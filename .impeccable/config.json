@@ -1,0 +1,41 @@
+{
+  "_comment": "Brand whitelist for aicall. The product hue is the brand, not AI slop. Read by .claude/hooks/frontend_design_gate.py via the vendored impeccable detector.",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "ai-color-palette",
+        "value": "#f97316",
+        "files": [
+          "src/**"
+        ],
+        "reason": "aicall brand colour, locked in src/config/site.ts"
+      },
+      {
+        "rule": "ai-color-palette",
+        "value": "#fed7aa",
+        "files": [
+          "src/**"
+        ],
+        "reason": "aicall brand colour, locked in src/config/site.ts"
+      },
+      {
+        "rule": "ai-color-palette",
+        "value": "#f97316",
+        "files": [
+          "src/**"
+        ],
+        "reason": "aicall brand colour, locked in src/config/site.ts"
+      },
+      {
+        "rule": "ai-color-palette",
+        "value": "#fb923c",
+        "files": [
+          "src/**"
+        ],
+        "reason": "aicall brand colour, locked in src/config/site.ts"
+      }
+    ]
+  }
+}
