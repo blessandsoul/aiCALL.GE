@@ -108,6 +108,11 @@ export function CallCostSlider() {
     setValue(value);
   };
 
+  const replay = () => {
+    userOwnedRef.current = false;
+    controllerRef.current?.replay();
+  };
+
   const totalMinutes = contacts * minutes;
   const humanHours = totalMinutes / 60;
   const humanCost = humanHours * wage;
@@ -159,6 +164,14 @@ export function CallCostSlider() {
               onChange={(value) => claimValue(setWage, value)}
             />
           </div>
+          <button
+            type="button"
+            onClick={replay}
+            className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#fafafa] px-5 text-[13px] font-semibold text-neutral-900 shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-colors hover:bg-[#f0f0f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
+          >
+            <Ico name="solar:refresh-bold-duotone" className="size-4" />
+            {t('replay')}
+          </button>
         </div>
 
         {/* The two columns, deliberately unequal: the human side is the one that hurts. */}

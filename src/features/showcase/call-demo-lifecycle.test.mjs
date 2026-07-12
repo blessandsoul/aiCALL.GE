@@ -337,3 +337,23 @@ test('cost sample yields permanently to the first slider input', async () => {
   assert.match(source, /onChange=\{\(value\) => claimValue\(/u);
   assert.doesNotMatch(source, /setInterval/u);
 });
+
+test('cost sample keeps visitor values until an explicit localized Replay', async () => {
+  const source = await showcaseSource('CallCostSlider.tsx');
+
+  assert.match(
+    source,
+    /const replay = \(\) => \{[\s\S]*userOwnedRef\.current = false;[\s\S]*controllerRef\.current\?\.replay\(\);[\s\S]*\};/u,
+  );
+  assert.match(source, /onClick=\{replay\}/u);
+  assert.match(source, /solar:refresh-bold-duotone/u);
+  assert.match(source, /\{t\('replay'\)\}/u);
+
+  for (const locale of ['ka', 'en', 'ru']) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../../messages/${locale}.json`, import.meta.url), 'utf8'),
+    );
+    assert.equal(typeof messages.product.cost.replay, 'string', `${locale} replay label`);
+    assert.ok(messages.product.cost.replay.trim(), `${locale} replay label is non-empty`);
+  }
+});
