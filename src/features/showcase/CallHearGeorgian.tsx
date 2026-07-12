@@ -2,8 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useReducedMotion } from 'framer-motion';
+import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { cn } from '@/lib/utils';
+import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
 
 /* =========================================================================
    CallHearGeorgian: the single most important element on this page.
@@ -116,14 +119,18 @@ const SCENARIOS: Scenario[] = [
 ];
 
 const CLIP_END = 9.5;
+const CYCLE_MS = 9_500;
 
 export function CallHearGeorgian() {
   const t = useTranslations('product.hear');
+  const reducedMotion = useReducedMotion();
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [now, setNow] = useState(0);
   const [audioMissing, setAudioMissing] = useState(false);
 
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<ReturnType<typeof createDemoLoop> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAt = useRef(0);
@@ -131,56 +138,112 @@ export function CallHearGeorgian() {
   const scenario = SCENARIOS[active];
 
   const stop = useCallback(() => {
-    setPlaying(false);
-    setNow(0);
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
     const a = audioRef.current;
     if (a) {
       a.pause();
       a.currentTime = 0;
     }
+    setPlaying(false);
   }, []);
+
+  const reset = useCallback(() => {
+    setNow(0);
+    setPlaying(false);
+  }, []);
+
+  const showFinal = useCallback(() => {
+    stop();
+    setNow(CLIP_END);
+  }, [stop]);
 
   // Silent fallback: when the recording is not on disk yet, the transcript still runs
   // on the same timeline. It is a script preview, and the caption says exactly that.
-  const tickSilently = useCallback(() => {
-    const elapsed = (performance.now() - startedAt.current) / 1000;
-    if (elapsed >= CLIP_END) {
-      stop();
-      return;
-    }
-    setNow(elapsed);
-    rafRef.current = requestAnimationFrame(tickSilently);
-  }, [stop]);
+  const startSilentTimeline = useCallback(() => {
+    startedAt.current = performance.now();
 
-  const toggle = useCallback(() => {
+    const advance = () => {
+      const elapsed = (performance.now() - startedAt.current) / 1000;
+      if (elapsed >= CLIP_END) {
+        rafRef.current = null;
+        setNow(CLIP_END);
+        setPlaying(false);
+        return;
+      }
+      setNow(elapsed);
+      rafRef.current = requestAnimationFrame(advance);
+    };
+
+    rafRef.current = requestAnimationFrame(advance);
+  }, []);
+
+  const playTranscript = useCallback(() => {
+    stop();
+    reset();
+    startSilentTimeline();
+  }, [reset, startSilentTimeline, stop]);
+
+  const toggleAudio = useCallback(() => {
+    controllerRef.current?.takeControl();
     if (playing) {
       stop();
+      reset();
       return;
     }
+
+    stop();
+    reset();
     setPlaying(true);
     const a = audioRef.current;
     if (a && !audioMissing) {
+      a.currentTime = 0;
       void a.play().catch(() => {
         setAudioMissing(true);
-        startedAt.current = performance.now();
-        rafRef.current = requestAnimationFrame(tickSilently);
+        startSilentTimeline();
       });
       return;
     }
-    startedAt.current = performance.now();
-    rafRef.current = requestAnimationFrame(tickSilently);
-  }, [playing, stop, audioMissing, tickSilently]);
+    startSilentTimeline();
+  }, [audioMissing, playing, reset, startSilentTimeline, stop]);
 
-  useEffect(() => stop, [stop]);
   useEffect(() => {
-    stop();
+    const target = rootRef.current;
+    if (!target) return;
+
+    const controller = createDemoLoop({
+      target,
+      reducedMotion: Boolean(reducedMotion),
+      threshold: 0.35,
+      cycleMs: CYCLE_MS,
+      holdMs: 2000,
+      play: playTranscript,
+      showFinal,
+      reset,
+      stop,
+    });
+    controllerRef.current = controller;
+
+    return () => {
+      controller.cleanup();
+      if (controllerRef.current === controller) controllerRef.current = null;
+    };
+  }, [playTranscript, reducedMotion, reset, showFinal, stop]);
+
+  const selectScenario = (index: number) => {
+    setActive(index);
     setAudioMissing(false);
-  }, [active, stop]);
+    controllerRef.current?.replay();
+  };
+
+  const replay = () => controllerRef.current?.replay();
 
   return (
     <SectionContainer className="py-20 md:py-28">
-      <div className="grid gap-10 lg:grid-cols-[minmax(260px,340px)_1fr] lg:gap-16">
+      <div
+        ref={rootRef}
+        className="grid min-w-0 gap-10 lg:grid-cols-[minmax(260px,340px)_1fr] lg:gap-16"
+      >
         {/* LEFT: the picker. Deliberately a vertical rail, not a row of equal cards. */}
         <div>
           <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
@@ -200,7 +263,7 @@ export function CallHearGeorgian() {
                 <li key={s.id}>
                   <button
                     type="button"
-                    onClick={() => setActive(i)}
+                    onClick={() => selectScenario(i)}
                     aria-pressed={on}
                     className={cn(
                       'flex min-h-[56px] w-full items-center gap-3 rounded-xl px-4 py-3 text-left',
@@ -235,11 +298,11 @@ export function CallHearGeorgian() {
         </div>
 
         {/* RIGHT: the player + the transcript */}
-        <div className="rounded-2xl bg-[#0e0e11] p-5 md:p-8">
+        <div className="min-w-0 rounded-3xl bg-[#0e0e11] p-5 md:p-8">
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={toggle}
+              onClick={toggleAudio}
               aria-label={playing ? t('pause') : t('play')}
               className={cn(
                 'flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-[#0e0e11]',
@@ -254,10 +317,7 @@ export function CallHearGeorgian() {
                   <span className="block h-4 w-[3px] rounded-sm bg-current" />
                 </span>
               ) : (
-                <span
-                  className="ml-[2px] block h-0 w-0 border-y-[7px] border-l-[11px] border-y-transparent border-l-current"
-                  aria-hidden="true"
-                />
+                <Ico name="solar:play-bold-duotone" className="h-6 w-6" />
               )}
             </button>
 
@@ -272,10 +332,22 @@ export function CallHearGeorgian() {
                   }}
                 />
               </div>
-              <p className="mt-2 text-[12px] tabular-nums text-white/40">
-                {now.toFixed(1)}s
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[12px] tabular-nums text-white/40">
+                <span>{now.toFixed(1)}s</span>
+                <span className="border-l border-white/10 pl-2">
+                  {playing ? t('audioStatus') : now >= CLIP_END ? t('result') : t('silentStatus')}
+                </span>
               </p>
             </div>
+
+            <button
+              type="button"
+              onClick={replay}
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-white/8 px-3 text-[13px] font-semibold text-white/70 transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:hover:bg-white/12"
+            >
+              <Ico name="solar:refresh-bold-duotone" className="h-5 w-5" />
+              <span className="hidden sm:inline">{t('replay')}</span>
+            </button>
           </div>
 
           {audioMissing && (
@@ -321,14 +393,16 @@ export function CallHearGeorgian() {
             ))}
           </div>
 
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <audio
             ref={audioRef}
             src={scenario.audio}
             preload="none"
             onError={() => setAudioMissing(true)}
             onTimeUpdate={(e) => setNow(e.currentTarget.currentTime)}
-            onEnded={stop}
+            onEnded={() => {
+              setPlaying(false);
+              setNow(CLIP_END);
+            }}
           />
         </div>
       </div>

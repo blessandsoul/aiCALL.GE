@@ -1,52 +1,44 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { cn } from '@/lib/utils';
-
-/* =========================================================================
-   CallConsentGate: three questions that decide whether we are allowed to call
-   this list at all.
-
-   Georgian personal data law requires written consent for direct marketing with
-   no exceptions, and opt-outs inside seven working days. So a bought list is not
-   a product we can sell, and the honest thing is to say so before the prospect
-   pays us.
-
-   No competitor will build this, because it disqualifies business. That is
-   precisely why it converts the serious buyer: a clinic that has thought about
-   the regulator recognizes the only vendor who has too.
-   ========================================================================= */
+import { consentVerdict } from './call-consent-model.mjs';
 
 type Verdict = 'green' | 'amber' | 'red';
+
+const TONE: Record<
+  Verdict,
+  { ring: string; surface: string; iconSurface: string; text: string }
+> = {
+  green: {
+    ring: 'shadow-[0_0_0_1px_#10b981]',
+    surface: 'bg-[#f0fdf8]',
+    iconSurface: 'bg-[#d1fae5] text-[#047857]',
+    text: 'text-[#065f46]',
+  },
+  amber: {
+    ring: 'shadow-[0_0_0_1px_#f59e0b]',
+    surface: 'bg-[#fffbeb]',
+    iconSurface: 'bg-[#fef3c7] text-[#b45309]',
+    text: 'text-[#78350f]',
+  },
+  red: {
+    ring: 'shadow-[0_0_0_1px_#ef4444]',
+    surface: 'bg-[#fef2f2]',
+    iconSurface: 'bg-[#fee2e2] text-[#b91c1c]',
+    text: 'text-[#7f1d1d]',
+  },
+};
 
 export function CallConsentGate() {
   const t = useTranslations('product.consent');
   const [own, setOwn] = useState<boolean | null>(null);
   const [existing, setExisting] = useState<boolean | null>(null);
   const [written, setWritten] = useState<boolean | null>(null);
-
-  const answered = own !== null && existing !== null && written !== null;
-
-  const verdict: Verdict | null = useMemo(() => {
-    if (!answered) return null;
-    // A list we do not own is a bought list. Written consent is the only door, and a
-    // bought list does not have it.
-    if (!own) return written ? 'amber' : 'red';
-    // Our own customers, about something they already have with us: performance of an
-    // existing relationship, and clean.
-    if (existing) return 'green';
-    // Our own customers, but we want to sell them something new. That is direct
-    // marketing, and it needs written consent.
-    return written ? 'green' : 'amber';
-  }, [answered, own, existing, written]);
-
-  const tone: Record<Verdict, { ring: string; dot: string; text: string }> = {
-    green: { ring: 'shadow-[0_0_0_1px_#10b981]', dot: 'bg-[#10b981]', text: 'text-[#065f46]' },
-    amber: { ring: 'shadow-[0_0_0_1px_#f59e0b]', dot: 'bg-[#f59e0b]', text: 'text-[#78350f]' },
-    red: { ring: 'shadow-[0_0_0_1px_#ef4444]', dot: 'bg-[#ef4444]', text: 'text-[#7f1d1d]' },
-  };
+  const verdict = consentVerdict({ own, existing, written }) as Verdict | null;
 
   const reset = () => {
     setOwn(null);
@@ -56,19 +48,24 @@ export function CallConsentGate() {
 
   return (
     <SectionContainer className="py-20 md:py-28">
-      <div className="mx-auto max-w-3xl lg:ml-0 lg:mr-auto">
+      <div className="min-w-0">
         <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
           {t('eyebrow')}
         </span>
         <h2 className="mt-4 text-balance font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 md:text-4xl">
           {t('heading')}
         </h2>
-        <p className="mt-3 max-w-xl text-pretty text-[15px] leading-relaxed text-[#525252]">
+        <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#525252]">
           {t('subtitle')}
         </p>
 
-        <div className="mt-10 flex flex-col gap-4">
+        <div
+          data-consent-questions
+          className="mt-10 grid min-w-0 gap-4 lg:grid-cols-3"
+        >
           <Question
+            number="01"
+            icon={<Ico name="solar:users-group-rounded-bold-duotone" className="h-6 w-6" />}
             label={t('q1')}
             yes={t('q1yes')}
             no={t('q1no')}
@@ -76,6 +73,8 @@ export function CallConsentGate() {
             onChange={setOwn}
           />
           <Question
+            number="02"
+            icon={<Ico name="solar:user-check-rounded-bold-duotone" className="h-6 w-6" />}
             label={t('q2')}
             yes={t('q2yes')}
             no={t('q2no')}
@@ -83,6 +82,8 @@ export function CallConsentGate() {
             onChange={setExisting}
           />
           <Question
+            number="03"
+            icon={<Ico name="solar:pen-new-square-bold-duotone" className="h-6 w-6" />}
             label={t('q3')}
             yes={t('q3yes')}
             no={t('q3no')}
@@ -93,40 +94,54 @@ export function CallConsentGate() {
 
         {verdict && (
           <div
+            data-consent-verdict
             className={cn(
-              'mt-8 rounded-2xl bg-white p-6',
-              tone[verdict].ring,
-              'transition-[transform,opacity] duration-200 ease-out',
+              'mt-5 min-w-0 rounded-3xl p-5 transition-[transform,opacity] duration-200 ease-out md:p-7',
+              TONE[verdict].ring,
+              TONE[verdict].surface,
             )}
-            style={{ transform: 'scale(1)', opacity: 1 }}
             role="status"
+            aria-live="polite"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-start">
               <span
-                className={cn('mt-[6px] h-2.5 w-2.5 shrink-0 rounded-full', tone[verdict].dot)}
-                aria-hidden="true"
-              />
-              <div>
-                <p className={cn('font-display text-lg font-extrabold', tone[verdict].text)}>
+                className={cn(
+                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl',
+                  TONE[verdict].iconSurface,
+                )}
+              >
+                <Ico
+                  name={
+                    verdict === 'red'
+                      ? 'solar:close-circle-bold-duotone'
+                      : 'solar:shield-check-bold-duotone'
+                  }
+                  className="h-6 w-6"
+                />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className={cn('font-display text-xl font-extrabold', TONE[verdict].text)}>
                   {t(verdict)}
                 </p>
                 <p className="mt-2 text-pretty text-[15px] leading-relaxed text-[#404040]">
                   {t(`${verdict}Body`)}
                 </p>
+                <p className="mt-5 border-t border-neutral-900/10 pt-4 text-[12px] leading-relaxed text-[#737373]">
+                  {t('law')}
+                </p>
+                <p className="mt-2 text-[12px] leading-relaxed text-[#737373]">
+                  {t('notice')}
+                </p>
               </div>
+              <button
+                type="button"
+                onClick={reset}
+                className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-neutral-900/70 shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-[transform,color] duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2 md:hover:text-neutral-900"
+              >
+                <Ico name="solar:refresh-bold-duotone" className="h-5 w-5" />
+                {t('reset')}
+              </button>
             </div>
-
-            <p className="mt-5 border-t border-[#e5e5e5] pt-4 text-[12px] leading-relaxed text-[#737373]">
-              {t('law')}
-            </p>
-
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-4 inline-flex min-h-[40px] items-center rounded-full px-4 text-sm font-medium text-neutral-900/70 transition-transform duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] md:hover:text-neutral-900"
-            >
-              {t('reset')}
-            </button>
           </div>
         )}
       </div>
@@ -135,12 +150,16 @@ export function CallConsentGate() {
 }
 
 function Question({
+  number,
+  icon,
   label,
   yes,
   no,
   value,
   onChange,
 }: {
+  number: string;
+  icon: React.ReactNode;
   label: string;
   yes: string;
   no: string;
@@ -148,9 +167,20 @@ function Question({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <fieldset className="rounded-2xl bg-[#fafafa] p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]">
-      <legend className="px-1 text-[15px] font-semibold text-neutral-900">{label}</legend>
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+    <fieldset className="flex min-w-0 flex-col rounded-2xl bg-[#fafafa] p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:p-6">
+      <legend className="sr-only">{label}</legend>
+      <div className="flex min-w-0 items-start justify-between gap-4">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[var(--brand)] shadow-[0_0_0_1px_rgba(0,0,0,0.06)]">
+          {icon}
+        </span>
+        <span className="font-mono text-[12px] font-semibold tracking-[0.16em] text-neutral-900/35">
+          {number}
+        </span>
+      </div>
+      <p className="mt-5 min-w-0 text-pretty text-[16px] font-semibold leading-snug text-neutral-900">
+        {label}
+      </p>
+      <div className="mt-5 grid min-w-0 gap-2">
         <Choice on={value === true} onClick={() => onChange(true)}>
           {yes}
         </Choice>
@@ -177,9 +207,9 @@ function Choice({
       onClick={onClick}
       aria-pressed={on}
       className={cn(
-        'min-h-[44px] rounded-xl px-4 py-2.5 text-left text-[14px] leading-snug',
+        'min-h-[44px] min-w-0 rounded-xl px-4 py-2.5 text-left text-[14px] leading-snug',
         'transition-[transform,background-color,box-shadow] duration-150 ease-out',
-        'active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2',
+        'active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2',
         on
           ? 'bg-[color-mix(in_srgb,var(--brand)_14%,white)] font-semibold text-neutral-900 shadow-[0_0_0_1px_var(--brand)]'
           : 'bg-white text-[#525252] shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:hover:bg-[#f4f4f4]',

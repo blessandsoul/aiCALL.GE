@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useReducedMotion } from 'framer-motion';
+import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
+import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
 
 /* =========================================================================
    CallCostSlider: his inputs, his number.
@@ -20,12 +23,90 @@ import { SectionContainer } from '@/components/layout/SectionContainer';
 /* Our own quoted rate for a campaign, in GEL per minute of connected call. It is our
    price, not a claim about anyone else's, and the note under the widget says so. */
 const AGENT_GEL_PER_MIN = 0.45;
+const CYCLE_MS = 6_500;
 
 export function CallCostSlider() {
   const t = useTranslations('product.cost');
+  const reducedMotion = useReducedMotion();
   const [contacts, setContacts] = useState(400);
   const [minutes, setMinutes] = useState(2);
   const [wage, setWage] = useState(14);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<ReturnType<typeof createDemoLoop> | null>(null);
+  const userOwnedRef = useRef(false);
+  const sampleTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const stop = useCallback(() => {
+    sampleTimers.current.forEach(clearTimeout);
+    sampleTimers.current = [];
+  }, []);
+
+  const reset = useCallback(() => {
+    stop();
+    if (userOwnedRef.current) return;
+    setContacts(100);
+    setMinutes(1);
+    setWage(10);
+  }, [stop]);
+
+  const showFinal = useCallback(() => {
+    stop();
+    if (userOwnedRef.current) return;
+    setContacts(400);
+    setMinutes(2);
+    setWage(14);
+  }, [stop]);
+
+  const play = useCallback(() => {
+    stop();
+    if (userOwnedRef.current) return;
+    setContacts(100);
+    setMinutes(1);
+    setWage(10);
+    sampleTimers.current = [
+      setTimeout(() => {
+        if (!userOwnedRef.current) setContacts(250);
+      }, 1800),
+      setTimeout(() => {
+        if (!userOwnedRef.current) setMinutes(2);
+      }, 3400),
+      setTimeout(() => {
+        if (!userOwnedRef.current) setWage(14);
+      }, 4800),
+      setTimeout(() => {
+        if (!userOwnedRef.current) setContacts(400);
+      }, CYCLE_MS),
+    ];
+  }, [stop]);
+
+  useEffect(() => {
+    const target = rootRef.current;
+    if (!target) return;
+
+    const controller = createDemoLoop({
+      target,
+      reducedMotion: Boolean(reducedMotion),
+      threshold: 0.35,
+      cycleMs: CYCLE_MS,
+      holdMs: 2000,
+      play,
+      showFinal,
+      reset,
+      stop,
+    });
+    controllerRef.current = controller;
+
+    return () => {
+      controller.cleanup();
+      if (controllerRef.current === controller) controllerRef.current = null;
+    };
+  }, [play, reducedMotion, reset, showFinal, stop]);
+
+  const claimValue = (setValue: (value: number) => void, value: number) => {
+    userOwnedRef.current = true;
+    controllerRef.current?.takeControl();
+    setValue(value);
+  };
 
   const totalMinutes = contacts * minutes;
   const humanHours = totalMinutes / 60;
@@ -37,7 +118,10 @@ export function CallCostSlider() {
 
   return (
     <SectionContainer className="py-20 md:py-28">
-      <div className="grid gap-10 lg:grid-cols-[minmax(280px,400px)_1fr] lg:gap-16">
+      <div
+        ref={rootRef}
+        className="grid min-w-0 gap-10 lg:grid-cols-[minmax(280px,400px)_1fr] lg:gap-16"
+      >
         <div>
           <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
             {t('eyebrow')}
@@ -56,7 +140,7 @@ export function CallCostSlider() {
               min={50}
               max={4000}
               step={50}
-              onChange={setContacts}
+              onChange={(value) => claimValue(setContacts, value)}
             />
             <Slider
               label={t('minutes')}
@@ -64,7 +148,7 @@ export function CallCostSlider() {
               min={1}
               max={6}
               step={1}
-              onChange={setMinutes}
+              onChange={(value) => claimValue(setMinutes, value)}
             />
             <Slider
               label={t('wage')}
@@ -72,15 +156,16 @@ export function CallCostSlider() {
               min={6}
               max={40}
               step={1}
-              onChange={setWage}
+              onChange={(value) => claimValue(setWage, value)}
             />
           </div>
         </div>
 
         {/* The two columns, deliberately unequal: the human side is the one that hurts. */}
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl bg-[#fafafa] p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:p-8">
-            <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
+          <div className="min-w-0 rounded-2xl bg-[#fafafa] p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:p-8">
+            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-neutral-900/40">
+              <Ico name="solar:clock-circle-bold-duotone" className="h-4 w-4" />
               {t('human')}
             </span>
             <p className="mt-3 font-display text-5xl font-extrabold tabular-nums leading-none text-neutral-900 md:text-6xl">
@@ -93,11 +178,13 @@ export function CallCostSlider() {
           </div>
 
           <div
-            className="rounded-2xl p-6 md:p-8"
+            className="min-w-0 rounded-2xl p-6 md:p-8"
             style={{ background: 'color-mix(in srgb, var(--brand) 12%, white)' }}
           >
-            <span className="text-[12px] uppercase tracking-wide text-neutral-900/50">
-              {t('agent')}
+            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-neutral-900/50">
+              <Ico name="solar:calculator-bold-duotone" className="h-4 w-4" />
+              <span>{t('agent')}</span>
+              <span className="border-l border-neutral-900/10 pl-2">{t('result')}</span>
             </span>
             <p className="mt-3 font-display text-5xl font-extrabold tabular-nums leading-none text-neutral-900 md:text-6xl">
               {fmt(agentCost)}
@@ -145,7 +232,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-3 h-10 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[#e5e5e5] [&::-webkit-slider-thumb]:mt-[-7px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--brand)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out active:[&::-webkit-slider-thumb]:scale-[0.96] [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[var(--brand)] [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[#e5e5e5]"
+        className="mt-3 h-11 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[#e5e5e5] [&::-webkit-slider-thumb]:mt-[-7px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--brand)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out active:[&::-webkit-slider-thumb]:scale-[0.96] [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[var(--brand)] [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[#e5e5e5]"
       />
     </label>
   );

@@ -2,8 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useReducedMotion } from 'framer-motion';
+import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { cn } from '@/lib/utils';
+import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
 
 /* =========================================================================
    CallOutcomeBoard: shows the buyer the artifact he is purchasing.
@@ -21,7 +24,8 @@ import { cn } from '@/lib/utils';
 const TOTAL = 100;
 /* A plausible split, not a claim. Deliberately not round: real campaigns are messy. */
 const SPLIT = { confirmed: 47, moved: 16, noanswer: 31, human: 6 };
-const TICK_MS = 55;
+const TICK_MS = 60;
+const CYCLE_MS = 6_000;
 
 type Bucket = keyof typeof SPLIT;
 const ORDER: Bucket[] = ['confirmed', 'moved', 'noanswer', 'human'];
@@ -45,10 +49,20 @@ const TONE: Record<Bucket, string> = {
   human: '#3b82f6',
 };
 
+const ICON: Record<Bucket, string> = {
+  confirmed: 'solar:check-circle-bold-duotone',
+  moved: 'solar:calendar-mark-bold-duotone',
+  noanswer: 'solar:phone-bold-duotone',
+  human: 'solar:users-group-rounded-bold-duotone',
+};
+
 export function CallOutcomeBoard() {
   const t = useTranslations('product.board');
+  const reducedMotion = useReducedMotion();
   const [n, setN] = useState(0);
   const [running, setRunning] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<ReturnType<typeof createDemoLoop> | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clear = useCallback(() => {
@@ -73,7 +87,45 @@ export function CallOutcomeBoard() {
     }, TICK_MS);
   }, [clear]);
 
-  useEffect(() => clear, [clear]);
+  const stop = useCallback(() => {
+    clear();
+    setRunning(false);
+  }, [clear]);
+
+  const reset = useCallback(() => {
+    stop();
+    setN(0);
+  }, [stop]);
+
+  const showFinal = useCallback(() => {
+    stop();
+    setN(TOTAL);
+  }, [stop]);
+
+  useEffect(() => {
+    const target = rootRef.current;
+    if (!target) return;
+
+    const controller = createDemoLoop({
+      target,
+      reducedMotion: Boolean(reducedMotion),
+      threshold: 0.35,
+      cycleMs: CYCLE_MS,
+      holdMs: 2000,
+      play: run,
+      showFinal: showFinal,
+      reset,
+      stop,
+    });
+    controllerRef.current = controller;
+
+    return () => {
+      controller.cleanup();
+      if (controllerRef.current === controller) controllerRef.current = null;
+    };
+  }, [reducedMotion, reset, run, showFinal, stop]);
+
+  const replay = () => controllerRef.current?.replay();
 
   const counts = ORDER.reduce<Record<Bucket, number>>(
     (acc, b) => {
@@ -87,21 +139,20 @@ export function CallOutcomeBoard() {
 
   return (
     <SectionContainer className="py-20 md:py-28">
-      <div className="grid gap-10 lg:grid-cols-[1fr_minmax(300px,420px)] lg:gap-16">
+      <div
+        ref={rootRef}
+        className="grid min-w-0 gap-10 lg:grid-cols-[1fr_minmax(300px,420px)] lg:gap-16"
+      >
         {/* LEFT: the board */}
         <div className="order-2 lg:order-1">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {ORDER.map((b) => (
               <div
                 key={b}
-                className="rounded-2xl bg-[#fafafa] p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]"
+                className="min-w-0 rounded-2xl bg-[#fafafa] p-4 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]"
               >
                 <span className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ background: TONE[b] }}
-                    aria-hidden="true"
-                  />
+                  <Ico name={ICON[b]} className="h-4 w-4" style={{ color: TONE[b] }} />
                   <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
                     {t(b)}
                   </span>
@@ -149,22 +200,22 @@ export function CallOutcomeBoard() {
           <div className="mt-8 flex items-center gap-4">
             <button
               type="button"
-              onClick={run}
-              disabled={running}
+              onClick={replay}
               className={cn(
                 'inline-flex min-h-[48px] items-center rounded-full px-6 text-sm font-semibold text-white',
                 'transition-[transform,filter] duration-150 ease-out',
                 'active:scale-[0.96] md:hover:brightness-110',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2',
-                running && 'opacity-70',
               )}
               style={{ background: 'var(--brand)' }}
             >
-              {running ? t('running') : done ? t('again') : t('run')}
+              <Ico name="solar:refresh-bold-duotone" className="mr-2 h-5 w-5" />
+              {t('replay')}
             </button>
 
-            <span className="text-sm tabular-nums text-[#737373]">
-              {n} / {TOTAL} {t('called')}
+            <span className="inline-flex min-h-[44px] items-center gap-2 text-sm tabular-nums text-[#737373]">
+              {done && <Ico name="solar:check-circle-bold-duotone" className="h-5 w-5 text-[#10b981]" />}
+              {n} / {TOTAL} {done ? t('result') : running ? t('running') : t('called')}
             </span>
           </div>
         </div>

@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, useReducedMotion } from 'framer-motion';
+import { Ico } from '@/components/common/Ico';
 import { cn } from '@/lib/utils';
+import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
 
 /* =========================================================================
    HeroProof, aiCALL: a call happening, and a row turning green.
@@ -26,41 +28,80 @@ const ROWS = [
 
 /* The row the call is about, and the beat at which it confirms. */
 const ACTIVE = 2;
-const CYCLE = 5200;
+const CYCLE_MS = 6_800;
 
 export function HeroProof() {
   const t = useTranslations('product.proof');
-  const reduced = useReducedMotion();
+  const reducedMotion = useReducedMotion();
   const [beat, setBeat] = useState(0);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<ReturnType<typeof createDemoLoop> | null>(null);
+  const storyTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const stop = useCallback(() => {
+    storyTimers.current.forEach(clearTimeout);
+    storyTimers.current = [];
+  }, []);
+
+  const reset = useCallback(() => setBeat(0), []);
+
+  const play = useCallback(() => {
+    stop();
+    setBeat(0);
+    storyTimers.current = [
+      setTimeout(() => setBeat(1), 1600),
+      setTimeout(() => setBeat(2), 3800),
+      setTimeout(() => setBeat(3), CYCLE_MS),
+    ];
+  }, [stop]);
+
+  const showFinal = useCallback(() => {
+    stop();
+    setBeat(3);
+  }, [stop]);
 
   useEffect(() => {
-    if (reduced) {
-      setBeat(3);
-      return;
-    }
-    const id = setInterval(() => setBeat((b) => (b + 1) % 4), CYCLE / 4);
-    return () => clearInterval(id);
-  }, [reduced]);
+    const target = rootRef.current;
+    if (!target) return;
+
+    const controller = createDemoLoop({
+      target,
+      reducedMotion: Boolean(reducedMotion),
+      threshold: 0.35,
+      cycleMs: CYCLE_MS,
+      holdMs: 2000,
+      play,
+      showFinal,
+      reset,
+      stop,
+    });
+    controllerRef.current = controller;
+
+    return () => {
+      controller.cleanup();
+      if (controllerRef.current === controller) controllerRef.current = null;
+    };
+  }, [play, reducedMotion, reset, showFinal, stop]);
+
+  const replay = () => controllerRef.current?.replay();
 
   const ringing = beat === 0;
   const talking = beat === 1 || beat === 2;
   const confirmed = beat >= 2;
 
   return (
-    <div className="rounded-3xl bg-white/70 p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.07),0_28px_60px_-40px_rgba(0,0,0,0.45)] backdrop-blur-sm md:p-6">
+    <div ref={rootRef} className="min-w-0 rounded-3xl bg-white/70 p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.07),0_28px_60px_-40px_rgba(0,0,0,0.45)] backdrop-blur-sm md:p-6">
       {/* the call */}
       <div className="rounded-2xl bg-[#0e0e11] p-4 md:p-5">
         <div className="flex items-center gap-3">
           <motion.span
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
             style={{ background: 'var(--brand)' }}
-            animate={reduced ? {} : { scale: ringing ? [1, 1.07, 1] : 1 }}
+            animate={reducedMotion ? {} : { scale: ringing ? [1, 1.07, 1] : 1 }}
             transition={{ duration: 0.6, repeat: ringing ? Infinity : 0, ease: 'easeOut' }}
             aria-hidden="true"
           >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
+            <Ico name="solar:phone-bold-duotone" className="h-[18px] w-[18px] text-white" />
           </motion.span>
 
           <div className="min-w-0 flex-1">
@@ -80,7 +121,7 @@ export function HeroProof() {
                 className="w-[2.5px] origin-center rounded-full"
                 style={{ height: 26, background: talking ? 'var(--brand)' : 'rgba(255,255,255,0.16)' }}
                 animate={
-                  reduced || !talking
+                  reducedMotion || !talking
                     ? { scaleY: 0.14 }
                     : { scaleY: [0.16, h / 10, 0.22, h / 12, 0.16] }
                 }
@@ -94,7 +135,7 @@ export function HeroProof() {
         <div className="mt-3.5 min-h-[42px]">
           <motion.p
             key={beat}
-            initial={reduced ? false : { opacity: 0, y: 6 }}
+            initial={reducedMotion ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.26, ease: [0.23, 1, 0.32, 1] }}
             className={cn(
@@ -115,14 +156,24 @@ export function HeroProof() {
 
       {/* the sheet. THIS is the thing he is buying. */}
       <div className="mt-4">
-        <span className="mb-2 flex items-baseline justify-between">
+        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-neutral-900/40">
             {t('sheet')}
           </span>
-          <span className="font-mono text-[11px] tabular-nums text-neutral-900/35">
-            {confirmed ? '3' : '2'}/4 {t('confirmedShort')}
+          <span className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
+            <span className="font-mono text-[11px] tabular-nums text-neutral-900/35">
+              {confirmed ? '3' : '2'}/4 {t('confirmedShort')}
+            </span>
+            <button
+              type="button"
+              onClick={replay}
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl px-3 text-[12px] font-semibold text-neutral-900/55 transition-[transform,color] duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] md:hover:text-neutral-900"
+            >
+              <Ico name="solar:refresh-bold-duotone" className="h-4 w-4" />
+              {t('replay')}
+            </button>
           </span>
-        </span>
+        </div>
 
         <ul className="flex flex-col gap-1.5">
           {ROWS.map((r, i) => {
@@ -152,7 +203,10 @@ export function HeroProof() {
                   )}
                   aria-hidden="true"
                 >
-                  {done ? 'ok' : '?'}
+                  <Ico
+                    name={done ? 'solar:check-circle-bold-duotone' : 'solar:clock-circle-bold-duotone'}
+                    className="h-4 w-4"
+                  />
                 </motion.span>
               </li>
             );
