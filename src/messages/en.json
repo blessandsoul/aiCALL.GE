@@ -31,10 +31,10 @@
     "legal": "Zemo Plato, III Array, N14, Apt. 87, Tbilisi 0163"
   },
   "landingNav": {
-    "showcase": "How it sounds",
+    "showcase": "Hear the call",
     "process": "How it works",
     "faq": "Questions",
-    "cta": "Get in touch"
+    "cta": "Start a pilot"
   },
   "landingFooter": {
     "company": "AI NOW LLC, Tbilisi, Georgia",
@@ -43,10 +43,10 @@
     "socialHeading": "Social",
     "languageHeading": "Language",
     "contact": "Contact",
-    "sectionShowcase": "How it sounds",
+    "sectionShowcase": "Hear the call",
     "sectionWork": "How it works",
     "sectionFaq": "Questions",
-    "ctaHuge": "Try it on a hundred of your own bookings",
+    "ctaHuge": "Try it on your bookings",
     "copyright": "© {year} aiCALL, an aiNOW product. All rights reserved."
   },
   "product": {
@@ -60,17 +60,12 @@
       "taglineWorks": "calls",
       "typewriterWords": "appointments,deliveries,bookings,service visits,payments",
       "typewriterPrefill": "appointments",
-      "sloganCreates": "creates",
-      "sloganAds": "advertises",
-      "sloganSells": "sells",
-      "sloganManages": "manages",
-      "sloganTogether": "together",
       "ctaResults": "Hear it in Georgian",
       "ctaCall": "Book a call",
       "commitment": "First 5 clinics: a 100-call pilot on your own bookings. We measure your answer rate and your confirm rate in Georgian, and the numbers are yours whether you continue with us or not.",
       "audience": "For clinics, dentists, service centres, salons and delivery",
       "sub": "So we call them. In Georgian, the day before, at the hour you pick. They answer in one word, and you get tomorrow's list back with the answers already in it.",
-      "signedBy": "Andrew Altair. I am the one who calls you back."
+      "signedBy": "aiNOW checks this process on your data, sets it up, and shows you the result."
     },
     "work": {
       "eyebrow": "How it works",
