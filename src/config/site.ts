@@ -65,7 +65,7 @@ export const SITE = {
    */
   seo: {
     disambiguating:
-      "An outbound AI voice agent that calls a Georgian business's OWN booked customers to confirm or reschedule them. It is not a cold-calling service and it will not call a purchased list: Georgian law requires written consent for direct marketing with no exceptions.",
+      "An outbound AI voice agent that calls a Georgian business's OWN booked customers to confirm or reschedule them. It is not a cold-calling service and it will not call a purchased list: Georgian law requires consent for direct marketing regardless of data source, and aiNOW's launch policy requires a written or electronic consent record.",
     serviceType: "AI voice agent for appointment confirmation and rescheduling, in Georgian",
     audienceName:
       "Clinics, dental practices, dealership service centres, beauty salons and delivery companies in Georgia",
@@ -90,15 +90,15 @@ export const SITE = {
     boundary:
       "aiCALL is the phone only. An agent that answers customers on Messenger, Instagram, Viber or a website chat is aiSTAFF.ge. Automating the paperwork inside the company, the orders and documents and approvals, is aiOFFICE.ge.",
     limits: [
-      "Georgian speech recognition still gets roughly one word in nine wrong, so the calls are designed around yes, no, a date and a number, and not around open conversation.",
-      "We will not call a purchased or scraped list. Georgian law requires written consent for direct marketing with no exceptions.",
-      "We have run no Georgian campaign yet, so we publish no answer rate and no confirm rate. The first pilot is how those numbers get made.",
+      "Calls use short, fixed questions; open or uncertain questions go to a person instead of being guessed.",
+      "We will not call a purchased or scraped list. Consent is required for direct marketing regardless of source. Written consent is specifically required when personal data beyond name, surname, address, phone and email are processed; aiNOW's launch policy is stricter and asks for a written or electronic consent record before every marketing launch.",
+      "We do not present another campaign's answer or confirmation rate as yours. An approved campaign produces its own measured outcomes.",
       "The agent never takes a card payment over the phone.",
     ],
     commitment:
       "First 5 clinics: a 100-call pilot on your own bookings. We measure your answer rate and your confirm rate in Georgian, and the numbers are yours whether you continue with us or not.",
     summary:
-      "aiCALL is an AI voice agent, built by the aiNOW agency in Tbilisi, that phones a Georgian business's own booked customers the day before their appointment, confirms or reschedules them in Georgian, and hands the business back a clean outcome sheet. It deliberately does not sell cold-calling: Georgian personal data law requires written consent for direct marketing with no exceptions, and the site says so on the page. The calls are designed around one-word answers because Georgian speech recognition is still roughly 89% accurate, and the product is honest about that limit rather than hiding it.",
+      "aiCALL is an AI voice agent, built by the aiNOW agency in Tbilisi, that phones a Georgian business's own booked customers the day before their appointment, confirms or reschedules them in Georgian, and hands the business back a clean outcome sheet. It deliberately does not sell cold-calling: direct marketing requires consent regardless of source, while written consent under Article 12 specifically applies when personal data beyond name, surname, address, phone and email are processed. aiNOW separately requires a written or electronic consent record under its launch policy. Calls use short, fixed questions, send open questions to a person, and never present a borrowed answer rate.",
   },
 } as const;
 

@@ -170,6 +170,73 @@ test('canonical replay, control, retained callbacks, and cleanup preserve caller
   assert.deepEqual(harness.calls, afterCleanup);
 });
 
+test('controlled manual audio and timer owners stop hidden or off-screen until explicit replay', () => {
+  const ownerTimers = createTimerHarness();
+  const owner = {
+    events: [],
+    running: null,
+    timer: null,
+  };
+
+  const startOwner = (label) => {
+    owner.running = label;
+    owner.events.push(`start:${label}`);
+    owner.timer = ownerTimers.schedule(() => {
+      owner.events.push(`finish:${label}`);
+      owner.running = null;
+      owner.timer = null;
+    }, 1800);
+  };
+
+  const stopOwner = () => {
+    owner.events.push(`stop:${owner.running ?? 'idle'}`);
+    if (owner.timer !== null) ownerTimers.cancel(owner.timer);
+    owner.running = null;
+    owner.timer = null;
+  };
+
+  const harness = createHarness({
+    play: () => startOwner('automatic'),
+    reset: () => owner.events.push('reset'),
+    stop: stopOwner,
+  });
+  const observed = harness.observer.instances[0];
+
+  observed.emit(harness.target, 0.8);
+  harness.controller.takeControl();
+  startOwner('real-audio');
+  assert.equal(owner.running, 'real-audio');
+
+  harness.pageDocument.setHidden(true);
+  assert.equal(owner.running, null);
+  assert.equal(ownerTimers.pending().length, 0);
+  assert.deepEqual(owner.events.slice(-2), ['start:real-audio', 'stop:real-audio']);
+
+  const eventsAfterHidden = [...owner.events];
+  harness.pageDocument.setHidden(false);
+  assert.deepEqual(owner.events, eventsAfterHidden);
+
+  startOwner('manual-recovery-timers');
+  observed.emit(harness.target, 0, false);
+  assert.equal(owner.running, null);
+  assert.equal(ownerTimers.pending().length, 0);
+  assert.deepEqual(
+    owner.events.slice(-2),
+    ['start:manual-recovery-timers', 'stop:manual-recovery-timers'],
+  );
+
+  const eventsAfterOffScreen = [...owner.events];
+  observed.emit(harness.target, 0.8);
+  assert.deepEqual(owner.events, eventsAfterOffScreen);
+  assert.equal(harness.timers.pending().length, 0);
+
+  harness.controller.replay();
+  assert.deepEqual(owner.events.slice(-3), ['stop:idle', 'reset', 'start:automatic']);
+  assert.equal(owner.running, 'automatic');
+  assert.equal(ownerTimers.pending().length, 1);
+  assert.equal(harness.timers.pending().length, 1);
+});
+
 test('canonical reduced-motion mode renders a static final state with no timer or observer', () => {
   const observer = createObserverHarness();
   const pageDocument = createDocumentHarness();

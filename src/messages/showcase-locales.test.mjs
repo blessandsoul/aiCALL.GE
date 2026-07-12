@@ -35,11 +35,12 @@ function landingCopy(messages) {
   return Object.fromEntries(namespaces.map((namespace) => [namespace, messages.product[namespace]]));
 }
 
-const [en, ka, ru, pkg] = await Promise.all([
+const [en, ka, ru, pkg, siteSource] = await Promise.all([
   readJson('./en.json'),
   readJson('./ka.json'),
   readJson('./ru.json'),
   readJson('../../package.json'),
+  readFile(new URL('../config/site.ts', import.meta.url), 'utf8'),
 ]);
 
 test('KA, EN, and RU showcase copy has exact key parity', () => {
@@ -84,6 +85,65 @@ test('consent copy keeps a cautious boundary and says it is not legal advice', (
   }
 });
 
+test('Article 12 copy separates consent, additional-data writing, and aiNOW launch policy', () => {
+  const checks = {
+    en: {
+      messages: en,
+      blanketSeo: /marketing calls? (?:need|require)s? written consent/iu,
+      blanketFaq: /direct marketing requires written consent under Georgian law|marketing and needs written consent/iu,
+      blanketLaw: /including written consent/iu,
+      generalConsent: /direct marketing needs consent regardless of how the data were obtained or whether they are publicly accessible/iu,
+      additionalData: /written consent is required when the data go beyond name, surname, address, phone number and email/iu,
+      withdrawal: /within seven working days/iu,
+      policy: /under aiNOW's launch policy[^.]*written or electronic consent record/iu,
+      questionPolicy: /under aiNOW's launch policy/iu,
+    },
+    ka: {
+      messages: ka,
+      blanketSeo: /მარკეტინგული ზარისთვის წერილობითი თანხმობაა საჭირო/u,
+      blanketFaq: /პირდაპირი მარკეტინგისთვის[^.]*წერილობით თანხმობას მოითხოვს|მარკეტინგია და წერილობით თანხმობას მოითხოვს/u,
+      blanketLaw: /მათ შორის წერილობით თანხმობას/u,
+      generalConsent: /პირდაპირი მარკეტინგისთვის თანხმობა საჭიროა მონაცემების მოპოვების გზისა და მათი საჯარო ხელმისაწვდომობის მიუხედავად/u,
+      additionalData: /სახელის, გვარის, მისამართის, ტელეფონის ნომრისა და ელფოსტის გარდა სხვა მონაცემებიც მუშავდება, საჭიროა წერილობითი თანხმობა/u,
+      withdrawal: /შვიდ სამუშაო დღეში/u,
+      policy: /aiNOW-ის კამპანიის დაწყების პოლიტიკის მიხედვით[^.]*თანხმობის წერილობითი ან ელექტრონული ჩანაწერი/u,
+      questionPolicy: /aiNOW-ის კამპანიის დაწყების პოლიტიკის მიხედვით/u,
+    },
+    ru: {
+      messages: ru,
+      blanketSeo: /для маркетинговых звонков нужно письменное согласие/iu,
+      blanketFaq: /прямого маркетинга[^.]*требует письменного согласия|маркетинг[^.]*требует письменного согласия/iu,
+      blanketLaw: /включая письменное согласие/iu,
+      generalConsent: /согласие на прямой маркетинг нужно независимо от способа получения данных и их общедоступности/iu,
+      additionalData: /письменное согласие требуется, если обрабатываются данные помимо имени, фамилии, адреса, телефона и электронной почты/iu,
+      withdrawal: /не позднее семи рабочих дней/iu,
+      policy: /по политике запуска aiNOW[^.]*письменное или электронное подтверждение согласия/iu,
+      questionPolicy: /по политике запуска aiNOW/iu,
+    },
+  };
+
+  for (const [locale, check] of Object.entries(checks)) {
+    const { seo, faq, consent } = check.messages.product;
+
+    assert.doesNotMatch(seo.description, check.blanketSeo, `${locale} SEO overstates written consent`);
+    assert.doesNotMatch(
+      `${faq.a3} ${faq.a4}`,
+      check.blanketFaq,
+      `${locale} FAQ overstates written consent`,
+    );
+    assert.doesNotMatch(consent.law, check.blanketLaw, `${locale} law note is too broad`);
+    assert.match(consent.law, check.generalConsent, `${locale} keeps the general-consent rule`);
+    assert.match(consent.law, check.additionalData, `${locale} limits writing to additional data`);
+    assert.match(consent.law, check.withdrawal, `${locale} keeps the withdrawal deadline`);
+    assert.match(consent.q3, check.questionPolicy, `${locale} labels policy before the answer`);
+    assert.match(
+      `${faq.a3} ${consent.amberBody}`,
+      check.policy,
+      `${locale} labels the stricter aiNOW launch policy`,
+    );
+  }
+});
+
 test('Georgian landing copy contains no Cyrillic letters', () => {
   const copy = flattenStrings(landingCopy(ka)).join('\n');
   assert.doesNotMatch(copy, /[\u0400-\u04FF]/u);
@@ -101,6 +161,24 @@ test('public copy contains no ecosystem slogan, personal signer, or invented pro
   assert.doesNotMatch(
     allCopy,
     /one word in nine|first 5 clinics|100-call pilot|August 2026|we have not run a Georgian campaign|within 24 hours|первые 5 клиник|пилот.*100|август.*2026|24 часов|პირველი 5 კლინიკა|100-ზარიანი|24 საათ/iu,
+  );
+});
+
+test('public site config keeps accurate consent and evidence boundaries', () => {
+  assert.doesNotMatch(
+    siteSource,
+    /written consent for direct marketing with no exceptions|one word in nine|89% accurate/iu,
+  );
+  assert.match(siteSource, /short, fixed questions/iu);
+  assert.match(siteSource, /open or uncertain questions go to a person/iu);
+  assert.match(siteSource, /do not present another campaign's answer or confirmation rate as yours/iu);
+  assert.match(
+    siteSource,
+    /written consent is specifically required when personal data beyond name, surname, address, phone and email are processed/iu,
+  );
+  assert.match(
+    siteSource,
+    /aiNOW's launch policy[^.]*written or electronic consent record/iu,
   );
 });
 

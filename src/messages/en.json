@@ -52,7 +52,7 @@
   "product": {
     "seo": {
       "title": "aiCALL — Georgian calls that confirm bookings and show the outcome",
-      "description": "aiCALL calls a business's own customers about existing appointments, deliveries or payments. It asks one short question in Georgian, records the outcome and hands uncertain calls to a person. Marketing calls need written consent."
+      "description": "aiCALL calls a business's own customers about existing appointments, deliveries or payments. It asks one short question in Georgian, records the outcome and hands uncertain calls to a person. Direct marketing needs consent regardless of where the contact data came from."
     },
     "hero": {
       "lead": "Never miss a",
@@ -99,9 +99,9 @@
       "q2": "Will customers know that an AI agent is calling?",
       "a2": "Yes. The opening identifies the AI agent and your business. aiNOW checks the final wording with you. If your sector needs another disclosure, the campaign pauses until it is cleared.",
       "q3": "Can aiCALL use a bought or scraped number list?",
-      "a3": "No. aiNOW does not start from a bought or scraped list. Direct marketing requires written consent under Georgian law. If ownership or consent is unclear, the list pauses for review.",
+      "a3": "No. aiNOW does not call a bought or scraped list. Georgian law requires consent for direct marketing regardless of where the data came from. Under aiNOW's launch policy, every marketing campaign also needs a written or electronic consent record.",
       "q4": "Which calls may be suitable without marketing consent?",
-      "a4": "Operational calls to your own customers about an existing appointment, order or agreement may be suitable. Selling something new is marketing and needs written consent. This consent check is guidance, not legal advice.",
+      "a4": "Operational calls to your own customers about an existing appointment, order or agreement may be suitable. A new offer is direct marketing and needs consent. aiNOW's launch policy also asks for a written or electronic consent record. This is guidance, not legal advice.",
       "q5": "What happens when the customer asks an open question?",
       "a5": "The agent stops the fixed script and hands the call to a person, or marks a follow-up for your team. It does not invent an answer.",
       "q6": "Can the call move to a real employee?",
@@ -166,16 +166,16 @@
       "q2": "Is the call only about their existing relationship with you?",
       "q2yes": "Yes, an appointment, order or current agreement",
       "q2no": "No, we want to offer something new",
-      "q3": "Do you hold written consent for marketing calls?",
-      "q3yes": "Yes, the written record is available",
-      "q3no": "No, or the record is uncertain",
+      "q3": "Under aiNOW's launch policy, can you show a consent record for marketing calls?",
+      "q3yes": "Yes, a written or electronic record is available",
+      "q3no": "No, or the consent record is uncertain",
       "green": "An operational call may proceed",
       "greenBody": "These are your own customers and the call concerns an existing appointment, order or agreement. aiNOW can prepare an operational script after the details are checked.",
       "amber": "Pause for a consent review",
-      "amberBody": "One answer changes the legal basis. Do not start the campaign yet. aiNOW separates operational calls from marketing and asks you to confirm the written record.",
+      "amberBody": "One answer changes the call category. Do not start yet. aiNOW separates operational calls from marketing. Under aiNOW's launch policy, every marketing launch needs a written or electronic consent record.",
       "red": "Do not call this list",
-      "redBody": "The list is not yours and no written marketing consent is recorded. aiNOW will not start calls from it.",
-      "law": "Georgia's Law on Personal Data Protection sets rules for direct marketing, including written consent and handling objections within seven working days.",
+      "redBody": "The list is not yours and no marketing-consent record is available. Under aiNOW's launch policy, calls will not start from this list.",
+      "law": "Under Article 12, direct marketing needs consent regardless of how the data were obtained or whether they are publicly accessible. Written consent is required when the data go beyond name, surname, address, phone number and email. A withdrawal request must be honoured within seven working days.",
       "notice": "This check is practical guidance, not legal advice. If the facts are unclear, aiNOW pauses the campaign and asks for a legal review.",
       "reset": "Clear my answers"
     },
