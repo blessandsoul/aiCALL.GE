@@ -167,7 +167,7 @@ test('public copy contains no ecosystem slogan, personal signer, or invented pro
 test('public site config keeps accurate consent and evidence boundaries', () => {
   assert.doesNotMatch(
     siteSource,
-    /written consent for direct marketing with no exceptions|one word in nine|89% accurate/iu,
+    /written consent for direct marketing with no exceptions|one word in nine|89% accurate|first 5 clinics|100-call pilot/iu,
   );
   assert.match(siteSource, /short, fixed questions/iu);
   assert.match(siteSource, /open or uncertain questions go to a person/iu);

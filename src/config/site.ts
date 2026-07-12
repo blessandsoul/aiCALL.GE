@@ -96,7 +96,7 @@ export const SITE = {
       "The agent never takes a card payment over the phone.",
     ],
     commitment:
-      "First 5 clinics: a 100-call pilot on your own bookings. We measure your answer rate and your confirm rate in Georgian, and the numbers are yours whether you continue with us or not.",
+      "Start with an approved call scenario on your own customer list. We measure that campaign's answer and confirmation outcomes, and the results remain yours whether you continue with us or not.",
     summary:
       "aiCALL is an AI voice agent, built by the aiNOW agency in Tbilisi, that phones a Georgian business's own booked customers the day before their appointment, confirms or reschedules them in Georgian, and hands the business back a clean outcome sheet. It deliberately does not sell cold-calling: direct marketing requires consent regardless of source, while written consent under Article 12 specifically applies when personal data beyond name, surname, address, phone and email are processed. aiNOW separately requires a written or electronic consent record under its launch policy. Calls use short, fixed questions, send open questions to a person, and never present a borrowed answer rate.",
   },
