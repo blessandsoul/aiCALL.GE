@@ -59,11 +59,13 @@
       "description": "aiCALL calls your existing customers in Georgian, confirms bookings or deliveries, records the outcome, and hands complex conversations to your team."
     },
     "hero": {
-      "lead": "Never miss a",
+      "owner": "Your",
+      "role": "phone operator",
+      "lead": "automatically handles",
       "taglinePrefix": "AI that",
       "taglineWorks": "calls",
-      "typewriterWords": "bookings,deliveries,visits,payments,reminders",
-      "typewriterPrefill": "bookings",
+      "typewriterWords": "calls,bookings,orders,reminders,surveys",
+      "typewriterPrefill": "calls",
       "ctaResults": "Hear the Georgian question",
       "ctaCall": "Discuss your call list",
       "commitment": "aiNOW checks your list, script, consent basis and human handoff before a campaign starts. You approve the setup and keep the outcome sheet.",
