@@ -8,6 +8,8 @@ const namespaces = [
   'work',
   'faq',
   'cta',
+  'capabilities',
+  'heroStory',
   'hear',
   'consent',
   'board',

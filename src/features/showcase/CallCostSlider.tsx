@@ -66,7 +66,7 @@ export function CallCostSlider() {
     sampleTimers.current = [
       setTimeout(() => {
         if (!userOwnedRef.current) setContacts(250);
-      }, 1800),
+      }, 900),
       setTimeout(() => {
         if (!userOwnedRef.current) setMinutes(2);
       }, 3400),
@@ -122,19 +122,23 @@ export function CallCostSlider() {
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Math.round(n));
 
   return (
-    <SectionContainer className="py-20 md:py-28">
+    <SectionContainer className="py-16 md:py-24 lg:py-28">
       <div
         ref={rootRef}
+        data-landing-demo="showcase"
+        data-demo-id="aicall-cost-slider"
+        data-demo-detail={`${contacts}-${minutes}-${wage}`}
+        aria-live="off"
         className="grid min-w-0 gap-10 lg:grid-cols-[minmax(280px,400px)_1fr] lg:gap-16"
       >
         <div>
-          <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
+          <span className="text-[12px] uppercase tracking-wide text-[#667085]">
             {t('eyebrow')}
           </span>
-          <h2 className="mt-4 text-balance font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 md:text-4xl">
+          <h2 className="mt-4 text-balance font-display text-[30px] font-extrabold leading-[33px] tracking-tight text-[#111827] md:text-[36px] md:leading-[40px]">
             {t('heading')}
           </h2>
-          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#525252]">
+          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#4B5563]">
             {t('subtitle')}
           </p>
 
@@ -167,7 +171,8 @@ export function CallCostSlider() {
           <button
             type="button"
             onClick={replay}
-            className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#fafafa] px-5 text-[13px] font-semibold text-neutral-900 shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-colors hover:bg-[#f0f0f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
+            data-demo-replay="true"
+            className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 whitespace-normal rounded-full bg-[#fafafa] px-5 text-center text-[13px] font-semibold text-[#111827] transition-[background-color,transform] active:scale-[0.96] shadow-[0_0_0_1px_rgba(0,0,0,0.08)] hover:bg-[#f0f0f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2"
           >
             <Ico name="solar:refresh-bold-duotone" className="size-4" />
             {t('replay')}
@@ -177,7 +182,7 @@ export function CallCostSlider() {
         {/* The two columns, deliberately unequal: the human side is the one that hurts. */}
         <div className="flex flex-col gap-4">
           <div className="min-w-0 rounded-2xl bg-[#fafafa] p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:p-8">
-            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-neutral-900/40">
+            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-[#4B5563]">
               <Ico name="solar:clock-circle-bold-duotone" className="h-4 w-4" />
               {t('human')}
             </span>
@@ -194,21 +199,21 @@ export function CallCostSlider() {
             className="min-w-0 rounded-2xl p-6 md:p-8"
             style={{ background: 'color-mix(in srgb, var(--brand) 12%, white)' }}
           >
-            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-neutral-900/50">
+            <span className="inline-flex items-center gap-2 text-[12px] uppercase tracking-wide text-[#4B5563]">
               <Ico name="solar:calculator-bold-duotone" className="h-4 w-4" />
               <span>{t('agent')}</span>
               <span className="border-l border-neutral-900/10 pl-2">{t('result')}</span>
             </span>
             <p className="mt-3 font-display text-5xl font-extrabold tabular-nums leading-none text-neutral-900 md:text-6xl">
               {fmt(agentCost)}
-              <span className="ml-2 text-2xl font-bold text-neutral-900/50">GEL</span>
+              <span className="ml-2 text-2xl font-bold text-[#4B5563]">GEL</span>
             </p>
-            <p className="mt-2 text-sm tabular-nums text-neutral-900/50">
+            <p className="mt-2 text-sm tabular-nums text-[#4B5563]">
               {fmt(totalMinutes)} min, {t('perMonth')}
             </p>
           </div>
 
-          <p className="text-[12px] leading-relaxed text-[#737373]">{t('note')}</p>
+          <p data-demo-outcome className="text-[12px] leading-relaxed text-[#4B5563]">{t('note')}</p>
         </div>
       </div>
     </SectionContainer>
@@ -234,7 +239,7 @@ function Slider({
     <label className="block">
       <span className="flex items-baseline justify-between gap-4">
         <span className="text-[14px] font-medium text-neutral-900">{label}</span>
-        <span className="font-display text-lg font-extrabold tabular-nums text-[var(--brand)]">
+        <span className="font-display text-lg font-extrabold tabular-nums text-[var(--brand-ink)]">
           {value}
         </span>
       </span>
@@ -245,7 +250,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-3 h-11 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-none [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[#e5e5e5] [&::-webkit-slider-thumb]:mt-[-7px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--brand)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out active:[&::-webkit-slider-thumb]:scale-[0.96] [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[var(--brand)] [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[#e5e5e5]"
+        className="mt-3 h-11 w-full cursor-pointer appearance-none rounded-full bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2 [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-[#e5e5e5] [&::-webkit-slider-thumb]:mt-[-7px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--brand)] [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out active:[&::-webkit-slider-thumb]:scale-[0.96] [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-[var(--brand)] [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-[#e5e5e5]"
       />
     </label>
   );

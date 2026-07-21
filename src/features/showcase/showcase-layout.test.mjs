@@ -30,7 +30,11 @@ test('consent gate uses semantic Ico visuals for all decisions and controls', as
 test('consent answers remain manual and the result sits below the questions', async () => {
   const source = await readFile(consentPath, 'utf8');
 
-  assert.doesNotMatch(source, /useEffect|setTimeout|setInterval/u);
+  const illustrativeAutoplay = source.match(
+    /const playDemo = useCallback\([\s\S]*?\}, \[resetDemo\]\);/u,
+  )?.[0] ?? '';
+  assert.match(illustrativeAutoplay, /setDemoStep/u);
+  assert.doesNotMatch(illustrativeAutoplay, /setOwn|setExisting|setWritten/u);
   assert.doesNotMatch(
     source,
     /setOwn\(true\)[\s\S]*setExisting\(true\)[\s\S]*setWritten\(true\)/u,
@@ -43,11 +47,46 @@ test('consent answers remain manual and the result sits below the questions', as
   );
 });
 
-test('hero result controls stack before tablet width', async () => {
-  const hero = await source('HeroProof.tsx');
+test('hero workflow keeps stable mobile geometry and a 44px Replay target', async () => {
+  const [adapter, workflow, styles] = await Promise.all([
+    source('HeroProof.tsx'),
+    readFile(new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../home/components/hero-workflow-story.css', import.meta.url), 'utf8'),
+  ]);
 
-  assert.match(hero, /mb-2 flex flex-col gap-2 sm:flex-row/u);
-  assert.match(hero, /min-h-\[44px\]/u);
+  assert.match(adapter, /HeroWorkflowStory/u);
+  assert.match(workflow, /data-demo-replay="true"/u);
+  assert.match(styles, /\.hero-workflow\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?contain:\s*inline-size;/u);
+  assert.match(styles, /\.hero-workflow__row\s*\{[\s\S]*?min-height:\s*82px;/u);
+  assert.match(styles, /\.hero-workflow__replay\s*\{[\s\S]*?min-width:\s*44px;[\s\S]*?min-height:\s*44px;/u);
+  assert.match(styles, /@media \(max-width: 479px\)[\s\S]*?\.hero-workflow__details\s*\{[\s\S]*?grid-template-columns:\s*1fr;/u);
+});
+
+test('landing renders one hero demo followed by five static capabilities', async () => {
+  const [showcase, capabilities, workflow] = await Promise.all([
+    readFile(new URL('../home/components/LandingShowcase.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../home/components/ProductCapabilities.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(showcase, /useTranslations\('product\.capabilities'\)/u);
+  assert.match(showcase, /<ProductCapabilities/u);
+  assert.equal(showcase.match(/solar:[a-z0-9-]+/gu)?.length, 5);
+  assert.doesNotMatch(showcase, /CallHearGeorgian|CallConsentGate|CallOutcomeBoard|CallBargeIn|CallCostSlider/u);
+  assert.doesNotMatch(showcase, /data-landing-demo/u);
+  assert.match(capabilities, /items\.map\(\(item, index\)/u);
+  assert.match(capabilities, /data-feature-section="true"/u);
+  assert.equal(workflow.match(/data-landing-demo=/gu)?.length, 1);
+});
+
+test('barge-in keeps every story state in one stable overlay stack', async () => {
+  const barge = await source('CallBargeIn.tsx');
+
+  assert.match(barge, /data-barge-state-stack/u);
+  assert.match(barge, /grid-cols-\[minmax\(0,1fr\)\][\s\S]*grid-rows-\[1fr\]/u);
+  assert.doesNotMatch(barge, /\{interrupted && \(/u);
+  assert.doesNotMatch(barge, /\{recovering && \(/u);
+  assert.doesNotMatch(barge, /\{phase === 'result' && \(/u);
 });
 
 test('calculator range controls expose a 44px mobile target', async () => {
@@ -55,6 +94,23 @@ test('calculator range controls expose a 44px mobile target', async () => {
 
   assert.match(cost, /type="range"[\s\S]*className="[^"]*h-11/u);
   assert.doesNotMatch(cost, /type="range"[\s\S]*className="[^"]*\bh-10\b/u);
+});
+
+test('mobile autoplay copy reserves its final geometry before the story starts', async () => {
+  const [hearing, consent, outcome] = await Promise.all([
+    source('CallHearGeorgian.tsx'),
+    source('CallConsentGate.tsx'),
+    source('CallOutcomeBoard.tsx'),
+  ]);
+
+  assert.match(hearing, /min-h-\[76px\][^'"`]*sm:min-h-0/u);
+  assert.match(consent, /min-h-\[68px\][^'"`]*sm:min-h-0/u);
+  assert.match(
+    consent,
+    /min-h-\[168px\][^'"`]*sm:min-h-\[120px\][^'"`]*lg:min-h-\[72px\]/u,
+  );
+  assert.match(outcome, /flex-col items-start gap-3[^'"`]*sm:flex-row/u);
+  assert.match(outcome, /min-h-\[44px\][^'"`]*w-full[^'"`]*sm:w-auto[^'"`]*sm:flex-1/u);
 });
 
 test('showcase layouts avoid fixed minimum-width utilities on narrow screens', async () => {

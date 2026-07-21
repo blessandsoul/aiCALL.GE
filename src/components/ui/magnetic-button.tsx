@@ -76,10 +76,10 @@ export const MagneticButton = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        'magnetic-btn group relative inline-flex items-center overflow-hidden rounded-2xl text-sm font-semibold sm:text-base',
-        'transition-all duration-500 ease-out',
+        'magnetic-btn group relative inline-flex max-w-full items-center overflow-hidden rounded-2xl text-sm font-semibold sm:text-base',
+        'transition-[transform,box-shadow,filter] duration-500 ease-out',
         'hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/20',
-        'active:scale-[0.97]',
+        'active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
         className
       )}
       style={{
@@ -113,8 +113,8 @@ export const MagneticButton = ({
       {/* Inner surface with subtle gradient */}
       <span
         className={cn(
-          'relative z-10 flex items-center gap-0 px-6 py-2.5 sm:px-8 sm:py-3',
-          'transition-all duration-300',
+          'relative z-10 flex min-w-0 flex-wrap items-center justify-center gap-0 whitespace-normal px-6 py-2.5 text-center sm:px-8 sm:py-3',
+          'transition-[color,background-color,transform] duration-300',
           styles.text
         )}
       >

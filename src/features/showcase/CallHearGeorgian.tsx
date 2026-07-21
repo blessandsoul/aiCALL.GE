@@ -7,6 +7,7 @@ import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { cn } from '@/lib/utils';
 import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
+import { attemptAudioPlayback } from './call-audio-playback.mjs';
 
 /* =========================================================================
    CallHearGeorgian: the single most important element on this page.
@@ -134,10 +135,12 @@ export function CallHearGeorgian() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const startedAt = useRef(0);
+  const playbackAttemptRef = useRef(0);
 
   const scenario = SCENARIOS[active];
 
   const stop = useCallback(() => {
+    playbackAttemptRef.current += 1;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
     const a = audioRef.current;
@@ -161,6 +164,9 @@ export function CallHearGeorgian() {
   // Silent fallback: when the recording is not on disk yet, the transcript still runs
   // on the same timeline. It is a script preview, and the caption says exactly that.
   const startSilentTimeline = useCallback(() => {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
+    setPlaying(false);
     startedAt.current = performance.now();
 
     const advance = () => {
@@ -194,17 +200,22 @@ export function CallHearGeorgian() {
 
     stop();
     reset();
-    setPlaying(true);
     const a = audioRef.current;
-    if (a && !audioMissing) {
-      a.currentTime = 0;
-      void a.play().catch(() => {
+    if (a) a.currentTime = 0;
+    const attempt = playbackAttemptRef.current;
+    void attemptAudioPlayback({
+      audio: a && !audioMissing ? a : null,
+      onPlaying: () => {
+        if (attempt !== playbackAttemptRef.current) return;
+        setPlaying(true);
+      },
+      onFallback: () => {
+        if (attempt !== playbackAttemptRef.current) return;
         setAudioMissing(true);
+        setPlaying(false);
         startSilentTimeline();
-      });
-      return;
-    }
-    startSilentTimeline();
+      },
+    });
   }, [audioMissing, playing, reset, startSilentTimeline, stop]);
 
   useEffect(() => {
@@ -231,28 +242,36 @@ export function CallHearGeorgian() {
   }, [playTranscript, reducedMotion, reset, showFinal, stop]);
 
   const selectScenario = (index: number) => {
+    controllerRef.current?.takeControl();
+    stop();
     setActive(index);
     setAudioMissing(false);
-    controllerRef.current?.replay();
+    setNow(0);
+    setPlaying(false);
+    startSilentTimeline();
   };
 
   const replay = () => controllerRef.current?.replay();
 
   return (
-    <SectionContainer className="py-20 md:py-28">
+    <SectionContainer className="py-16 md:py-24 lg:py-28">
       <div
         ref={rootRef}
+        data-landing-demo="showcase"
+        data-demo-id="aicall-hear-georgian"
+        data-demo-detail={`${scenario.id}-${playing ? 'audio' : 'silent'}-${Math.min(19, Math.floor(now * 2))}`}
+        aria-live="off"
         className="grid min-w-0 gap-10 lg:grid-cols-[minmax(260px,340px)_1fr] lg:gap-16"
       >
         {/* LEFT: the picker. Deliberately a vertical rail, not a row of equal cards. */}
         <div>
-          <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
+          <span className="text-[12px] uppercase tracking-wide text-[#667085]">
             {t('eyebrow')}
           </span>
-          <h2 className="mt-4 text-balance font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 md:text-4xl">
+          <h2 className="mt-4 text-balance font-display text-[30px] font-extrabold leading-[33px] tracking-tight text-[#111827] md:text-[36px] md:leading-[40px]">
             {t('heading')}
           </h2>
-          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#525252]">
+          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#4B5563]">
             {t('subtitle')}
           </p>
 
@@ -286,7 +305,7 @@ export function CallHearGeorgian() {
                       <span className="block text-sm font-semibold text-neutral-900">
                         {t(`${s.id}Title`)}
                       </span>
-                      <span className="block truncate text-[13px] text-[#525252]">
+                      <span className="block break-words text-[13px] text-[#4B5563]">
                         {t(`${s.id}Sub`)}
                       </span>
                     </span>
@@ -311,18 +330,35 @@ export function CallHearGeorgian() {
               )}
               style={{ background: 'var(--brand)' }}
             >
-              {playing ? (
-                <span className="flex gap-[3px]" aria-hidden="true">
+              <span className="relative grid h-6 w-6 place-items-center" aria-hidden="true">
+                <span
+                  className={cn(
+                    'absolute flex gap-[3px] transition-[opacity,transform] duration-150 ease-out',
+                    playing ? 'scale-100 opacity-100' : 'scale-75 opacity-0',
+                  )}
+                >
                   <span className="block h-4 w-[3px] rounded-sm bg-current" />
                   <span className="block h-4 w-[3px] rounded-sm bg-current" />
                 </span>
-              ) : (
-                <Ico name="solar:play-bold-duotone" className="h-6 w-6" />
-              )}
+                <Ico
+                  name="solar:play-bold-duotone"
+                  className={cn(
+                    'absolute h-6 w-6 transition-[opacity,transform] duration-150 ease-out',
+                    playing ? 'scale-75 opacity-0' : 'scale-100 opacity-100',
+                  )}
+                />
+              </span>
             </button>
 
-            <div className="min-w-0 flex-1">
-              <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="min-h-[76px] min-w-0 flex-1 sm:min-h-0">
+              <div
+                className="h-1 w-full overflow-hidden rounded-full bg-white/10"
+                role="progressbar"
+                aria-label={t('silentStatus')}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(Math.min(now / CLIP_END, 1) * 100)}
+              >
                 <div
                   className="h-full origin-left rounded-full"
                   style={{
@@ -332,7 +368,7 @@ export function CallHearGeorgian() {
                   }}
                 />
               </div>
-              <p className="mt-2 flex flex-wrap items-center gap-2 text-[12px] tabular-nums text-white/40">
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[12px] tabular-nums text-[#A3A3A3]">
                 <span>{now.toFixed(1)}s</span>
                 <span className="border-l border-white/10 pl-2">
                   {playing ? t('audioStatus') : now >= CLIP_END ? t('result') : t('silentStatus')}
@@ -343,6 +379,8 @@ export function CallHearGeorgian() {
             <button
               type="button"
               onClick={replay}
+              data-demo-replay="true"
+              aria-label={t('replay')}
               className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-white/8 px-3 text-[13px] font-semibold text-white/70 transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:hover:bg-white/12"
             >
               <Ico name="solar:refresh-bold-duotone" className="h-5 w-5" />
@@ -350,11 +388,15 @@ export function CallHearGeorgian() {
             </button>
           </div>
 
-          {audioMissing && (
-            <p className="mt-5 rounded-lg bg-white/5 px-4 py-3 text-[13px] leading-relaxed text-white/60">
-              {t('pending')}
-            </p>
-          )}
+          <p
+            className={cn(
+              'mt-5 min-h-[44px] rounded-lg px-4 py-3 text-[13px] leading-relaxed transition-[background-color,color,opacity] duration-200 ease-out',
+              audioMissing ? 'bg-white/5 text-white/60 opacity-100' : 'bg-transparent text-transparent opacity-0',
+            )}
+            aria-hidden={!audioMissing}
+          >
+            {t('pending')}
+          </p>
 
           <div className="mt-6 flex flex-col gap-5">
             {scenario.lines.map((line, li) => (
@@ -363,7 +405,7 @@ export function CallHearGeorgian() {
                 className={cn('flex', line.who === 'agent' ? 'justify-start' : 'justify-end')}
               >
                 <div className="max-w-[85%]">
-                  <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/30">
+                  <span className="mb-1 block text-[11px] uppercase tracking-wide text-[#A3A3A3]">
                     {line.who === 'agent' ? t('agent') : t('customer')}
                   </span>
                   <p
@@ -379,7 +421,7 @@ export function CallHearGeorgian() {
                           key={wi}
                           className="transition-[opacity,filter] duration-150 ease-out"
                           style={{
-                            opacity: spoken ? 1 : 0.28,
+                            opacity: spoken ? 1 : 0.72,
                             filter: spoken ? 'blur(0px)' : 'blur(1px)',
                           }}
                         >
@@ -397,13 +439,22 @@ export function CallHearGeorgian() {
             ref={audioRef}
             src={scenario.audio}
             preload="none"
-            onError={() => setAudioMissing(true)}
+            onError={() => {
+              playbackAttemptRef.current += 1;
+              setAudioMissing(true);
+              setPlaying(false);
+              startSilentTimeline();
+            }}
             onTimeUpdate={(e) => setNow(e.currentTarget.currentTime)}
             onEnded={() => {
               setPlaying(false);
               setNow(CLIP_END);
             }}
           />
+          <p data-demo-outcome className="mt-5 flex items-center gap-2 text-[13px] font-semibold text-[#D1D5DB]">
+            <Ico name="solar:check-circle-bold-duotone" className="h-4 w-4 text-[var(--brand)]" />
+            {t('result')}
+          </p>
         </div>
       </div>
     </SectionContainer>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Ico } from '@/components/common/Ico';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { cn } from '@/lib/utils';
@@ -22,6 +22,7 @@ import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
    ========================================================================= */
 
 const TOTAL = 100;
+const STARTER_COUNT = 16;
 /* A plausible split, not a claim. Deliberately not round: real campaigns are messy. */
 const SPLIT = { confirmed: 47, moved: 16, noanswer: 31, human: 6 };
 const TICK_MS = 60;
@@ -59,7 +60,10 @@ const ICON: Record<Bucket, string> = {
 export function CallOutcomeBoard() {
   const t = useTranslations('product.board');
   const reducedMotion = useReducedMotion();
-  const [n, setN] = useState(0);
+  // A decision board should already communicate a result before autoplay starts.
+  // Sixteen deterministic illustrative calls seed every bucket, so rewind never
+  // flashes four zeroes or an empty grid.
+  const [n, setN] = useState(STARTER_COUNT);
   const [running, setRunning] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<ReturnType<typeof createDemoLoop> | null>(null);
@@ -72,7 +76,7 @@ export function CallOutcomeBoard() {
 
   const run = useCallback(() => {
     clear();
-    setN(0);
+    setN(STARTER_COUNT);
     setRunning(true);
     timer.current = setInterval(() => {
       setN((prev) => {
@@ -94,7 +98,7 @@ export function CallOutcomeBoard() {
 
   const reset = useCallback(() => {
     stop();
-    setN(0);
+    setN(STARTER_COUNT);
   }, [stop]);
 
   const showFinal = useCallback(() => {
@@ -138,9 +142,13 @@ export function CallOutcomeBoard() {
   const done = n >= TOTAL;
 
   return (
-    <SectionContainer className="py-20 md:py-28">
+    <SectionContainer className="py-16 md:py-24 lg:py-28">
       <div
         ref={rootRef}
+        data-landing-demo="showcase"
+        data-demo-id="aicall-outcome-board"
+        data-demo-detail={done ? 'complete' : running ? `sorting-${n}` : 'ready'}
+        aria-live="off"
         className="grid min-w-0 gap-10 lg:grid-cols-[1fr_minmax(300px,420px)] lg:gap-16"
       >
         {/* LEFT: the board */}
@@ -153,13 +161,24 @@ export function CallOutcomeBoard() {
               >
                 <span className="flex items-center gap-2">
                   <Ico name={ICON[b]} className="h-4 w-4" style={{ color: TONE[b] }} />
-                  <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
+                  <span className="text-[12px] uppercase tracking-wide text-[#667085]">
                     {t(b)}
                   </span>
                 </span>
-                <p className="mt-3 font-display text-4xl font-extrabold tabular-nums leading-none text-neutral-900">
-                  {counts[b]}
-                </p>
+                <div className="relative mt-3 h-9 min-w-[3ch] overflow-hidden font-display text-4xl font-extrabold tabular-nums leading-none text-neutral-900">
+                  <AnimatePresence initial={false}>
+                    <motion.span
+                      key={counts[b]}
+                      initial={reducedMotion ? false : { y: '100%' }}
+                      animate={{ y: 0 }}
+                      exit={{ y: '-100%' }}
+                      transition={{ duration: reducedMotion ? 0 : 0.18, ease: 'easeOut' }}
+                      className="absolute inset-0 block min-w-[3ch]"
+                    >
+                      {counts[b]}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
               </div>
             ))}
           </div>
@@ -182,38 +201,39 @@ export function CallOutcomeBoard() {
             })}
           </div>
 
-          <p className="mt-5 text-[12px] leading-relaxed text-[#737373]">{t('note')}</p>
+          <p data-demo-outcome className="mt-5 text-[12px] leading-relaxed text-[#667085]">{t('note')}</p>
         </div>
 
         {/* RIGHT: the copy + the trigger */}
         <div className="order-1 lg:order-2">
-          <span className="text-[12px] uppercase tracking-wide text-neutral-900/40">
+          <span className="text-[12px] uppercase tracking-wide text-[#667085]">
             {t('eyebrow')}
           </span>
-          <h2 className="mt-4 text-balance font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-neutral-900 md:text-4xl">
+          <h2 className="mt-4 text-balance font-display text-[30px] font-extrabold leading-[33px] tracking-tight text-[#111827] md:text-[36px] md:leading-[40px]">
             {t('heading')}
           </h2>
-          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#525252]">
+          <p className="mt-3 text-pretty text-[15px] leading-relaxed text-[#4B5563]">
             {t('subtitle')}
           </p>
 
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
             <button
               type="button"
               onClick={replay}
+              data-demo-replay="true"
               className={cn(
-                'inline-flex min-h-[48px] items-center rounded-full px-6 text-sm font-semibold text-white',
+                'inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-6 text-sm font-semibold text-white sm:w-auto',
                 'transition-[transform,filter] duration-150 ease-out',
                 'active:scale-[0.96] md:hover:brightness-110',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)] focus-visible:ring-offset-2',
               )}
-              style={{ background: 'var(--brand)' }}
+              style={{ background: 'var(--brand-cta, var(--brand))' }}
             >
               <Ico name="solar:refresh-bold-duotone" className="mr-2 h-5 w-5" />
               {t('replay')}
             </button>
 
-            <span className="inline-flex min-h-[44px] items-center gap-2 text-sm tabular-nums text-[#737373]">
+            <span className="inline-flex min-h-[44px] w-full min-w-0 items-center gap-2 text-sm tabular-nums text-[#667085] sm:w-auto sm:flex-1">
               {done && <Ico name="solar:check-circle-bold-duotone" className="h-5 w-5 text-[#10b981]" />}
               {n} / {TOTAL} {done ? t('result') : running ? t('running') : t('called')}
             </span>

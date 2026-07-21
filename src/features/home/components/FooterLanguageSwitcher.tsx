@@ -33,7 +33,7 @@ export function FooterLanguageSwitcher() {
             locale={l.code}
             aria-current={current === l.code ? 'true' : undefined}
             className={cn(
-              'transition hover:text-neutral-900',
+              'inline-flex min-h-11 min-w-11 items-center break-words transition-colors hover:text-neutral-900',
               current === l.code && 'text-neutral-900 font-medium',
             )}
           >

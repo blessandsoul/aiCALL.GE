@@ -2,7 +2,7 @@
   "seo": {
     "contact": {
       "title": "Contact aiCALL",
-      "description": "Talk to us about calling your own booked customers in Georgian. Clinics, dental, service centres, salons, delivery."
+      "description": "Contact aiNOW about calling your own booked customers in Georgian for confirmations, reminders, and approved follow-up."
     },
     "notFound": {
       "title": "404, page not found",
@@ -34,7 +34,11 @@
     "showcase": "Hear the call",
     "process": "How it works",
     "faq": "Questions",
-    "cta": "Start a pilot"
+    "cta": "Start a pilot",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "switchLanguage": "Switch language",
+    "homeLabel": "{brand} home"
   },
   "landingFooter": {
     "company": "AI NOW LLC, Tbilisi, Georgia",
@@ -51,15 +55,15 @@
   },
   "product": {
     "seo": {
-      "title": "aiCALL — Georgian calls that confirm bookings and show the outcome",
-      "description": "aiCALL calls a business's own customers about existing appointments, deliveries or payments. It asks one short question in Georgian, records the outcome and hands uncertain calls to a person. Direct marketing needs consent regardless of where the contact data came from."
+      "title": "aiCALL: Georgian booking confirmation calls for business",
+      "description": "aiCALL calls your existing customers in Georgian, confirms bookings or deliveries, records the outcome, and hands complex conversations to your team."
     },
     "hero": {
       "lead": "Never miss a",
       "taglinePrefix": "AI that",
       "taglineWorks": "calls",
-      "typewriterWords": "booking,delivery,service visit,payment,callback",
-      "typewriterPrefill": "booking",
+      "typewriterWords": "bookings,deliveries,visits,payments,reminders",
+      "typewriterPrefill": "bookings",
       "ctaResults": "Hear the Georgian question",
       "ctaCall": "Discuss your call list",
       "commitment": "aiNOW checks your list, script, consent basis and human handoff before a campaign starts. You approve the setup and keep the outcome sheet.",
@@ -91,19 +95,19 @@
       "s6Desc": "Your team approves the list and script, handles exceptions and decides what happens after the outcome is recorded."
     },
     "faq": {
-      "headingPre": "Clear questions,",
-      "headingAccent": "plain answers.",
-      "subtitle": "What the call can do, when a person steps in, and where consent sets the boundary.",
-      "q1": "Will <brand></brand> speak Georgian clearly?",
-      "a1": "The demo uses a short, fixed Georgian question because that is the reliable business task. Listen to the sample here. aiNOW tests your wording before launch and sends open questions to a person.",
-      "q2": "Will customers know that an AI agent is calling?",
-      "a2": "Yes. The opening identifies the AI agent and your business. aiNOW checks the final wording with you. If your sector needs another disclosure, the campaign pauses until it is cleared.",
+      "headingPre": "Five questions",
+      "headingAccent": "before the first call.",
+      "subtitle": "Short answers about call purpose, consent, and human handoff.",
+      "q1": "What does <brand></brand> do?",
+      "a1": "aiCALL calls your existing customers to confirm bookings, deliveries, visits, payments, or reminders. The call follows an approved script and writes every result to a board.",
+      "q2": "Which businesses use aiCALL?",
+      "a2": "aiCALL fits clinics, salons, service centers, delivery teams, and any company that needs many short customer confirmations.",
       "q3": "Can aiCALL use a bought or scraped number list?",
       "a3": "No. aiNOW does not call a bought or scraped list. Georgian law requires consent for direct marketing regardless of where the data came from. Under aiNOW's launch policy, every marketing campaign also needs a written or electronic consent record.",
-      "q4": "Which calls may be suitable without marketing consent?",
-      "a4": "Operational calls to your own customers about an existing appointment, order or agreement may be suitable. A new offer is direct marketing and needs consent. aiNOW's launch policy also asks for a written or electronic consent record. This is guidance, not legal advice.",
-      "q5": "What happens when the customer asks an open question?",
-      "a5": "The agent stops the fixed script and hands the call to a person, or marks a follow-up for your team. It does not invent an answer.",
+      "q4": "When does a human join?",
+      "a4": "A human joins when the customer asks a complex question, refuses, requests a person, or the approved script is no longer enough.",
+      "q5": "What result does the business get?",
+      "a5": "The business gets a list of confirmed, postponed, unanswered, and human-handoff calls. The team stops listening to every call by hand.",
       "q6": "Can the call move to a real employee?",
       "a6": "Yes. You choose the handoff number and the situations that require a person. The employee receives the customer while the context is still clear.",
       "q7": "How is the price calculated?",
@@ -177,6 +181,13 @@
       "redBody": "The list is not yours and no marketing-consent record is available. Under aiNOW's launch policy, calls will not start from this list.",
       "law": "Under Article 12, direct marketing needs consent regardless of how the data were obtained or whether they are publicly accessible. Written consent is required when the data go beyond name, surname, address, phone number and email. A withdrawal request must be honoured within seven working days.",
       "notice": "This check is practical guidance, not legal advice. If the facts are unclear, aiNOW pauses the campaign and asks for a legal review.",
+      "demoLabel": "Illustrative preview — no answer is selected",
+      "demoStep0": "The preview points to each check without choosing an answer.",
+      "demoStep1": "First, confirm whose customers are in the list.",
+      "demoStep2": "Then, separate an operational call from a new offer.",
+      "demoStep3": "For marketing, check the consent record before launch.",
+      "outcome": "Unsafe or unclear lists stop before a call starts.",
+      "replay": "Replay illustration",
       "reset": "Clear my answers"
     },
     "board": {
@@ -223,6 +234,55 @@
       "perMonth": "for this list",
       "replay": "Replay example",
       "note": "The aiCALL amount uses aiNOW's planning rate for this example. The list size, call length and staff cost come from your sliders."
+    },
+    "capabilities": {
+      "eyebrow": "Five capabilities",
+      "title": "What aiCALL handles every day",
+      "intro": "Calls, safety rules, and visible outcomes in one simple process.",
+      "outcomeLabel": "Business result",
+      "items": {
+        "1": {
+          "title": "Answers and speaks in Georgian",
+          "description": "aiCALL answers an incoming call, understands the question, and responds with approved business information.",
+          "result": "The customer gets an answer without waiting for an employee."
+        },
+        "2": {
+          "title": "Checks lists before outbound calls",
+          "description": "Before calling, aiNOW checks the list source and call rules. Uncertain contacts stay on hold for approval.",
+          "result": "The team sees who can be called and what still needs review."
+        },
+        "3": {
+          "title": "Records every outcome in one list",
+          "description": "Confirmations, time changes, and unanswered calls are saved in one clear table.",
+          "result": "The team receives a ready list for the next action."
+        },
+        "4": {
+          "title": "Handles interruptions naturally",
+          "description": "A customer can interrupt, ask another question, and then return to the original topic.",
+          "result": "The call feels like a conversation, not a rigid recording."
+        },
+        "5": {
+          "title": "Shows the cost before launch",
+          "description": "List size, call duration, and current staff cost appear in one simple comparison.",
+          "result": "The business can plan the budget before calls begin."
+        }
+      }
+    },
+    "heroStory": {
+      "badge": "Illustrative demo",
+      "inputLabel": "The business request",
+      "input": "Call everyone booked for tomorrow and tell them about the new entrance. If somebody calls us, answer and book an open time.",
+      "bridgeLabel": "iAI understood",
+      "bridge": "Two tasks: call the approved list and answer incoming calls. iAI sends both to aiCALL.",
+      "productLabel": "aiCALL works",
+      "productAction": "One workflow handles calls in both directions.",
+      "detailOne": "Outbound: Nino heard the update and confirmed her visit",
+      "detailTwo": "Inbound: Giorgi called, got an answer, and booked an open time",
+      "resultLabel": "Visible result",
+      "result": "Nino confirmed · Giorgi booked",
+      "businessLabel": "What the business gets",
+      "businessValue": "Both call outcomes are saved. The team does not need to call and update the schedule by hand.",
+      "replay": "Replay"
     },
     "proof": {
       "ringing": "Calling an approved customer",

@@ -120,11 +120,15 @@ test('canonical loop observes at 0.35 and repeats a 6-10 second story after a 20
 
   observed.emit(harness.target, 0.35, true);
   assert.deepEqual(harness.calls, ['play']);
-  const repeat = harness.timers.pending()[0];
-  assert.ok(repeat.delay >= 6000 + 2000 && repeat.delay <= 10000 + 2000);
-  assert.equal(repeat.delay, 9000);
+  const story = harness.timers.pending()[0];
+  assert.ok(story.delay >= 6000 && story.delay <= 10000);
+  assert.equal(story.delay, 7000);
 
-  harness.timers.fire(repeat.id);
+  harness.timers.fire(story.id);
+  assert.deepEqual(harness.calls, ['play']);
+  const finalHold = harness.timers.pending()[0];
+  assert.equal(finalHold.delay, 2000);
+  harness.timers.fire(finalHold.id);
   assert.deepEqual(harness.calls, ['play', 'stop', 'reset', 'play']);
 });
 
@@ -268,7 +272,6 @@ const narrativeFiles = [
   'CallHearGeorgian.tsx',
   'CallOutcomeBoard.tsx',
   'CallBargeIn.tsx',
-  'HeroProof.tsx',
 ];
 
 async function showcaseSource(file) {
@@ -288,6 +291,23 @@ test('every narrative component consumes the canonical visibility-aware loop', a
     const cycleMs = Number(cycle[1].replaceAll('_', ''));
     assert.ok(cycleMs >= 6000 && cycleMs <= 10000, `${file} has a 6-10 second story`);
   }
+
+  const heroAdapter = await showcaseSource('HeroProof.tsx');
+  const heroWorkflow = await readFile(
+    new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url),
+    'utf8',
+  );
+  const cycle = heroWorkflow.match(/const CYCLE_MS = ([\d_]+);/u);
+
+  assert.match(heroAdapter, /HeroWorkflowStory/u);
+  assert.match(heroAdapter, /mode="orchestrated"/u);
+  assert.match(heroWorkflow, /from ['"]\.\/lib\/demo-loop\.mjs['"]/u);
+  assert.match(heroWorkflow, /createDemoLoop\(\{/u);
+  assert.match(heroWorkflow, /threshold:\s*0\.35/u);
+  assert.match(heroWorkflow, /holdMs:\s*2_000/u);
+  assert.ok(cycle, 'shared hero workflow declares CYCLE_MS');
+  const cycleMs = Number(cycle[1].replaceAll('_', ''));
+  assert.ok(cycleMs >= 6000 && cycleMs <= 10000, 'shared hero has a 6-10 second story');
 });
 
 test('the silent transcript autoplays but real audio remains behind its button', async () => {
@@ -308,7 +328,7 @@ test('the 100-call board autoplays and keeps an immediate replay button', async 
   assert.match(source, /showFinal:\s*showFinal/u);
 });
 
-test('barge-in autoplays speaking through interruption, recovery, and result while keeping manual interrupt', async () => {
+test('barge-in keeps separate interrupt and always-mounted Replay controls', async () => {
   const source = await showcaseSource('CallBargeIn.tsx');
 
   assert.match(
@@ -316,17 +336,42 @@ test('barge-in autoplays speaking through interruption, recovery, and result whi
     /type Phase = 'idle' \| 'speaking' \| 'interrupted' \| 'recovery' \| 'result';/u,
   );
   assert.match(source, /setPhase\('interrupted'\)[\s\S]*setPhase\('recovery'\)[\s\S]*setPhase\('result'\)/u);
-  assert.match(source, /speaking \? interrupt : replay/u);
+  assert.match(source, /onClick=\{interrupt\}/u);
+  assert.match(source, /onClick=\{replay\}[\s\S]*data-demo-replay="true"/u);
+  assert.doesNotMatch(source, /speaking \? interrupt : replay/u);
+  assert.doesNotMatch(source, /data-demo-replay=\{speaking \?/u);
+});
+
+test('barge-in Replay exposes a fresh stage and visible nearby progress', async () => {
+  const source = await showcaseSource('CallBargeIn.tsx');
+
+  assert.match(source, /const \[runId, setRunId\] = useState\(0\);/u);
+  assert.match(source, /setRunId\(\(previous\) => previous \+ 1\);/u);
+  assert.match(source, /data-demo-detail=\{`\$\{phase\}-\$\{i\}`\}/u);
+  assert.match(source, /data-demo-stage=\{`\$\{runId\}-\$\{phase\}-\$\{i\}`\}/u);
+  assert.match(
+    source,
+    /data-barge-visible-progress[\s\S]*data-barge-status-slot[\s\S]*grid[\s\S]*tabular-nums[\s\S]*Math\.min\(i, WORDS\.length\)/u,
+  );
 });
 
 test('hero proof uses managed visibility, semantic icons, and replay', async () => {
-  const source = await showcaseSource('HeroProof.tsx');
+  const adapter = await showcaseSource('HeroProof.tsx');
+  const workflow = await readFile(
+    new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url),
+    'utf8',
+  );
 
-  assert.match(source, /useReducedMotion/u);
-  assert.match(source, /ref=\{rootRef\}/u);
-  assert.match(source, /onClick=\{replay\}/u);
-  assert.match(source, /solar:phone-bold-duotone/u);
-  assert.doesNotMatch(source, /<svg|\{done \? 'ok' : '\?'\}/u);
+  assert.match(adapter, /useTranslations\('product\.heroStory'\)/u);
+  assert.match(adapter, /demoId="aicall-hero-story"/u);
+  assert.match(adapter, /mode="orchestrated"/u);
+  assert.match(adapter, /solar:phone-bold-duotone/u);
+  assert.match(workflow, /prefers-reduced-motion: reduce/u);
+  assert.match(workflow, /ref=\{rootRef\}/u);
+  assert.match(workflow, /controllerRef\.current\?\.replay\(\)/u);
+  assert.match(workflow, /data-demo-replay="true"/u);
+  assert.match(workflow, /solar:refresh-bold-duotone/u);
+  assert.doesNotMatch(`${adapter}\n${workflow}`, /<svg|\{done \? 'ok' : '\?'\}/u);
 });
 
 test('cost sample yields permanently to the first slider input', async () => {

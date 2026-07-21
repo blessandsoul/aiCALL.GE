@@ -24,12 +24,14 @@ const WORDS = SCRIPT.split(' ');
 const WORD_MS = 260;
 const BARS = 28;
 const CYCLE_MS = 7_000;
+const STATUS_KEYS = ['speaking', 'interrupted', 'recoveryStatus', 'result'] as const;
 
 type Phase = 'idle' | 'speaking' | 'interrupted' | 'recovery' | 'result';
 
 export function CallBargeIn() {
   const t = useTranslations('product.barge');
   const reducedMotion = useReducedMotion();
+  const [runId, setRunId] = useState(0);
   const [i, setI] = useState(0);
   const [phase, setPhase] = useState<Phase>('idle');
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -46,6 +48,7 @@ export function CallBargeIn() {
 
   const playStory = useCallback(() => {
     clear();
+    setRunId((previous) => previous + 1);
     setI(0);
     setPhase('speaking');
     wordTimer.current = setInterval(() => {
@@ -115,19 +118,34 @@ export function CallBargeIn() {
   const speaking = phase === 'speaking';
   const interrupted = phase === 'interrupted' || phase === 'recovery' || phase === 'result';
   const recovering = phase === 'recovery' || phase === 'result';
+  const statusKey = phase === 'result'
+    ? 'result'
+    : phase === 'recovery'
+      ? 'recoveryStatus'
+      : phase === 'interrupted'
+        ? 'interrupted'
+        : 'speaking';
 
   return (
-    <SectionContainer className="py-20 md:py-28">
-      <div ref={rootRef} className="min-w-0 rounded-3xl bg-[#0e0e11] p-6 md:p-12">
+    <SectionContainer className="py-16 md:py-24 lg:py-28">
+      <div
+        ref={rootRef}
+        data-landing-demo="showcase"
+        data-demo-id="aicall-barge-in"
+        data-demo-detail={`${phase}-${i}`}
+        data-demo-stage={`${runId}-${phase}-${i}`}
+        aria-live="off"
+        className="min-w-0 rounded-3xl bg-[#0e0e11] p-6 md:p-12"
+      >
         <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-center lg:gap-16">
           <div>
-            <span className="text-[12px] uppercase tracking-wide text-white/40">
+            <span className="text-[12px] uppercase tracking-wide text-[#A3A3A3]">
               {t('eyebrow')}
             </span>
-            <h2 className="mt-4 text-balance font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-white md:text-4xl">
+            <h2 className="mt-4 text-balance font-display text-[30px] font-extrabold leading-[33px] tracking-tight text-white md:text-[36px] md:leading-[40px]">
               {t('heading')}
             </h2>
-            <p className="mt-3 max-w-lg text-pretty text-[15px] leading-relaxed text-white/60">
+            <p className="mt-3 max-w-lg text-pretty text-[15px] leading-relaxed text-[#D1D5DB]">
               {t('subtitle')}
             </p>
 
@@ -150,8 +168,8 @@ export function CallBargeIn() {
               ))}
             </div>
 
-            <div className="mt-6 min-h-[92px] rounded-2xl bg-white/[0.06] px-5 py-4">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/30">
+            <div className="mt-6 min-h-[156px] rounded-2xl bg-white/[0.06] px-5 py-4 sm:min-h-[128px]">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-[#A3A3A3]">
                 {t(phase === 'result' ? 'result' : phase === 'recovery' ? 'recoveryStatus' : phase === 'interrupted' ? 'interrupted' : 'speaking')}
               </span>
               <p className="text-[15px] leading-relaxed text-white">
@@ -162,8 +180,34 @@ export function CallBargeIn() {
               </p>
             </div>
 
-            {interrupted && (
-              <div className="mt-4 flex flex-col gap-3">
+            <div
+              data-barge-state-stack
+              className="relative mt-4 grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+            >
+              <div
+                aria-hidden={interrupted}
+                className={cn(
+                  'col-start-1 row-start-1 flex min-h-[220px] items-center rounded-2xl bg-white/[0.035] px-5 py-6 transition-[opacity,transform] duration-300 ease-out',
+                  interrupted
+                    ? 'pointer-events-none invisible translate-y-1 opacity-0'
+                    : 'visible translate-y-0 opacity-100',
+                )}
+              >
+                <p className="flex items-start gap-3 text-[13px] leading-relaxed text-[#A3A3A3]">
+                  <Ico name="solar:chat-round-dots-bold-duotone" className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand)]" />
+                  {t('note')}
+                </p>
+              </div>
+
+              <div
+                aria-hidden={!interrupted}
+                className={cn(
+                  'col-start-1 row-start-1 flex min-h-[220px] flex-col gap-3 transition-[opacity,transform] duration-300 ease-out',
+                  interrupted
+                    ? 'visible translate-y-0 opacity-100'
+                    : 'pointer-events-none invisible translate-y-1 opacity-0',
+                )}
+              >
                 <p className="inline-flex items-center gap-2 text-[15px] font-semibold text-[var(--brand)]">
                   <Ico name="solar:record-circle-bold-duotone" className="h-5 w-5" />
                   {t('interrupted')}
@@ -173,43 +217,93 @@ export function CallBargeIn() {
                     {t('busy')}
                   </p>
                 </div>
-                {recovering && (
-                  <div className="flex justify-start">
-                    <p className="max-w-[80%] rounded-2xl bg-white/8 px-4 py-3 text-[15px] text-white">
-                      {t('recovery')}
-                    </p>
-                  </div>
-                )}
-                {phase === 'result' && (
-                  <p className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#10b981]/12 px-4 text-sm font-semibold text-[#6ee7b7]">
-                    <Ico name="solar:check-circle-bold-duotone" className="h-5 w-5" />
-                    {t('result')}
+                <div
+                  aria-hidden={!recovering}
+                  className={cn(
+                    'flex justify-start transition-[opacity,transform] duration-300 ease-out',
+                    recovering ? 'visible translate-y-0 opacity-100' : 'invisible translate-y-1 opacity-0',
+                  )}
+                >
+                  <p className="max-w-[80%] rounded-2xl bg-white/8 px-4 py-3 text-[15px] text-white">
+                    {t('recovery')}
                   </p>
-                )}
+                </div>
+                <p
+                  aria-hidden={phase !== 'result'}
+                  className={cn(
+                    'inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#10b981]/12 px-4 text-sm font-semibold text-[#6ee7b7] transition-[opacity,transform] duration-300 ease-out',
+                    phase === 'result'
+                      ? 'visible translate-y-0 opacity-100'
+                      : 'invisible translate-y-1 opacity-0',
+                  )}
+                >
+                  <Ico name="solar:check-circle-bold-duotone" className="h-5 w-5" />
+                  {t('result')}
+                </p>
               </div>
-            )}
+            </div>
           </div>
 
           <div className="flex flex-col items-start gap-5 lg:items-center">
             <button
               type="button"
-              onClick={speaking ? interrupt : replay}
+              onClick={interrupt}
+              disabled={!speaking}
               className={cn(
                 'flex h-32 w-32 items-center justify-center rounded-full text-center text-sm font-bold uppercase tracking-wide text-white',
                 'transition-[transform,filter] duration-150 ease-out active:scale-[0.96] md:hover:brightness-110',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#0e0e11]',
+                'disabled:cursor-not-allowed disabled:active:scale-100 disabled:md:hover:brightness-100',
               )}
-              style={{ background: speaking ? '#ef4444' : 'rgba(255,255,255,0.12)' }}
+              style={{ background: speaking ? '#b91c1c' : 'rgba(255,255,255,0.12)' }}
             >
               <span className="flex flex-col items-center gap-2">
-                <Ico
-                  name={speaking ? 'solar:record-circle-bold-duotone' : 'solar:refresh-bold-duotone'}
-                  className="h-6 w-6"
-                />
-                {speaking ? t('interrupt') : t('replay')}
+                <Ico name="solar:record-circle-bold-duotone" className="h-6 w-6" />
+                {t('interrupt')}
               </span>
             </button>
-            <p className="max-w-[240px] text-pretty text-[12px] leading-relaxed text-white/40 lg:text-center">
+            <button
+              type="button"
+              onClick={replay}
+              data-demo-replay="true"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-white/12 px-5 text-[13px] font-semibold text-white transition-[transform,background-color] duration-150 ease-out active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0e0e11] md:hover:bg-white/16"
+            >
+              <Ico name="solar:refresh-bold-duotone" className="h-5 w-5" />
+              {t('replay')}
+            </button>
+            <div
+              data-barge-visible-progress
+              aria-hidden="true"
+              className="w-full max-w-[240px] rounded-xl bg-white/[0.06] px-3.5 py-3"
+            >
+              <div className="flex items-start justify-between gap-3 text-[11px] font-semibold text-white/70">
+                <span data-barge-status-slot className="grid min-w-0 flex-1 text-pretty">
+                  {STATUS_KEYS.map((key) => (
+                    <span
+                      key={key}
+                      className={cn(
+                        'col-start-1 row-start-1 transition-opacity duration-150 ease-out',
+                        key === statusKey ? 'opacity-100' : 'opacity-0',
+                      )}
+                    >
+                      {t(key)}
+                    </span>
+                  ))}
+                </span>
+                <span className="tabular-nums text-white">
+                  {Math.min(i, WORDS.length).toString().padStart(2, '0')}
+                </span>
+              </div>
+              <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-white/10">
+                <span
+                  className="block h-full origin-left rounded-full bg-[var(--brand)] transition-transform duration-150 ease-out"
+                  style={{
+                    transform: `scaleX(${Math.max(Math.min(i, WORDS.length) / WORDS.length, 0.04)})`,
+                  }}
+                />
+              </span>
+            </div>
+            <p data-demo-outcome className="max-w-[240px] text-pretty text-[12px] leading-relaxed text-[#A3A3A3] lg:text-center">
               {t('note')}
             </p>
           </div>

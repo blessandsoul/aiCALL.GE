@@ -91,12 +91,12 @@ export const SITE = {
       "aiCALL is the phone only. An agent that answers customers on Messenger, Instagram, Viber or a website chat is aiSTAFF.ge. Automating the paperwork inside the company, the orders and documents and approvals, is aiOFFICE.ge.",
     limits: [
       "Calls use short, fixed questions; open or uncertain questions go to a person instead of being guessed.",
-      "We will not call a purchased or scraped list. Consent is required for direct marketing regardless of source. Written consent is specifically required when personal data beyond name, surname, address, phone and email are processed; aiNOW's launch policy is stricter and asks for a written or electronic consent record before every marketing launch.",
-      "We do not present another campaign's answer or confirmation rate as yours. An approved campaign produces its own measured outcomes.",
+      "aiNOW does not call a purchased or scraped list. Consent is required for direct marketing regardless of source. Written consent is specifically required when personal data beyond name, surname, address, phone and email are processed; aiNOW's launch policy asks for a written or electronic consent record before every marketing launch.",
+      "aiNOW teams do not present another campaign's answer or confirmation rate as yours. An approved campaign produces its own measured outcomes.",
       "The agent never takes a card payment over the phone.",
     ],
     commitment:
-      "Start with an approved call scenario on your own customer list. We measure that campaign's answer and confirmation outcomes, and the results remain yours whether you continue with us or not.",
+      "The campaign starts with an approved scenario and the business's own customer list. aiNOW measures that campaign's answer and confirmation outcomes and returns the result sheet to the business.",
     summary:
       "aiCALL is an AI voice agent, built by the aiNOW agency in Tbilisi, that phones a Georgian business's own booked customers the day before their appointment, confirms or reschedules them in Georgian, and hands the business back a clean outcome sheet. It deliberately does not sell cold-calling: direct marketing requires consent regardless of source, while written consent under Article 12 specifically applies when personal data beyond name, surname, address, phone and email are processed. aiNOW separately requires a written or electronic consent record under its launch policy. Calls use short, fixed questions, send open questions to a person, and never present a borrowed answer rate.",
   },
