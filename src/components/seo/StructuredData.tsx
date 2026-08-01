@@ -31,7 +31,7 @@ const ORG_ID = 'https://ainow.ge#organization';
 const SERVICE_ID = `${SITE.baseUrl}/#service`;
 const SITE_ID = `${SITE.baseUrl}/#website`;
 const FAQ_LIMIT = 5;
-const CONTENT_MODIFIED = '2026-07-14';
+const CONTENT_MODIFIED = '2026-07-23';
 const AINOW_SAME_AS = [
   'https://www.facebook.com/ainow.ge',
   'https://www.instagram.com/ainow.ge/',

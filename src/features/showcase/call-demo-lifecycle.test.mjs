@@ -292,22 +292,17 @@ test('every narrative component consumes the canonical visibility-aware loop', a
     assert.ok(cycleMs >= 6000 && cycleMs <= 10000, `${file} has a 6-10 second story`);
   }
 
-  const heroAdapter = await showcaseSource('HeroProof.tsx');
-  const heroWorkflow = await readFile(
-    new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url),
-    'utf8',
-  );
-  const cycle = heroWorkflow.match(/const CYCLE_MS = ([\d_]+);/u);
+  const hero = await showcaseSource('HeroProof.tsx');
+  const cycle = hero.match(/const CYCLE_MS = ([\d_]+);/u);
 
-  assert.match(heroAdapter, /HeroWorkflowStory/u);
-  assert.match(heroAdapter, /mode="orchestrated"/u);
-  assert.match(heroWorkflow, /from ['"]\.\/lib\/demo-loop\.mjs['"]/u);
-  assert.match(heroWorkflow, /createDemoLoop\(\{/u);
-  assert.match(heroWorkflow, /threshold:\s*0\.35/u);
-  assert.match(heroWorkflow, /holdMs:\s*2_000/u);
-  assert.ok(cycle, 'shared hero workflow declares CYCLE_MS');
+  assert.match(hero, /home\/components\/lib\/demo-loop\.mjs/u);
+  assert.match(hero, /createDemoLoop\(\{/u);
+  assert.match(hero, /threshold:\s*0\.35/u);
+  assert.match(hero, /holdMs:\s*2_000/u);
+  assert.match(hero, /data-demo-id="aicall-hero-story"/u);
+  assert.ok(cycle, 'call hero declares CYCLE_MS');
   const cycleMs = Number(cycle[1].replaceAll('_', ''));
-  assert.ok(cycleMs >= 6000 && cycleMs <= 10000, 'shared hero has a 6-10 second story');
+  assert.ok(cycleMs >= 6000 && cycleMs <= 10000, 'call hero has a 6-10 second story');
 });
 
 test('the silent transcript autoplays but real audio remains behind its button', async () => {
@@ -356,22 +351,29 @@ test('barge-in Replay exposes a fresh stage and visible nearby progress', async 
 });
 
 test('hero proof uses managed visibility, semantic icons, and replay', async () => {
-  const adapter = await showcaseSource('HeroProof.tsx');
-  const workflow = await readFile(
-    new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url),
-    'utf8',
-  );
+  const hero = await showcaseSource('HeroProof.tsx');
 
-  assert.match(adapter, /useTranslations\('product\.heroStory'\)/u);
-  assert.match(adapter, /demoId="aicall-hero-story"/u);
-  assert.match(adapter, /mode="orchestrated"/u);
-  assert.match(adapter, /solar:phone-bold-duotone/u);
-  assert.match(workflow, /prefers-reduced-motion: reduce/u);
-  assert.match(workflow, /ref=\{rootRef\}/u);
-  assert.match(workflow, /controllerRef\.current\?\.replay\(\)/u);
-  assert.match(workflow, /data-demo-replay="true"/u);
-  assert.match(workflow, /solar:refresh-bold-duotone/u);
-  assert.doesNotMatch(`${adapter}\n${workflow}`, /<svg|\{done \? 'ok' : '\?'\}/u);
+  assert.match(hero, /useTranslations\('product\.heroCall'\)/u);
+  assert.match(hero, /data-demo-id="aicall-hero-story"/u);
+  assert.match(hero, /prefers-reduced-motion: reduce/u);
+  assert.match(hero, /ref=\{rootRef\}/u);
+  assert.match(hero, /controllerRef\.current\?\.replay\(\)/u);
+  assert.match(hero, /data-demo-toggle="true"/u);
+  assert.match(hero, /data-demo-replay=\{isStopped \? 'true' : undefined\}/u);
+  assert.match(hero, /solar:phone-calling-rounded-bold-duotone/u);
+  assert.match(hero, /solar:incoming-call-rounded-bold-duotone/u);
+  assert.match(hero, /solar:refresh-bold-duotone/u);
+  assert.doesNotMatch(hero, /<svg|\{done \? 'ok' : '\?'\}/u);
+});
+
+test('hero waveform follows the shipped recordings instead of an independent sine loop', async () => {
+  const hero = await showcaseSource('HeroProof.tsx');
+
+  assert.match(hero, /const VOICE_ENVELOPES:/u);
+  assert.match(hero, /sampleVoiceEnvelope\(envelope,\s*progress \+ timeOffset\)/u);
+  assert.match(hero, /audio\.currentTime \/ duration/u);
+  assert.match(hero, /data-wave-source=\{audioEnabled \? 'audio-current-time' : 'recorded-envelope'\}/u);
+  assert.doesNotMatch(hero, /phaseRef|Math\.sin\(/u);
 });
 
 test('cost sample yields permanently to the first slider input', async () => {

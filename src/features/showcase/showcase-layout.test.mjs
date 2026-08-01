@@ -47,26 +47,30 @@ test('consent answers remain manual and the result sits below the questions', as
   );
 });
 
-test('hero workflow keeps stable mobile geometry and a 44px Replay target', async () => {
-  const [adapter, workflow, styles] = await Promise.all([
+test('call hero keeps stable mobile geometry and a 44px Replay target', async () => {
+  const [hero, styles] = await Promise.all([
     source('HeroProof.tsx'),
-    readFile(new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url), 'utf8'),
-    readFile(new URL('../home/components/hero-workflow-story.css', import.meta.url), 'utf8'),
+    source('call-hero-proof.css'),
   ]);
 
-  assert.match(adapter, /HeroWorkflowStory/u);
-  assert.match(workflow, /data-demo-replay="true"/u);
-  assert.match(styles, /\.hero-workflow\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?contain:\s*inline-size;/u);
-  assert.match(styles, /\.hero-workflow__row\s*\{[\s\S]*?min-height:\s*82px;/u);
-  assert.match(styles, /\.hero-workflow__replay\s*\{[\s\S]*?min-width:\s*44px;[\s\S]*?min-height:\s*44px;/u);
-  assert.match(styles, /@media \(max-width: 479px\)[\s\S]*?\.hero-workflow__details\s*\{[\s\S]*?grid-template-columns:\s*1fr;/u);
+  assert.match(hero, /data-demo-toggle="true"/u);
+  assert.match(hero, /data-demo-replay=\{isStopped \? 'true' : undefined\}/u);
+  assert.match(hero, /className="call-proof__viewport"/u);
+  assert.match(hero, /className="call-campaign__row"/u);
+  assert.match(hero, /<LiveCallSurface[\s\S]*compact/u);
+  assert.match(hero, /inline-flex min-h-11 items-center justify-center/u);
+  assert.match(styles, /\.call-proof__viewport\s*\{[\s\S]*height:\s*532px/u);
+  assert.match(styles, /@media \(max-width: 479px\)[\s\S]*height:\s*540px/u);
+  assert.match(styles, /\.call-campaign__row\s*\{[\s\S]*height:\s*258px/u);
+  assert.match(styles, /\.call-campaign__row\[data-state='active'\][\s\S]*clip-path:\s*inset\(0\)/u);
+  assert.match(styles, /\.call-live-surface__hangup[\s\S]*min-width:\s*44px/u);
 });
 
 test('landing renders one hero demo followed by five static capabilities', async () => {
-  const [showcase, capabilities, workflow] = await Promise.all([
+  const [showcase, capabilities, hero] = await Promise.all([
     readFile(new URL('../home/components/LandingShowcase.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../home/components/ProductCapabilities.tsx', import.meta.url), 'utf8'),
-    readFile(new URL('../home/components/HeroWorkflowStory.tsx', import.meta.url), 'utf8'),
+    source('HeroProof.tsx'),
   ]);
 
   assert.match(showcase, /useTranslations\('product\.capabilities'\)/u);
@@ -76,7 +80,7 @@ test('landing renders one hero demo followed by five static capabilities', async
   assert.doesNotMatch(showcase, /data-landing-demo/u);
   assert.match(capabilities, /items\.map\(\(item, index\)/u);
   assert.match(capabilities, /data-feature-section="true"/u);
-  assert.equal(workflow.match(/data-landing-demo=/gu)?.length, 1);
+  assert.equal(hero.match(/data-landing-demo=/gu)?.length, 1);
 });
 
 test('barge-in keeps every story state in one stable overlay stack', async () => {

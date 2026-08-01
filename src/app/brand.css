@@ -34,8 +34,8 @@
   --accent-cta: #ff8a3d;
 
   /* #ff5a1f as text on #fbfbfc is 3.02:1 (normal text wants 4.5),
-     #b84116 is 5.34:1 */
-  --brand-ink: #b84116;
+     #4c1705 also survives the translucent mobile nav over moving content. */
+  --brand-ink: #4c1705;
 
   /* Oversized display text needs 3:1, not the small-label reserve above. */
   --brand-display: #fa581e;

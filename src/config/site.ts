@@ -46,7 +46,7 @@ export const SITE = {
   manifest: {
     name: "aiCALL",
     short: "aiCALL",
-    description: "AI voice agent that confirms and reschedules your booked customers, in Georgian.",
+    description: "AI phone operator that answers calls and confirms bookings with your customers, in Georgian.",
     background: "#fbfcfc",
     theme: "#f97316",
   },
@@ -65,8 +65,8 @@ export const SITE = {
    */
   seo: {
     disambiguating:
-      "An outbound AI voice agent that calls a Georgian business's OWN booked customers to confirm or reschedule them. It is not a cold-calling service and it will not call a purchased list: Georgian law requires consent for direct marketing regardless of data source, and aiNOW's launch policy requires a written or electronic consent record.",
-    serviceType: "AI voice agent for appointment confirmation and rescheduling, in Georgian",
+      "An AI phone operator that answers inbound calls and makes approved operational calls to a Georgian business's existing customers. It is not a cold-calling service and it will not call a purchased list: Georgian law requires consent for direct marketing regardless of data source, and aiNOW's launch policy requires a written or electronic consent record.",
+    serviceType: "AI phone operator for inbound calls, appointment confirmation and rescheduling in Georgian",
     audienceName:
       "Clinics, dental practices, dealership service centres, beauty salons and delivery companies in Georgia",
     areaServed: "GE",
@@ -81,6 +81,7 @@ export const SITE = {
       "Payment reminders",
     ],
     features: [
+      "Answers inbound customer calls in Georgian using business-approved information",
       "Calls your booked customers the day before, in Georgian, at the hour you choose",
       "Confirms, reschedules, or transfers the call to a person on request",
       "Discloses that it is an AI agent in the first sentence of every call",
@@ -96,9 +97,9 @@ export const SITE = {
       "The agent never takes a card payment over the phone.",
     ],
     commitment:
-      "The campaign starts with an approved scenario and the business's own customer list. aiNOW measures that campaign's answer and confirmation outcomes and returns the result sheet to the business.",
+      "Inbound and outbound calls start with approved information, handoff rules and, for outbound calls, the business's own customer list. aiNOW measures each result and returns the outcome sheet to the business.",
     summary:
-      "aiCALL is an AI voice agent, built by the aiNOW agency in Tbilisi, that phones a Georgian business's own booked customers the day before their appointment, confirms or reschedules them in Georgian, and hands the business back a clean outcome sheet. It deliberately does not sell cold-calling: direct marketing requires consent regardless of source, while written consent under Article 12 specifically applies when personal data beyond name, surname, address, phone and email are processed. aiNOW separately requires a written or electronic consent record under its launch policy. Calls use short, fixed questions, send open questions to a person, and never present a borrowed answer rate.",
+      "aiCALL is an AI phone operator built by aiNOW in Tbilisi. It answers customer calls in Georgian, calls a business's own booked customers to confirm or reschedule appointments, sends uncertain conversations to a person and returns a clean outcome sheet. It deliberately does not sell cold-calling: direct marketing requires consent regardless of source, and aiNOW requires a written or electronic consent record before every marketing launch. Calls use approved information, open questions go to a person and demo figures are never presented as a customer's real result.",
   },
 } as const;
 

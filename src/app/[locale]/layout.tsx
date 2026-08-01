@@ -50,7 +50,7 @@ export async function generateMetadata({
     icons: {
       icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
       shortcut: "/icon.svg",
-      apple: "/icon.svg",
+      apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
     },
     title: {
       default: t("title"),
@@ -152,7 +152,14 @@ export default async function LocaleLayout({
   // Opts this subtree into static rendering. Must run before anything reads a translation.
   setRequestLocale(locale);
 
-  const messages = (await import(`@/messages/${locale}.json`)).default;
+  const siteMessages = (await import(`@/messages/${locale}.json`)).default;
+  const productPageMessages = (
+    await import(`@/features/product-pages/messages/${locale}.json`)
+  ).default;
+  const messages = {
+    ...siteMessages,
+    productPages: productPageMessages,
+  };
 
   return (
     <html
@@ -167,6 +174,11 @@ export default async function LocaleLayout({
             Grotesque (opsz,wght axis) + Space Mono, not next/font's static cuts. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="ai-summary" type="application/json" href={`${BASE_URL}/ai/summary.json`} />
+        <link rel="ai-service" type="application/json" href={`${BASE_URL}/ai/service.json`} />
+        <link rel="ai-faq" type="application/json" href={`${BASE_URL}/ai/faq.json`} />
+        <link rel="llms" type="text/plain" href={`${BASE_URL}/llms.txt`} />
+        <link rel="llms-full" type="text/plain" href={`${BASE_URL}/llms-full.txt`} />
         {/* eslint-disable-next-line @next/next/no-page-custom-font -- shared live aiNOW font contract */}
         <link
           href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800;12..96,900&family=DM+Sans:wght@400;500;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap"

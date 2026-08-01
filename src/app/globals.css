@@ -610,6 +610,12 @@ html {
   }
 }
 
+@media (forced-colors: active) {
+  .call-forced-control-text {
+    color: CanvasText !important;
+  }
+}
+
 
 
 /* Card hover effects */

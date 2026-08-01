@@ -22,6 +22,7 @@
     "successTitle": "Received",
     "successMessage": "We will call you back shortly.",
     "errorMessage": "Something went wrong. Please try again.",
+    "phoneInvalid": "Enter a valid phone number.",
     "contactInfo": "Contact information",
     "phoneLabel": "Phone",
     "emailLabel": "Email",
@@ -66,12 +67,12 @@
       "taglineWorks": "calls",
       "typewriterWords": "calls,bookings,orders,reminders,surveys",
       "typewriterPrefill": "calls",
-      "ctaResults": "Hear the Georgian question",
+      "ctaResults": "Show me a call for my business",
       "ctaCall": "Discuss your call list",
-      "commitment": "aiNOW checks your list, script, consent basis and human handoff before a campaign starts. You approve the setup and keep the outcome sheet.",
+      "commitment": "aiNOW checks who aiCALL contacts, what it says and when a call goes to a person. You approve the rules and see the result of every call.",
       "audience": "For clinics, service businesses, salons, delivery teams and administrators",
-      "sub": "aiCALL calls your own customers before a booked appointment or delivery, asks a short question in Georgian and marks each response. Missed confirmations become a visible list your team can act on.",
-      "signedBy": "aiNOW configures the call, checks the handoff and shows the result before you decide what comes next."
+      "sub": "aiCALL is an AI phone operator that calls your customers in Georgian and answers their calls too. It confirms appointments, takes orders and sends uncertain conversations to your team.",
+      "signedBy": "Configured and checked by aiNOW"
     },
     "work": {
       "eyebrow": "A clear call flow",
@@ -100,8 +101,12 @@
       "headingPre": "Five questions",
       "headingAccent": "before the first call.",
       "subtitle": "Short answers about call purpose, consent, and human handoff.",
+      "reviewedBy": "Content reviewed by aiNOW",
+      "updatedOn": "Updated",
+      "updatedDate": "23 July 2026",
+      "updatedIso": "2026-07-23",
       "q1": "What does <brand></brand> do?",
-      "a1": "aiCALL calls your existing customers to confirm bookings, deliveries, visits, payments, or reminders. The call follows an approved script and writes every result to a board.",
+      "a1": "aiCALL answers inbound calls and calls your existing customers to confirm bookings, deliveries, visits, payments, or reminders. It uses approved information and writes every result to the dashboard.",
       "q2": "Which businesses use aiCALL?",
       "a2": "aiCALL fits clinics, salons, service centers, delivery teams, and any company that needs many short customer confirmations.",
       "q3": "Can aiCALL use a bought or scraped number list?",
@@ -130,15 +135,22 @@
       "a14": "aiCALL handles approved phone calls. aiSTAFF handles customer messages. aiOFFICE supports internal documents and approvals. aiNOW helps you choose the product that matches the work."
     },
     "cta": {
-      "heading": "Hear the short Georgian confirmation",
-      "subtitle": "Share a business number and the scenario you want to review. aiNOW confirms the consent boundary first, then arranges a demo call. No call is sent from this page automatically.",
+      "heading": "Get an aiCALL demo call",
+      "subtitle": "Leave your business number. aiNOW will contact you, check the scenario and prepare a Georgian demo call for your business.",
       "phoneLabel": "Business phone number",
-      "phoneSubmit": "Request a reviewed demo",
-      "phoneNote": "aiNOW reviews the request before arranging a call",
+      "phoneSubmit": "Request the demo",
+      "phoneNote": "No call starts without your approval",
       "orWrite": "Or write to aiNOW:"
     },
     "wordmark": {
-      "line": "The chair does not stay empty."
+      "heading": "Georgian-speaking AI phone operator",
+      "items": [
+        "Answers incoming calls in Georgian",
+        "Calls existing customers",
+        "Confirms appointments or deliveries",
+        "Takes orders and records call outcomes",
+        "Hands complex conversations to your team"
+      ]
     },
     "hear": {
       "eyebrow": "The Georgian question",
@@ -284,6 +296,41 @@
       "result": "Nino confirmed · Giorgi booked",
       "businessLabel": "What the business gets",
       "businessValue": "Both call outcomes are saved. The team does not need to call and update the schedule by hand.",
+      "replay": "Replay"
+    },
+    "heroCall": {
+      "badge": "Live example",
+      "taskLabel": "Clinic task",
+      "task": "Call tomorrow's booked patients, confirm the visit, and if somebody calls in, answer and book an open time.",
+      "listLabel": "Today's list",
+      "row1Name": "Nino K.",
+      "row1Note": "Tomorrow, 14:00",
+      "row1Status": "Needs confirmation",
+      "row2Name": "Giorgi L.",
+      "row2Note": "Incoming call",
+      "row2Status": "New booking",
+      "row3Name": "Mariam",
+      "row3Note": "Tomorrow, 16:30",
+      "row3Status": "Retry call",
+      "callLabel": "Call conversation",
+      "outboundTitle": "aiCALL calls Nino",
+      "outboundSub": "Approved short script",
+      "incomingTitle": "Giorgi calls back",
+      "incomingSub": "The same rules answer the call",
+      "agentLine1": "Hello, I am the clinic's AI operator. We expect you tomorrow at 14:00. Do you confirm the visit?",
+      "clientLine1": "Confirmed. Where is the new entrance?",
+      "clientLine2": "Hello, do you have a free time tomorrow? This is Giorgi, +995 555 12 34 56.",
+      "agentLine2": "Yes, 16:30 is free. Giorgi, should I book you on this number?",
+      "agentLine3": "Booking saved. Nino is confirmed, Giorgi is added, Mariam needs one more call.",
+      "resultLabel": "What was saved",
+      "confirmed": "Confirmation",
+      "confirmedValue": "Nino will come at 14:00",
+      "booked": "New booking",
+      "bookedValue": "Giorgi, 16:30",
+      "handoff": "Next step",
+      "handoffValue": "Retry Mariam",
+      "businessLabel": "What the business gets",
+      "businessValue": "The call, answer and booking are visible in one place. The employee does not call everyone by hand.",
       "replay": "Replay"
     },
     "proof": {

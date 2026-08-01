@@ -11,8 +11,14 @@ test('navigation disclosures use localized state-aware accessible names', () => 
   assert.match(navSource, /aria-label=\{menuOpen \? a11y\.close : a11y\.open\}/u);
   assert.match(navSource, /aria-label=\{a11y\.language\}/u);
   assert.match(navSource, /aria-label=\{`\$\{SITE\.wordmark\.prefix\}\$\{SITE\.wordmark\.mark\}/u);
-  assert.match(navSource, /ka: \{ open: '[^']+', close: '[^']+', language: '[^']+'/u);
-  assert.match(navSource, /ru: \{ open: '[^']+', close: '[^']+', language: '[^']+'/u);
+  assert.match(
+    navSource,
+    /ka:\s*\{\s*open:\s*'[^']+',\s*close:\s*'[^']+',\s*language:\s*'[^']+'/u,
+  );
+  assert.match(
+    navSource,
+    /ru:\s*\{\s*open:\s*'[^']+',\s*close:\s*'[^']+',\s*language:\s*'[^']+'/u,
+  );
 });
 
 test('KA, EN, and RU are selected from the active locale', () => {
