@@ -29,8 +29,8 @@ export function FooterLanguageSwitcher() {
       {LOCALES.map((l) => (
         <li key={l.code}>
           <Link
-            href={pathname}
-            locale={l.code}
+            href={pathname.startsWith('/blog') && l.code !== 'ka' ? '/' : pathname}
+            locale={l.code === current ? undefined : l.code}
             aria-current={current === l.code ? 'true' : undefined}
             className={cn(
               'inline-flex min-h-11 min-w-11 items-center break-words transition-colors hover:text-neutral-900',

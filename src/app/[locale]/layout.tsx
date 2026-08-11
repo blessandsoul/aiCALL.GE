@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { isIndexedLocale } from "@/i18n/seo-locales";
 import { Providers } from "@/app/providers";
 import { LayoutShell } from "@/components/layout/LayoutShell";
+import { AistaffWidget } from "@/components/layout/AistaffWidget";
 import { Toaster } from "sonner";
 import { ScrollToTop } from "@/components/common/ScrollToTop";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -203,6 +204,7 @@ export default async function LocaleLayout({
             <LayoutShell>{children}</LayoutShell>
             <ScrollToTop />
             <Toaster position="top-right" richColors theme="dark" />
+            <AistaffWidget />
           </NextIntlClientProvider>
         </Providers>
       </body>

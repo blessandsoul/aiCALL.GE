@@ -14,6 +14,11 @@ export const contactFormSchema = z
     name: z.string().min(1).max(120).optional(),
     email: z.string().email("Invalid email").max(254).optional(),
     message: z.string().max(5000).optional(),
+    utm_source: z.string().max(80).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+    utm_medium: z.string().max(80).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+    utm_campaign: z.string().max(120).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+    utm_content: z.string().max(180).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+    source_path: z.string().max(300).regex(/^\/[a-zA-Z0-9_/?&=.-]*$/).optional(),
   })
   .refine((d) => Boolean(d.phone || d.email), {
     message: "Provide a phone number or email",

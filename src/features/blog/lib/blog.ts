@@ -135,6 +135,10 @@ export function getPostSlugs(): string[] {
   return [...slugs].sort();
 }
 
+export function getBlogLocales(): string[] {
+  return SITE.locales.filter((locale) => getPosts(locale).length > 0);
+}
+
 export function getDefaultAvailableLocale(slug: string): string | null {
   const available = getAvailableLocales(slug);
   if (available.includes(SITE.defaultLocale)) return SITE.defaultLocale;

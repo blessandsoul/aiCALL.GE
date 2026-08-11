@@ -49,7 +49,7 @@ export function BlogIndex({ posts, locale, contentLocale = locale }: { posts: Bl
         ) : (
           <div className="blog-card-grid">
             {posts.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} locale={post.locale} className="blog-card">
+              <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-card">
                 <div className="blog-card-topline">
                   <span className="blog-card-cluster">{post.cluster}</span>
                   <Ico name="solar:arrow-right-up-bold-duotone" aria-hidden="true" />

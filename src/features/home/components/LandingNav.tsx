@@ -246,7 +246,7 @@ export function LandingNav() {
     { id: SECTIONS.faq, label: t('faq') },
   ];
   const pricingRoute = publishedRoute('pricing');
-  const blogRoute = publishedRoute('blog');
+  const blogRoute = locale === 'ka' ? publishedRoute('blog') : undefined;
   const productRoutes = PUBLIC_ROUTES.flatMap((route) =>
     isProductMenuKey(route.key)
       ? [{ key: route.key, path: route.path, label: a11y[route.key] }]
@@ -392,8 +392,8 @@ export function LandingNav() {
               {LOCALES.map((l) => (
                 <li key={l.code}>
                   <Link
-                    href={pathname}
-                    locale={l.code}
+                    href={pathname.startsWith('/blog') && l.code !== 'ka' ? '/' : pathname}
+                    locale={l.code === locale ? undefined : l.code}
                     className={`nav-dd-link${l.code === locale ? ' is-current' : ''}`}
                     onClick={() => setLangOpen(false)}
                   >

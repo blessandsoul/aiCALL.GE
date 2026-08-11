@@ -35,10 +35,18 @@ export const ContactForm = () => {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     try {
+      const query = new URLSearchParams(window.location.search);
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          utm_source: query.get("utm_source") || undefined,
+          utm_medium: query.get("utm_medium") || undefined,
+          utm_campaign: query.get("utm_campaign") || undefined,
+          utm_content: query.get("utm_content") || undefined,
+          source_path: `${window.location.pathname}${window.location.search}`,
+        }),
       });
 
       if (res.ok) {

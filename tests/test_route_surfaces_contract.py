@@ -52,6 +52,31 @@ class RouteSurfacesContractTests(unittest.TestCase):
         self.assertIn("PUBLIC_ROUTES", llms_full)
         self.assertIn("FAMILY.filter", llms)
 
+    def test_blog_is_published_only_for_locales_with_real_articles(self) -> None:
+        blog_page = read("src/app/[locale]/blog/page.tsx")
+        sitemap = read("src/app/sitemap.ts")
+        nav = read("src/features/home/components/LandingNav.tsx")
+        footer_languages = read("src/features/home/components/FooterLanguageSwitcher.tsx")
+
+        self.assertIn("getBlogLocales", blog_page)
+        self.assertIn("if (getPosts(locale).length === 0) notFound()", blog_page)
+        self.assertNotIn("getPosts(contentLocale)", blog_page)
+        self.assertIn('if (route.path === "/blog") continue', sitemap)
+        self.assertIn("const blogLocales = getBlogLocales()", sitemap)
+        self.assertIn("locale === 'ka' ? publishedRoute('blog')", nav)
+        self.assertIn("pathname.startsWith('/blog') && l.code !== 'ka' ? '/'", footer_languages)
+
+    def test_contact_lead_preserves_organic_article_attribution(self) -> None:
+        schema = read("src/features/contact/schemas/contact.schema.ts")
+        form = read("src/features/contact/components/ContactForm.tsx")
+        telegram = read("src/lib/telegram.ts")
+
+        for field in ("utm_source", "utm_medium", "utm_campaign", "utm_content", "source_path"):
+            with self.subTest(field=field):
+                self.assertIn(field, schema)
+                self.assertIn(field, form)
+                self.assertIn(field, telegram)
+
     def test_machine_endpoints_are_generated_from_product_facts(self) -> None:
         route_files = (
             "src/app/.well-known/ai.txt/route.ts",
