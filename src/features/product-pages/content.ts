@@ -103,8 +103,8 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       description: t(`minutes.bundles.${bundle.id}.description`),
       minutes: bundle.minutes,
       price: {
-        amount: bundle.monthlyPriceUsd,
-        currency: 'USD',
+        amount: bundle.monthlyPriceGel,
+        currency: 'GEL',
         cadence: 'monthly',
         unit: t('plans.month'),
       },
@@ -365,7 +365,7 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       outboundRateUnit: t('minutes.rates.outboundUnit'),
       outboundRateStatus: t('minutes.rates.outboundStatus'),
       outboundRateNote: t('minutes.rates.outboundNote'),
-      mixedCurrencyNote: t('minutes.rates.mixedCurrencyNote'),
+      pricingUpdateNote: t('minutes.rates.pricingUpdateNote'),
       setupFeeLabel: t('minutes.summary.setupFee'),
       setupFeeNote: t('minutes.summary.setupFeeNote'),
       customValueLabel: t('labels.customValue'),
@@ -408,14 +408,14 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       callRates: {
         inbound: {
           pricePerConnectedMinute: {
-            amount: VOICE_PRICING.billing.inboundPricePerConnectedMinuteUsd,
-            currency: 'USD',
+            amount: VOICE_PRICING.billing.inboundPricePerConnectedMinuteGel,
+            currency: 'GEL',
             cadence: 'usage',
           },
           referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
           referencePrice: {
-            amount: VOICE_PRICING.billing.inboundReferencePriceUsd,
-            currency: 'USD',
+            amount: VOICE_PRICING.billing.inboundReferencePriceGel,
+            currency: 'GEL',
             cadence: 'usage',
           },
         },

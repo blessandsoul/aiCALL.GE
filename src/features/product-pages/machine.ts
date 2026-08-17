@@ -107,7 +107,7 @@ const MACHINE_MINUTE_BUNDLES = VOICE_PRICING.minuteBundles.map((bundle) => ({
   id: bundle.id,
   direction: 'inbound',
   inboundConnectedMinutes: bundle.minutes,
-  monthlyPriceUsd: bundle.monthlyPriceUsd,
+  monthlyPriceGel: bundle.monthlyPriceGel,
   currency: VOICE_PRICING.inboundBundleCurrency,
   priceType: bundle.contactOnly ? 'from' : 'fixed',
   contactOnly: bundle.contactOnly,
@@ -122,7 +122,7 @@ const MACHINE_DEFAULT_CONFIGURATIONS = VOICE_PRICING.plans.map((plan) => {
     inboundMinuteBundleId: plan.defaultMinuteBundleId,
     inboundConnectedMinutes: bundle?.minutes ?? 0,
     monthlyPlatformPriceGel: plan.monthlyPlatformPriceGel,
-    monthlyInboundMinutesPriceUsd: bundle?.monthlyPriceUsd ?? 0,
+    monthlyInboundMinutesPriceGel: bundle?.monthlyPriceGel ?? 0,
     outboundPricePerConnectedMinuteGel:
       VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
     priceType: plan.contactOnly || bundle?.contactOnly ? 'from' : 'fixed',
@@ -135,19 +135,19 @@ export const PRODUCT_MACHINE_PRICING = {
   inboundBundleCurrency: VOICE_PRICING.inboundBundleCurrency,
   billingPeriod: VOICE_PRICING.cadence,
   inboundPricing: {
-    pricePerConnectedMinuteUsd:
-      VOICE_PRICING.billing.inboundPricePerConnectedMinuteUsd,
+    pricePerConnectedMinuteGel:
+      VOICE_PRICING.billing.inboundPricePerConnectedMinuteGel,
     referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
-    referencePriceUsd: VOICE_PRICING.billing.inboundReferencePriceUsd,
+    referencePriceGel: VOICE_PRICING.billing.inboundReferencePriceGel,
     billingMethod:
-      'The customer selects a monthly inbound-minute bundle. The published reference is $2 for 10 connected inbound minutes.',
+      'The customer selects a monthly inbound-minute bundle. The indicative reference is 5.40 GEL for 10 connected inbound minutes.',
   },
   outboundPricing: {
     pricePerConnectedMinuteGel:
       VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
     temporary: VOICE_PRICING.billing.outboundRateTemporary,
     billingMethod:
-      'Outbound usage is not included in inbound-minute bundles. It is currently billed at 3 GEL per connected conversation minute after the customer answers. aiNOW is working to reduce this rate.',
+      'Outbound usage is not included in inbound-minute bundles. It is currently billed at 1.40 GEL per connected conversation minute after the customer answers. aiNOW is working to reduce this rate.',
   },
   oneTimeSetup: {
     priceGel: VOICE_PRICING.billing.oneTimeSetupFeeGel,
@@ -160,8 +160,8 @@ export const PRODUCT_MACHINE_PRICING = {
   selectionOrder: [
     'Choose the functional platform plan.',
     'Choose the inbound connected-minute bundle independently.',
-    'Review the separate GEL platform price, USD inbound-bundle price and one-time setup fee before submitting the request.',
-    'If outbound calls are needed, add the temporary 3 GEL per connected-minute rate separately.',
+    'Review the separate GEL platform price, GEL inbound-bundle price and one-time setup fee before submitting the request.',
+    'If outbound calls are needed, add the temporary 1.40 GEL per connected-minute rate separately.',
   ],
   includedInEveryPlan:
     'The published launch scope keeps voice quality, Georgian, English and Russian, interruption handling, disclosed recording, transcription and private call history consistent across plans.',

@@ -15,15 +15,15 @@ test('pricing separates functional plans from minute bundles', async () => {
   assert.match(source, /monthlyPlatformPriceGel: 900/u);
   assert.match(source, /monthlyPlatformPriceGel: 2_500/u);
   assert.match(source, /monthlyPlatformPriceGel: 5_000/u);
-  assert.match(source, /inboundPricePerConnectedMinuteUsd: 0\.2/u);
+  assert.match(source, /inboundPricePerConnectedMinuteGel: 0\.54/u);
   assert.match(source, /inboundReferenceMinutes: 10/u);
-  assert.match(source, /inboundReferencePriceUsd: 2/u);
-  assert.match(source, /outboundPricePerConnectedMinuteGel: 3/u);
-  assert.match(source, /minutes: 100,[\s\S]*monthlyPriceUsd: 20/u);
-  assert.match(source, /minutes: 500,[\s\S]*monthlyPriceUsd: 100/u);
-  assert.match(source, /minutes: 2_000,[\s\S]*monthlyPriceUsd: 400/u);
-  assert.match(source, /minutes: 5_000,[\s\S]*monthlyPriceUsd: 1_000/u);
-  assert.match(source, /minutes: 10_000,[\s\S]*monthlyPriceUsd: 2_000/u);
+  assert.match(source, /inboundReferencePriceGel: 5\.4/u);
+  assert.match(source, /outboundPricePerConnectedMinuteGel: 1\.4/u);
+  assert.match(source, /minutes: 100,[\s\S]*monthlyPriceGel: 54/u);
+  assert.match(source, /minutes: 500,[\s\S]*monthlyPriceGel: 270/u);
+  assert.match(source, /minutes: 2_000,[\s\S]*monthlyPriceGel: 1_080/u);
+  assert.match(source, /minutes: 5_000,[\s\S]*monthlyPriceGel: 2_700/u);
+  assert.match(source, /minutes: 10_000,[\s\S]*monthlyPriceGel: 5_400/u);
   assert.doesNotMatch(source, /includedMinutes|monthlyPriceFromGel/u);
 });
 
@@ -49,7 +49,7 @@ test('machine facts expose both pricing dimensions and planned capabilities', as
   assert.match(source, /minuteBundles: MACHINE_MINUTE_BUNDLES/u);
   assert.match(source, /defaultConfigurations: MACHINE_DEFAULT_CONFIGURATIONS/u);
   assert.match(source, /monthlyPlatformPriceGel/u);
-  assert.match(source, /monthlyInboundMinutesPriceUsd/u);
+  assert.match(source, /monthlyInboundMinutesPriceGel/u);
   assert.match(source, /outboundPricePerConnectedMinuteGel/u);
   assert.doesNotMatch(source, /monthlyTotalGel/u);
   assert.match(source, /capabilities: plan\.capabilities/u);

@@ -294,7 +294,7 @@ export function PricingConfigurator({
 
             <p className="pricing-configuration-summary__currency-note">
               <Ico name="solar:info-circle-bold-duotone" aria-hidden="true" />
-              <span>{copy.mixedCurrencyNote}</span>
+              <span>{copy.pricingUpdateNote}</span>
             </p>
 
             <Link

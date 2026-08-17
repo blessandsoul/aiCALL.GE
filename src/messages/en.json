@@ -118,7 +118,7 @@
       "q6": "Can the call move to a real employee?",
       "a6": "Yes. You choose the handoff number and the situations that require a person. The employee receives the customer while the context is still clear.",
       "q7": "How is the price calculated?",
-      "a7": "The functional plan determines aiCALL capabilities. Inbound calls use a separate USD bundle at $0.20 per conversation minute. Outbound conversation time currently costs 3 GEL per minute after the customer answers. aiNOW confirms the final configuration in writing.",
+      "a7": "The functional plan determines aiCALL capabilities. Inbound calls use a separate GEL minute bundle at an indicative 0.54 GEL per conversation minute. Outbound conversation time currently costs 1.40 GEL per minute after the customer answers. aiNOW confirms the final configuration in writing.",
       "q8": "What is needed before a test starts?",
       "a8": "aiNOW needs the approved list, short script, consent basis and handoff number. The start date is agreed only after those checks are complete.",
       "q9": "What if the customer does not answer?",
@@ -237,13 +237,13 @@
     "cost": {
       "eyebrow": "Outbound call cost",
       "heading": "Calculate the current cost of outbound calls.",
-      "subtitle": "Enter the number of customers to call and the average conversation length. Outbound conversation time currently costs 3 GEL per minute after the customer answers.",
+      "subtitle": "Enter the number of customers to call and the average conversation length. Outbound conversation time currently costs 1.40 GEL per minute after the customer answers.",
       "contacts": "Customers to call",
       "minutes": "Planned minutes per call",
       "wage": "Administrator cost per hour, GEL",
       "human": "Current staff time",
       "agent": "aiCALL outbound calls",
-      "result": "3 GEL per minute",
+      "result": "1.40 GEL per minute",
       "hours": "staff hours in the calculation",
       "perMonth": "for this list",
       "replay": "Replay example",
@@ -256,7 +256,7 @@
         "enterprise": "Enterprise",
         "custom": "Custom"
       },
-      "note": "This temporary high rate applies only to outbound calls, and aiNOW is working to reduce it. Choose a separate monthly bundle for inbound calls: 10 minutes = $2."
+      "note": "This temporary high rate applies only to outbound calls, and aiNOW is working to reduce it. Choose a separate monthly bundle for inbound calls: 10 minutes are approximately 5.40 GEL. Prices may change, so confirm the final price before purchase."
     },
     "capabilities": {
       "eyebrow": "Five capabilities",

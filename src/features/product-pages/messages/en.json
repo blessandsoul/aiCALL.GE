@@ -12,11 +12,11 @@
   },
   "pricing": {
     "seoTitle": "{product} pricing for inbound and outbound AI calls",
-    "seoDescription": "Functional plans start at 220 GEL per month. A 100-minute inbound bundle costs $20. Outbound conversation time currently costs 3 GEL per minute after the customer answers. Phone-number purchase and initial setup cost a one-time 150 GEL.",
+    "seoDescription": "Functional plans start at 220 GEL per month. A 100-minute inbound bundle is approximately 54 GEL. Outbound conversation time currently costs 1.40 GEL per minute after the customer answers. Phone-number purchase and initial setup cost a one-time 150 GEL.",
     "breadcrumb": "Pricing",
     "eyebrow": "Capabilities and call usage, billed separately",
     "title": "Choose capabilities and an inbound call bundle",
-    "lead": "Your functional plan determines what aiCALL can do. Choose a separate minute bundle for inbound calls. Outbound calls are not included. Conversation time currently costs 3 GEL per minute after the customer answers. Phone-number purchase and initial setup are a one-time 150 GEL charge.",
+    "lead": "Your functional plan determines what aiCALL can do. Choose a separate minute bundle for inbound calls. Outbound calls are not included. Conversation time currently costs 1.40 GEL per minute after the customer answers. Phone-number purchase and initial setup are a one-time 150 GEL charge.",
     "context": {
       "model": "Billing model",
       "fixed": "Fixed minute package",
@@ -29,9 +29,9 @@
       "price": "Platform plans",
       "priceValue": "From 220 GEL per month",
       "start": "Inbound minute bundles",
-      "startValue": "From $20 per month",
+      "startValue": "From 54 GEL per month",
       "support": "Outbound call rate",
-      "supportValue": "3 GEL per conversation minute after answer"
+      "supportValue": "1.40 GEL per conversation minute after answer"
     },
     "offers": {
       "eyebrow": "Step 1",
@@ -183,7 +183,7 @@
     "minutes": {
       "eyebrow": "Step 2",
       "title": "Choose your inbound call minutes",
-      "intro": "The bundles below cover inbound calls only. The reference rate is $2 per 10 connected minutes, but you pay for the selected monthly bundle rather than for each individual call.",
+      "intro": "The bundles below cover inbound calls only. The indicative reference is 5.40 GEL per 10 connected minutes, but you pay for the selected monthly bundle rather than for each individual call.",
       "select": "Select bundle",
       "selected": "Selected",
       "connected": "Inbound conversation time",
@@ -212,13 +212,13 @@
       "rates": {
         "inboundTitle": "Inbound calls",
         "inboundUnit": "per conversation minute after answer",
-        "inboundExample": "10 minutes = $2",
+        "inboundExample": "10 minutes ≈ 5.40 GEL",
         "inboundNote": "The selected monthly bundle covers the stated number of inbound conversation minutes.",
         "outboundTitle": "Outbound calls",
         "outboundUnit": "per conversation minute after answer",
         "outboundStatus": "Temporary rate",
         "outboundNote": "This rate is currently high. aiNOW is working to reduce it.",
-        "mixedCurrencyNote": "The functional plan is priced in GEL and the inbound bundle in USD. Outbound call usage is calculated separately at the rate shown above."
+        "pricingUpdateNote": "Public prices are indicative and may change with exchange rates, telephony costs or service conditions. We confirm the final price and availability before purchase."
       },
       "summary": {
         "platform": "Platform plan",
@@ -249,7 +249,7 @@
       "rows": {
         "minutes": {
           "label": "Inbound minute bundle",
-          "info": "Step 2 selects inbound call minutes only. Ten minutes of inbound conversation cost $2."
+          "info": "Step 2 selects inbound call minutes only. The indicative price for ten connected inbound minutes is 5.40 GEL."
         },
         "model": {
           "label": "Model",
@@ -281,7 +281,7 @@
         },
         "outbound": {
           "label": "Individual outbound calls",
-          "info": "An approved call objective can be started to a Georgian +995 number. Conversation time currently costs 3 GEL per minute after the customer answers."
+          "info": "An approved call objective can be started to a Georgian +995 number. Conversation time currently costs 1.40 GEL per minute after the customer answers."
         },
         "languages": {
           "label": "Conversation languages",
@@ -408,18 +408,18 @@
       "s3Description": "Check language, interruptions, recording and correct result capture.",
       "s3Timing": "Test",
       "s4Title": "Activate the plan and inbound-minute bundle",
-      "s4Description": "The platform plan and selected inbound-minute bundle activate together. Outbound calls are calculated separately at the current rate of 3 GEL per conversation minute after answer. Extra usage requires your approval.",
+      "s4Description": "The platform plan and selected inbound-minute bundle activate together. Outbound calls are calculated separately at the current rate of 1.40 GEL per conversation minute after answer. Extra usage requires your approval.",
       "s4Timing": "After approval"
     },
     "faq": {
       "eyebrow": "Pricing questions",
       "title": "What to know before you start",
       "q1": "What exactly am I paying for?",
-      "a1": "Choose a monthly platform plan for capabilities and a separate monthly inbound-minute bundle. Outbound conversation time is billed separately at 3 GEL per minute after the customer answers.",
+      "a1": "Choose a monthly platform plan for capabilities and a separate monthly inbound-minute bundle. Outbound conversation time is billed separately at 1.40 GEL per minute after the customer answers.",
       "q2": "Are inbound and outbound calls included in one bundle?",
       "a2": "No. Inbound bundles cover inbound calls only. Outbound usage is billed separately.",
       "q3": "How is inbound call pricing calculated?",
-      "a3": "Inbound conversation time costs $0.20 per minute after aiCALL answers, so 10 minutes cost $2. You pay for the selected monthly bundle. An additional bundle activates only after your approval.",
+      "a3": "Inbound conversation time is displayed at an indicative 0.54 GEL per minute after aiCALL answers, so 10 minutes are approximately 5.40 GEL. You pay for the selected monthly bundle. An additional bundle activates only after your approval.",
       "q4": "Why does Custom require contact?",
       "a4": "Custom starts at 5,000 GEL per month for the platform, but capacity, integrations and support must be agreed before launch.",
       "q5": "Are batch campaigns available now?",

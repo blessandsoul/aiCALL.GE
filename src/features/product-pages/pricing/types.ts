@@ -165,7 +165,7 @@ export interface PricingPageCopy {
   outboundRateUnit: string;
   outboundRateStatus: string;
   outboundRateNote: string;
-  mixedCurrencyNote: string;
+  pricingUpdateNote: string;
   setupFeeLabel: string;
   setupFeeNote: string;
   customValueLabel: string;

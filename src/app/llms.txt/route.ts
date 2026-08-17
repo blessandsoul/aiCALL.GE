@@ -55,7 +55,7 @@ export function GET() {
     ``,
     `- Model: ${PRODUCT_MACHINE_PRICING.model}`,
     `- Minute scope: ${PRODUCT_MACHINE_PRICING.minutePool}`,
-    `- Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost $${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceUsd}; inbound bundles are billed in USD.`,
+    `- Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost approximately ${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceGel} GEL; inbound bundles are displayed in GEL using an indicative conversion.`,
    `- Outbound current rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute; this temporary high rate is separate from inbound bundles, and aiNOW is working to reduce it.`,
     `- One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; this is separate from monthly platform and minute-bundle prices.`,
     `- Included: ${PRODUCT_MACHINE_PRICING.includedInEveryPlan}`,
@@ -68,12 +68,12 @@ export function GET() {
     `- Step 2, inbound connected-minute bundles:`,
     ...PRODUCT_MACHINE_PRICING.minuteBundles.map(
       (bundle) =>
-        `  - ${bundle.id}: ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes for $${bundle.monthlyPriceUsd}/month`,
+        `  - ${bundle.id}: ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes for approximately ${bundle.monthlyPriceGel} GEL/month`,
     ),
     `- Default combinations:`,
     ...PRODUCT_MACHINE_PRICING.defaultConfigurations.map(
       (configuration) =>
-        `  - ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle $${configuration.monthlyInboundMinutesPriceUsd}/month; outbound ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute`,
+        `  - ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle approximately ${configuration.monthlyInboundMinutesPriceGel} GEL/month; outbound ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute`,
     ),
     `- ${PRODUCT_MACHINE_PRICING.extraUsage}`,
     `- Availability: ${PRODUCT_MACHINE_PRICING.availabilityNote}`,

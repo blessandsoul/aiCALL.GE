@@ -31,7 +31,7 @@ export function GET() {
     '',
     `Model: ${PRODUCT_MACHINE_PRICING.model}.`,
     PRODUCT_MACHINE_PRICING.minutePool,
-   `Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost $${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceUsd}.`,
+   `Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost approximately ${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceGel} GEL using an indicative conversion.`,
     `One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; separate from monthly charges.`,
     `Outbound current rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute. This temporary high rate is separate from inbound bundles, and aiNOW is working to reduce it.`,
     PRODUCT_MACHINE_PRICING.includedInEveryPlan,
@@ -53,14 +53,14 @@ export function GET() {
     '',
     ...PRODUCT_MACHINE_PRICING.minuteBundles.map(
       (bundle) =>
-        `- ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes: $${bundle.monthlyPriceUsd}/month.`,
+        `- ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes: approximately ${bundle.monthlyPriceGel} GEL/month.`,
     ),
     '',
     '### Default combinations',
     '',
     ...PRODUCT_MACHINE_PRICING.defaultConfigurations.map(
       (configuration) =>
-        `- ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle $${configuration.monthlyInboundMinutesPriceUsd}/month; outbound usage remains separate at ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute.`,
+        `- ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle approximately ${configuration.monthlyInboundMinutesPriceGel} GEL/month; outbound usage remains separate at ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute.`,
     ),
     '',
     PRODUCT_MACHINE_PRICING.extraUsage,

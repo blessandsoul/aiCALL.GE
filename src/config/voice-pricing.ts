@@ -81,7 +81,7 @@ export interface VoicePricingPlan {
 export interface VoiceMinuteBundle {
   id: VoiceMinuteBundleId;
   minutes: number;
-  monthlyPriceUsd: number;
+  monthlyPriceGel: number;
   contactOnly: boolean;
   icon: string;
 }
@@ -96,16 +96,21 @@ export interface VoiceMinuteBundle {
  */
 export const VOICE_PRICING = {
   platformCurrency: 'GEL',
-  inboundBundleCurrency: 'USD',
+  inboundBundleCurrency: 'GEL',
+  currencyConversion: {
+    usdToGel: 2.7,
+    label: '1 USD = 2.70 GEL',
+    basis: 'indicative public display rate; final price is confirmed before purchase',
+  },
   cadence: 'monthly',
   model: 'platform-plus-inbound-minute-bundle',
   billing: {
     oneTimeSetupFeeGel: 150,
     oneTimeSetupIncludes: 'phone-number-purchase-and-initial-configuration',
-    inboundPricePerConnectedMinuteUsd: 0.2,
+    inboundPricePerConnectedMinuteGel: 0.54,
     inboundReferenceMinutes: 10,
-    inboundReferencePriceUsd: 2,
-    outboundPricePerConnectedMinuteGel: 3,
+    inboundReferencePriceGel: 5.4,
+    outboundPricePerConnectedMinuteGel: 1.4,
     outboundRateTemporary: true,
     sharedInboundOutboundPool: false,
     additionalFlatFeePerCall: false,
@@ -255,35 +260,35 @@ export const VOICE_PRICING = {
     {
       id: 'minutes100',
       minutes: 100,
-      monthlyPriceUsd: 20,
+      monthlyPriceGel: 54,
       contactOnly: false,
       icon: 'solar:clock-circle-bold-duotone',
     },
     {
       id: 'minutes500',
       minutes: 500,
-      monthlyPriceUsd: 100,
+      monthlyPriceGel: 270,
       contactOnly: false,
       icon: 'solar:clock-square-bold-duotone',
     },
     {
       id: 'minutes2000',
       minutes: 2_000,
-      monthlyPriceUsd: 400,
+      monthlyPriceGel: 1_080,
       contactOnly: false,
       icon: 'solar:stopwatch-bold-duotone',
     },
     {
       id: 'minutes5000',
       minutes: 5_000,
-      monthlyPriceUsd: 1_000,
+      monthlyPriceGel: 2_700,
       contactOnly: false,
       icon: 'solar:history-bold-duotone',
     },
     {
       id: 'minutes10000',
       minutes: 10_000,
-      monthlyPriceUsd: 2_000,
+      monthlyPriceGel: 5_400,
       contactOnly: false,
       icon: 'solar:infinity-bold-duotone',
     },
