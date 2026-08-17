@@ -118,7 +118,7 @@
       "q6": "Can the call move to a real employee?",
       "a6": "Yes. You choose the handoff number and the situations that require a person. The employee receives the customer while the context is still clear.",
       "q7": "How is the price calculated?",
-      "a7": "Cost depends on the approved list size and planned call length. The calculator uses your inputs. aiNOW provides a written quote after reviewing the scenario.",
+      "a7": "The functional plan determines aiCALL capabilities. Inbound calls use a separate USD bundle at $0.20 per conversation minute. Outbound conversation time currently costs 3 GEL per minute after the customer answers. aiNOW confirms the final configuration in writing.",
       "q8": "What is needed before a test starts?",
       "a8": "aiNOW needs the approved list, short script, consent basis and handoff number. The start date is agreed only after those checks are complete.",
       "q9": "What if the customer does not answer?",
@@ -235,19 +235,28 @@
       "note": "The agent does not argue or guess. A changed request becomes a clear task for your employee."
     },
     "cost": {
-      "eyebrow": "Your inputs stay yours",
-      "heading": "Put your current call work into numbers.",
-      "subtitle": "The sample moves until you touch a slider. Your first change stops it, and aiCALL never replaces your values.",
+      "eyebrow": "Outbound call cost",
+      "heading": "Calculate the current cost of outbound calls.",
+      "subtitle": "Enter the number of customers to call and the average conversation length. Outbound conversation time currently costs 3 GEL per minute after the customer answers.",
       "contacts": "Customers to call",
       "minutes": "Planned minutes per call",
       "wage": "Administrator cost per hour, GEL",
       "human": "Current staff time",
-      "agent": "aiCALL planning estimate",
-      "result": "Your calculation",
+      "agent": "aiCALL outbound calls",
+      "result": "3 GEL per minute",
       "hours": "staff hours in the calculation",
       "perMonth": "for this list",
       "replay": "Replay example",
-      "note": "The aiCALL amount uses aiNOW's planning rate for this example. The list size, call length and staff cost come from your sliders."
+      "from": "from",
+      "packageFit": "{minutes} conversation minutes × {rate} GEL. Choose the functional plan separately.",
+      "plans": {
+        "starter": "Starter",
+        "business": "Business",
+        "premium": "Premium",
+        "enterprise": "Enterprise",
+        "custom": "Custom"
+      },
+      "note": "This temporary high rate applies only to outbound calls, and aiNOW is working to reduce it. Choose a separate monthly bundle for inbound calls: 10 minutes = $2."
     },
     "capabilities": {
       "eyebrow": "Five capabilities",

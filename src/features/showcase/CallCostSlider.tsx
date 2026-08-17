@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useReducedMotion } from 'framer-motion';
 import { Ico } from '@/components/common/Ico';
+import { VOICE_PRICING } from '@/config/voice-pricing';
 import { SectionContainer } from '@/components/layout/SectionContainer';
 import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
 
@@ -20,9 +21,6 @@ import { createDemoLoop } from '@/features/home/components/lib/demo-loop.mjs';
    a campaign of this size, not as a market average.
    ========================================================================= */
 
-/* Our own quoted rate for a campaign, in GEL per minute of connected call. It is our
-   price, not a claim about anyone else's, and the note under the widget says so. */
-const AGENT_GEL_PER_MIN = 0.45;
 const CYCLE_MS = 6_500;
 
 export function CallCostSlider() {
@@ -116,7 +114,8 @@ export function CallCostSlider() {
   const totalMinutes = contacts * minutes;
   const humanHours = totalMinutes / 60;
   const humanCost = humanHours * wage;
-  const agentCost = totalMinutes * AGENT_GEL_PER_MIN;
+  const outboundRate = VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel;
+  const outboundUsagePrice = totalMinutes * outboundRate;
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Math.round(n));
@@ -205,11 +204,14 @@ export function CallCostSlider() {
               <span className="border-l border-neutral-900/10 pl-2">{t('result')}</span>
             </span>
             <p className="mt-3 font-display text-5xl font-extrabold tabular-nums leading-none text-neutral-900 md:text-6xl">
-              {fmt(agentCost)}
+              {fmt(outboundUsagePrice)}
               <span className="ml-2 text-2xl font-bold text-[#4B5563]">GEL</span>
             </p>
             <p className="mt-2 text-sm tabular-nums text-[#4B5563]">
-              {fmt(totalMinutes)} min, {t('perMonth')}
+              {t('packageFit', {
+                minutes: fmt(totalMinutes),
+                rate: fmt(outboundRate),
+              })}
             </p>
           </div>
 

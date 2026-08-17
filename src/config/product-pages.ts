@@ -11,6 +11,23 @@ export const PRODUCT_PAGES = {
       { id: 'calendar', name: 'Calendar', icon: 'solar:calendar-bold-duotone', category: 'businessSystems', connection: 'custom', status: 'customSetup', dataFlow: 'appointments' },
       { id: 'crm', name: 'CRM', icon: 'solar:users-group-rounded-bold-duotone', category: 'businessSystems', connection: 'custom', status: 'customSetup', dataFlow: 'customerRecords' },
       { id: 'telegram', name: 'Telegram', icon: 'solar:chat-round-dots-bold-duotone', category: 'communication', connection: 'custom', status: 'customSetup', dataFlow: 'callResults' },
+      {
+        id: 'tiktok-leads',
+        name: 'TikTok leads',
+        icon: 'solar:videocamera-record-bold-duotone',
+        category: 'contentAndAdvertising',
+        connection: 'planned',
+        status: 'planned',
+        dataFlow: 'customerRecords',
+        machineDescription:
+          'Calling consented leads received from TikTok Ads is planned through aiADS. aiCALL does not place calls inside TikTok, and this workflow is not currently available.',
+        requirements: [
+          'TikTok Marketing API approval',
+          'Advertiser authorization and approved scopes',
+          'A lawful basis and consent for each outbound call',
+        ],
+        officialSources: ['https://business-api.tiktok.com/portal'],
+      },
     ],
   },
   security: { status: 'public' },

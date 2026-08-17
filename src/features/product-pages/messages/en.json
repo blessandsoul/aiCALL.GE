@@ -11,99 +11,425 @@
     "terms": "Terms"
   },
   "pricing": {
-    "seoTitle": "{product} pricing and project scope",
-    "seoDescription": "See how {product} is scoped, what is included, what changes the estimate, and when payment starts.",
+    "seoTitle": "{product} pricing for inbound and outbound AI calls",
+    "seoDescription": "Functional plans start at 220 GEL per month. A 100-minute inbound bundle costs $20. Outbound conversation time currently costs 3 GEL per minute after the customer answers. Phone-number purchase and initial setup cost a one-time 150 GEL.",
     "breadcrumb": "Pricing",
-    "eyebrow": "Commercial terms",
-    "title": "A clear {product} scope before you pay",
-    "lead": "There is no made-up package price. aiNOW first checks your real task, writes down what is included and excluded, and gives you one price to approve.",
+    "eyebrow": "Capabilities and call usage, billed separately",
+    "title": "Choose capabilities and an inbound call bundle",
+    "lead": "Your functional plan determines what aiCALL can do. Choose a separate minute bundle for inbound calls. Outbound calls are not included. Conversation time currently costs 3 GEL per minute after the customer answers. Phone-number purchase and initial setup are a one-time 150 GEL charge.",
     "context": {
-      "model": "Commercial model",
-      "fixed": "Verified fixed offer",
-      "project": "Individually scoped project",
-      "retainer": "Recurring service",
-      "usage": "Usage-based service",
-      "hybrid": "Setup plus recurring use",
-      "pilot": "Pre-launch pilot",
-      "liveSubscription": "Live subscription plans",
-      "price": "Price",
-      "priceValue": "Written before work starts",
-      "start": "Work starts",
-      "startValue": "After scope and price approval",
-      "support": "Support",
-      "supportValue": "Defined in the proposal"
+      "model": "Billing model",
+      "fixed": "Fixed minute package",
+      "project": "Platform plan plus inbound minutes",
+      "retainer": "Monthly package",
+      "usage": "Inbound minute bundle",
+      "hybrid": "Setup plus inbound minutes",
+      "pilot": "Pilot package",
+      "liveSubscription": "Live packages",
+      "price": "Platform plans",
+      "priceValue": "From 220 GEL per month",
+      "start": "Inbound minute bundles",
+      "startValue": "From $20 per month",
+      "support": "Outbound call rate",
+      "supportValue": "3 GEL per conversation minute after answer"
     },
     "offers": {
-      "eyebrow": "Your offer",
-      "title": "One offer tied to your real task",
-      "intro": "The proposal names the result, access, integrations, approval points, timeline and ongoing costs. Anything outside it stays visible."
+      "eyebrow": "Step 1",
+      "title": "Choose your aiCALL capabilities",
+      "intro": "Each plan sets capacity, integrations, history and support. Select inbound call minutes separately in step 2."
     },
     "labels": {
       "included": "Included",
-      "excluded": "Not included by default",
-      "eligibility": "Pilot requirements",
-      "drivers": "What changes the estimate",
-      "allowance": "Included allowance",
-      "overage": "Overage rule",
-      "setup": "Setup"
+      "excluded": "Not ready yet",
+      "eligibility": "Requirements",
+      "drivers": "What we confirm",
+      "allowance": "Minute allowance",
+      "overage": "After the allowance",
+      "setup": "Setup",
+      "minutes": "Call minutes per month",
+      "minuteUnit": "min",
+      "package": "Plan",
+      "readyNow": "Available in every plan",
+      "recommended": "Recommended",
+      "custom": "Custom",
+      "backToStarter": "Starter",
+      "previous": "Previous plan",
+      "next": "Next plan",
+      "swipeHint": "Swipe to view plans",
+      "cardMinutes": "Call minutes",
+      "cardInbound": "Inbound calls",
+      "cardOutbound": "Outbound calls",
+      "cardLanguages": "Languages",
+      "cardRecording": "Recording and transcript",
+      "cardModel": "Model",
+      "cardOperators": "Operators",
+      "cardScenarios": "Call scenarios",
+      "cardConcurrentCalls": "Concurrent calls",
+      "cardPhoneNumbers": "Phone numbers",
+      "cardIntegrations": "Integrations",
+      "cardSupport": "Support",
+      "selectPlan": "Select plan",
+      "selectedPlan": "Selected",
+      "customValue": "By agreement"
+    },
+    "plans": {
+      "month": "/month",
+      "starter": {
+        "name": "Starter",
+        "model": "Nemo Lite",
+        "summary": "For one operator and one focused call scenario.",
+        "billing": "Platform per month",
+        "highlightLabel": "Focused launch",
+        "highlightValue": "1 operator and 1 scenario",
+        "highlightCaption": "With onboarding support",
+        "included1": "1 phone number and 1 concurrent call",
+        "included2": "30-day call and transcript history",
+        "included3": "Georgian, Russian and English, with notice before optional recording",
+        "excluded1": "Integrations and planned phone automation are not included",
+        "operators": "1",
+        "scenarios": "1",
+        "phoneNumbers": "1",
+        "concurrentCalls": "1",
+        "integrations": "0",
+        "history": "30 days",
+        "support": "Onboarding support",
+        "analytics": "Basic analytics"
+      },
+      "business": {
+        "name": "Business",
+        "model": "Nemo Smart",
+        "summary": "For a small team running several call scenarios.",
+        "billing": "Platform per month",
+        "highlightLabel": "Team launch",
+        "highlightValue": "3 scenarios and 3 concurrent calls",
+        "highlightCaption": "With launch support",
+        "included1": "1 operator, 1 phone number and 1 integration",
+        "included2": "90-day call and transcript history",
+        "included3": "Georgian, Russian and English, with notice before optional recording",
+        "excluded1": "Advanced phone automation remains planned",
+        "operators": "1",
+        "scenarios": "3",
+        "phoneNumbers": "1",
+        "concurrentCalls": "3",
+        "integrations": "1",
+        "history": "90 days",
+        "support": "Launch support",
+        "analytics": "Basic analytics"
+      },
+      "premium": {
+        "name": "Premium",
+        "model": "Nemo Pro",
+        "summary": "For growing sales and support teams.",
+        "billing": "Platform per month",
+        "highlightLabel": "Recommended scale",
+        "highlightValue": "10 scenarios and 10 concurrent calls",
+        "highlightCaption": "With ongoing support",
+        "included1": "3 operators, 3 phone numbers and 3 integrations",
+        "included2": "365-day call and transcript history",
+        "included3": "Georgian, Russian and English, with notice before optional recording",
+        "excluded1": "Listed phone automation features remain planned",
+        "operators": "3",
+        "scenarios": "10",
+        "phoneNumbers": "3",
+        "concurrentCalls": "10",
+        "integrations": "3",
+        "history": "365 days",
+        "support": "Ongoing support",
+        "analytics": "Advanced analytics"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "model": "Nemo Ultra",
+        "summary": "For larger teams that need priority service.",
+        "billing": "Platform per month",
+        "highlightLabel": "Managed scale",
+        "highlightValue": "25 scenarios and 25 concurrent calls",
+        "highlightCaption": "Priority support with an SLA",
+        "included1": "10 operators, 10 phone numbers and 10 integrations",
+        "included2": "Unlimited call and transcript history",
+        "included3": "Georgian, Russian and English, with notice before optional recording",
+        "excluded1": "Planned phone features are not available yet",
+        "operators": "10",
+        "scenarios": "25",
+        "phoneNumbers": "10",
+        "concurrentCalls": "25",
+        "integrations": "10",
+        "history": "Unlimited",
+        "support": "Priority support with SLA",
+        "analytics": "Custom analytics"
+      },
+      "custom": {
+        "name": "Custom",
+        "model": "By agreement",
+        "summary": "For bespoke capacity, governance and support requirements.",
+        "billing": "Starting from",
+        "highlightLabel": "Custom configuration",
+        "highlightValue": "Scale by agreement",
+        "highlightCaption": "Matched to your requirements",
+        "included1": "Operators, scenarios and call capacity by agreement",
+        "included2": "Integrations, history and support by agreement",
+        "included3": "Georgian, Russian and English, with notice before optional recording",
+        "excluded1": "Planned features remain unavailable until separately delivered",
+        "operators": "By agreement",
+        "scenarios": "By agreement",
+        "phoneNumbers": "By agreement",
+        "concurrentCalls": "By agreement",
+        "integrations": "By agreement",
+        "history": "By agreement",
+        "support": "By agreement",
+        "analytics": "By agreement"
+      }
+    },
+    "minutes": {
+      "eyebrow": "Step 2",
+      "title": "Choose your inbound call minutes",
+      "intro": "The bundles below cover inbound calls only. The reference rate is $2 per 10 connected minutes, but you pay for the selected monthly bundle rather than for each individual call.",
+      "select": "Select bundle",
+      "selected": "Selected",
+      "connected": "Inbound conversation time",
+      "bundles": {
+        "minutes100": {
+          "name": "100 minutes",
+          "description": "For a pilot or light inbound call flow."
+        },
+        "minutes500": {
+          "name": "500 minutes",
+          "description": "For regular inbound calls."
+        },
+        "minutes2000": {
+          "name": "2,000 minutes",
+          "description": "For an active daily inbound call flow."
+        },
+        "minutes5000": {
+          "name": "5,000 minutes",
+          "description": "For a high volume of inbound calls."
+        },
+        "minutes10000": {
+          "name": "10,000 minutes",
+          "description": "For a very high volume of inbound calls."
+        }
+      },
+      "rates": {
+        "inboundTitle": "Inbound calls",
+        "inboundUnit": "per conversation minute after answer",
+        "inboundExample": "10 minutes = $2",
+        "inboundNote": "The selected monthly bundle covers the stated number of inbound conversation minutes.",
+        "outboundTitle": "Outbound calls",
+        "outboundUnit": "per conversation minute after answer",
+        "outboundStatus": "Temporary rate",
+        "outboundNote": "This rate is currently high. aiNOW is working to reduce it.",
+        "mixedCurrencyNote": "The functional plan is priced in GEL and the inbound bundle in USD. Outbound call usage is calculated separately at the rate shown above."
+      },
+      "summary": {
+        "platform": "Platform plan",
+        "minutes": "Inbound minute bundle",
+        "total": "Monthly configuration",
+        "perMonth": "per month",
+        "configuration": "Plan and inbound minutes",
+        "setupFee": "One-time number setup",
+        "setupFeeNote": "Number purchase and initial configuration",
+        "noAutomaticCharge": "Extra inbound minutes activate only after your approval",
+        "action": "Configure this combination",
+        "from": "From"
+      }
     },
     "comparison": {
-      "eyebrow": "Compare",
-      "title": "Offers side by side",
-      "offer": "Offer",
-      "billing": "Billing"
+      "eyebrow": "Full comparison",
+      "title": "Compare platform capabilities",
+      "intro": "Languages, recording disclosure and transcript quality stay consistent. Team capacity, integrations, history and support vary by plan.",
+      "offer": "Capability",
+      "billing": "Billing",
+      "included": "Included",
+      "soon": "Soon",
+      "plannedValue": "Planned",
+      "notIncluded": "Not included",
+      "values": {
+        "languages": "KA, RU, EN"
+      },
+      "rows": {
+        "minutes": {
+          "label": "Inbound minute bundle",
+          "info": "Step 2 selects inbound call minutes only. Ten minutes of inbound conversation cost $2."
+        },
+        "model": {
+          "label": "Model",
+          "info": "The Nemo model assigned to the platform plan."
+        },
+        "operators": {
+          "label": "Operators",
+          "info": "Maximum operator seats included in the platform plan."
+        },
+        "scenarios": {
+          "label": "Call scenarios",
+          "info": "Maximum configured call flows included in the plan."
+        },
+        "phoneNumbers": {
+          "label": "Phone numbers",
+          "info": "Phone-number capacity assigned to the plan."
+        },
+        "integrations": {
+          "label": "Integrations",
+          "info": "Maximum connected business systems included in the plan."
+        },
+        "support": {
+          "label": "Support",
+          "info": "Service level included with the platform plan."
+        },
+        "inbound": {
+          "label": "Inbound calls",
+          "info": "Customers call your assigned number and aiCALL answers. Conversation time starts after aiCALL answers and uses the selected inbound bundle."
+        },
+        "outbound": {
+          "label": "Individual outbound calls",
+          "info": "An approved call objective can be started to a Georgian +995 number. Conversation time currently costs 3 GEL per minute after the customer answers."
+        },
+        "languages": {
+          "label": "Conversation languages",
+          "info": "aiCALL detects Georgian, Russian and English and replies in the same language."
+        },
+        "businessContext": {
+          "label": "Approved business context",
+          "info": "Answers use your rules and information added to the system."
+        },
+        "interruption": {
+          "label": "Natural interruption",
+          "info": "A customer can speak during the call and aiCALL listens."
+        },
+        "leadCapture": {
+          "label": "Lead and callback capture",
+          "info": "On inbound calls, details are saved only after confirmation."
+        },
+        "recording": {
+          "label": "Optional call recording",
+          "info": "Recording uses a notice and your approved business rules."
+        },
+        "transcriptHistory": {
+          "label": "Transcripts and call history",
+          "info": "The call record, status and transcript stay visible in one place."
+        },
+        "knowledgeBase": {
+          "label": "Knowledge base",
+          "info": "Connection to approved knowledge sources is planned and is not live yet."
+        },
+        "concurrentCalls": {
+          "label": "Concurrent calls",
+          "info": "Maximum number of calls the plan can process at the same time."
+        },
+        "history": {
+          "label": "Call and transcript history",
+          "info": "How long call status and transcript records remain available."
+        },
+        "batchCampaigns": {
+          "label": "Batch call campaigns",
+          "info": "This phone automation feature is planned and is not live yet."
+        },
+        "schedulingRetries": {
+          "label": "Scheduling and automatic retries",
+          "info": "This phone automation feature is planned and is not live yet."
+        },
+        "calendarCrm": {
+          "label": "Calendar and CRM actions",
+          "info": "Direct calendar and CRM actions are planned and are not live yet."
+        },
+        "humanHandoff": {
+          "label": "Human handoff",
+          "info": "Transfer of an active call to a team member is planned and is not live yet."
+        },
+        "analytics": {
+          "label": "Analytics",
+          "info": "Reporting and analysis level assigned to the plan."
+        },
+        "apiWebhooks": {
+          "label": "API and webhooks",
+          "info": "Programmatic connections and event delivery are planned and are not live yet."
+        },
+        "overage": {
+          "label": "Unexpected automatic charges",
+          "info": "A larger allowance or extra block is activated only with your approval."
+        }
+      }
+    },
+    "roadmap": {
+      "eyebrow": "Next stage",
+      "title": "These capabilities are still being built",
+      "intro": "The items below are not included in live packages yet. A launch date will be published only when each item is ready.",
+      "items": {
+        "batchCampaigns": {
+          "title": "CSV batch campaigns",
+          "description": "Upload a number list and launch it as one managed campaign."
+        },
+        "schedulingQueue": {
+          "title": "Call scheduling and queue",
+          "description": "Automatically control call time, order and load."
+        },
+        "automaticRetries": {
+          "title": "Automatic retries",
+          "description": "Retry unanswered calls according to an approved rule."
+        },
+        "voicemail": {
+          "title": "Voicemail detection",
+          "description": "Detect voicemail and leave an approved message."
+        },
+        "humanHandoff": {
+          "title": "Live human handoff",
+          "description": "Transfer an active call safely to a team member."
+        },
+        "calendarCrm": {
+          "title": "Calendar and CRM actions",
+          "description": "Create appointments and customer records directly."
+        },
+        "multipleNumbers": {
+          "title": "Multiple numbers per account",
+          "description": "Manage numbers for different teams and objectives together."
+        },
+        "analytics": {
+          "title": "Advanced analytics",
+          "description": "Detailed reporting on campaigns, outcomes and call quality."
+        }
+      }
     },
     "offer": {
-      "name": "{product} written scope",
-      "summary": "A product-specific proposal based on your workflow, required connections and approval rules.",
-      "billing": "Price fixed in the written proposal",
-      "fallbackIncluded": "The agreed first useful result",
-      "excluded1": "Third-party fees, advertising spend and paid licences unless explicitly listed",
-      "excluded2": "New work added after the written scope is approved",
-      "excluded3": "Guaranteed business results that depend on the market, platforms or customer behaviour",
-      "driver1": "Number and complexity of the workflows or screens",
-      "driver2": "Required integrations, data access and migration",
-      "driver3": "Launch, training and ongoing support requirements",
-      "eligibility1": "A responsible product owner and a clear first use case",
-      "eligibility2": "Access to the systems and data needed for a safe test",
-      "eligibility3": "Written approval of the pilot boundary before real-world use",
-      "action": "Request my scope"
+      "driver1": "Operator, scenario and concurrent-call requirements",
+      "driver2": "Phone numbers, integrations and history retention",
+      "driver3": "Support level and planned feature requirements",
+      "action": "Choose plan",
+      "contactAction": "Contact us"
     },
     "timeline": {
-      "eyebrow": "From request to start",
-      "title": "You know the decision before the invoice",
-      "s1Title": "Fit check",
-      "s1Description": "We confirm the business task, users, current process and the result that would count as useful.",
-      "s1Timing": "First call",
-      "s2Title": "Written scope",
-      "s2Description": "aiNOW lists the deliverables, integrations, approvals, exclusions, timeline and price.",
-      "s2Timing": "Before payment",
-      "s3Title": "Approval and start",
-      "s3Description": "Work starts only after you approve the same written scope that the team will follow.",
-      "s3Timing": "Your decision",
-      "s4Title": "Handover or support",
-      "s4Description": "The proposal states what you receive, who owns each access and what support continues after launch.",
-      "s4Timing": "Written in advance"
+      "eyebrow": "Getting started",
+      "title": "Four steps to the first live call",
+      "s1Title": "Choose the call objective",
+      "s1Description": "Define who aiCALL answers or calls and what result should be captured.",
+      "s1Timing": "First meeting",
+      "s2Title": "Add approved information",
+      "s2Description": "Approve the greeting, answer rules and business information the agent may use.",
+      "s2Timing": "Before setup",
+      "s3Title": "Run test calls",
+      "s3Description": "Check language, interruptions, recording and correct result capture.",
+      "s3Timing": "Test",
+      "s4Title": "Activate the plan and inbound-minute bundle",
+      "s4Description": "The platform plan and selected inbound-minute bundle activate together. Outbound calls are calculated separately at the current rate of 3 GEL per conversation minute after answer. Extra usage requires your approval.",
+      "s4Timing": "After approval"
     },
     "faq": {
       "eyebrow": "Pricing questions",
-      "title": "What a buyer should know",
-      "q1": "Why is there no single public price for {product}?",
-      "a1": "The cost depends on the real workflow, integrations and launch boundary. aiNOW gives you a written price before work starts instead of advertising a number that does not match your task.",
-      "q2": "Do I pay before I know the full scope?",
-      "a2": "No. The proposal names the deliverables, exclusions, timeline and price first. Payment and work begin only after you approve it.",
-      "q3": "Which costs can be separate?",
-      "a3": "Third-party licences, hosting, advertising spend, store fees and other provider charges are separate unless the proposal explicitly includes them.",
-      "q4": "What happens if the task changes?",
-      "a4": "aiNOW explains the effect on price and timing before adding the new work. The approved scope does not silently expand.",
-      "q5": "Who owns the finished work and access?",
-      "a5": "Ownership, source access, accounts and handover are written into the proposal or contract before work begins."
+      "title": "What to know before you start",
+      "q1": "What exactly am I paying for?",
+      "a1": "Choose a monthly platform plan for capabilities and a separate monthly inbound-minute bundle. Outbound conversation time is billed separately at 3 GEL per minute after the customer answers.",
+      "q2": "Are inbound and outbound calls included in one bundle?",
+      "a2": "No. Inbound bundles cover inbound calls only. Outbound usage is billed separately.",
+      "q3": "How is inbound call pricing calculated?",
+      "a3": "Inbound conversation time costs $0.20 per minute after aiCALL answers, so 10 minutes cost $2. You pay for the selected monthly bundle. An additional bundle activates only after your approval.",
+      "q4": "Why does Custom require contact?",
+      "a4": "Custom starts at 5,000 GEL per month for the platform, but capacity, integrations and support must be agreed before launch.",
+      "q5": "Are batch campaigns available now?",
+      "a5": "Not yet. Inbound calls and individually initiated outbound calls are available today. CSV campaigns, automatic queues and retries are clearly marked as coming soon."
     },
     "cta": {
       "eyebrow": "Next step",
-      "title": "Get the real {product} scope",
-      "description": "Leave your phone number. aiNOW will ask only what is needed to prepare a useful proposal.",
-      "label": "Request a scope"
+      "title": "Configure the right {product} plan",
+      "description": "Choose the capabilities you need, then add an inbound-minute bundle for your expected inbound volume. Outbound calls are calculated separately.",
+      "label": "Configure my plan"
     }
   },
   "integrations": {

@@ -4,6 +4,8 @@ import { PUBLIC_ROUTES } from '@/features/product-pages/routes';
 import {
   MACHINE_REVIEWED_ON,
   MACHINE_PUBLIC_PAGES,
+  PRODUCT_MACHINE_INTEGRATIONS,
+  PRODUCT_MACHINE_PRICING,
   PRODUCT_BRAND,
   machineTextResponse,
 } from '@/features/product-pages/machine';
@@ -49,9 +51,48 @@ export function GET() {
     `- Contact: ${CONTACT_EMAIL.toLowerCase()}`,
     `- Website: ${SITE.baseUrl}`,
     ``,
+    `## Pricing`,
+    ``,
+    `- Model: ${PRODUCT_MACHINE_PRICING.model}`,
+    `- Minute scope: ${PRODUCT_MACHINE_PRICING.minutePool}`,
+    `- Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost $${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceUsd}; inbound bundles are billed in USD.`,
+   `- Outbound current rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute; this temporary high rate is separate from inbound bundles, and aiNOW is working to reduce it.`,
+    `- One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; this is separate from monthly platform and minute-bundle prices.`,
+    `- Included: ${PRODUCT_MACHINE_PRICING.includedInEveryPlan}`,
+    `- Billing is split between the monthly platform plan, the inbound-minute bundle, and separate outbound connected-minute usage. Extra usage requires customer approval, and there is no automatic overage charge.`,
+    `- Step 1, functional platform plans:`,
+    ...PRODUCT_MACHINE_PRICING.platformPlans.map(
+      (plan) =>
+        `  - ${plan.id}: ${plan.priceType === 'from' ? 'from ' : ''}${plan.monthlyPlatformPriceGel} GEL/month; model ${plan.model}; default minute bundle ${plan.defaultMinuteBundleId}; support ${plan.support}`,
+    ),
+    `- Step 2, inbound connected-minute bundles:`,
+    ...PRODUCT_MACHINE_PRICING.minuteBundles.map(
+      (bundle) =>
+        `  - ${bundle.id}: ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes for $${bundle.monthlyPriceUsd}/month`,
+    ),
+    `- Default combinations:`,
+    ...PRODUCT_MACHINE_PRICING.defaultConfigurations.map(
+      (configuration) =>
+        `  - ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle $${configuration.monthlyInboundMinutesPriceUsd}/month; outbound ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute`,
+    ),
+    `- ${PRODUCT_MACHINE_PRICING.extraUsage}`,
+    `- Availability: ${PRODUCT_MACHINE_PRICING.availabilityNote}`,
+    ``,
     `## What it does`,
     ``,
     ...SITE.seo.features.map((f) => `- ${f}`),
+    ``,
+    `## Integrations and availability`,
+    ``,
+    ...PRODUCT_MACHINE_INTEGRATIONS.map((integration) => {
+      const availability =
+        integration.status === 'planned'
+          ? 'planned; not currently available'
+          : integration.status === 'customSetup'
+            ? 'available after product-specific setup'
+            : 'available now';
+      return `- ${integration.platform}: ${availability}. ${integration.description ?? ''}`.trim();
+    }),
     ``,
     `## What it does NOT do`,
     ``,
@@ -79,11 +120,13 @@ export function GET() {
     `- ${SITE.baseUrl}/llms-full.txt`,
     `- ${SITE.baseUrl}/ai/summary.json`,
     `- ${SITE.baseUrl}/ai/service.json`,
+    `- ${SITE.baseUrl}/ai/integrations.json`,
     `- ${SITE.baseUrl}/ai/faq.json`,
     ``,
     `## Sources and verification`,
     ``,
     `- Product facts, scope and limits: ${SITE.baseUrl}/ai/service.json`,
+    `- Integration status and prerequisites: ${SITE.baseUrl}/ai/integrations.json`,
     `- Visible product questions and answers: ${SITE.baseUrl}/ai/faq.json`,
     `- Last content review: ${MACHINE_REVIEWED_ON}`,
     ``,

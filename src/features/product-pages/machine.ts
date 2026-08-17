@@ -1,5 +1,7 @@
 import messages from '@/messages/en.json';
+import { PRODUCT_PAGES } from '@/config/product-pages';
 import { SITE } from '@/config/site';
+import { VOICE_PRICING } from '@/config/voice-pricing';
 import { PUBLIC_ROUTES } from '@/features/product-pages/routes';
 import { CONTACT_EMAIL } from '@/lib/constants/app.constants';
 import { localeUrl } from '@/i18n/seo-locales';
@@ -7,7 +9,7 @@ import { localeUrl } from '@/i18n/seo-locales';
 import type { ProductPageLocale, PublicRoute } from './types';
 
 export const PRODUCT_BRAND = SITE.wordmark.prefix + SITE.wordmark.mark;
-export const MACHINE_REVIEWED_ON = '2026-07-26';
+export const MACHINE_REVIEWED_ON = '2026-08-16';
 export const MACHINE_CACHE_HEADERS = {
   'Cache-Control': 'public, max-age=3600, s-maxage=86400',
 } as const;
@@ -25,6 +27,19 @@ export interface MachinePublicPage {
   path: PublicRoute['path'];
   url: string;
   localizedUrls: Readonly<Record<ProductPageLocale, string>>;
+}
+
+export interface MachineIntegration {
+  id: string;
+  platform: string;
+  status: 'available' | 'customSetup' | 'planned';
+  availableNow: boolean;
+  launchDate?: string | null;
+  connection: string;
+  dataFlow: string;
+  description?: string;
+  requirements: readonly string[];
+  officialSources: readonly string[];
 }
 
 function replaceBrandMarkup(value: string): string {
@@ -57,6 +72,118 @@ export const MACHINE_PUBLIC_PAGES: readonly MachinePublicPage[] =
       ) as Record<ProductPageLocale, string>,
     };
   });
+
+export const PRODUCT_MACHINE_INTEGRATIONS: readonly MachineIntegration[] =
+  PRODUCT_PAGES.integrations.records.map((record) => ({
+    id: record.id,
+    platform: record.name,
+    status: record.status,
+    availableNow: record.status !== 'planned',
+    ...(record.status === 'planned' ? { launchDate: null } : {}),
+    connection: record.connection,
+    dataFlow: record.dataFlow,
+    description:
+      'machineDescription' in record ? record.machineDescription : undefined,
+    requirements:
+      'requirements' in record ? [...record.requirements] : [],
+    officialSources:
+      'officialSources' in record ? [...record.officialSources] : [],
+  }));
+
+const MACHINE_PLATFORM_PLANS = VOICE_PRICING.plans.map((plan) => ({
+  id: plan.id,
+  model: plan.model,
+  monthlyPlatformPriceGel: plan.monthlyPlatformPriceGel,
+  priceType: plan.contactOnly ? 'from' : 'fixed',
+  recommended: plan.recommended,
+  contactOnly: plan.contactOnly,
+  defaultMinuteBundleId: plan.defaultMinuteBundleId,
+  limits: plan.limits,
+  support: plan.support,
+  capabilities: plan.capabilities,
+}));
+
+const MACHINE_MINUTE_BUNDLES = VOICE_PRICING.minuteBundles.map((bundle) => ({
+  id: bundle.id,
+  direction: 'inbound',
+  inboundConnectedMinutes: bundle.minutes,
+  monthlyPriceUsd: bundle.monthlyPriceUsd,
+  currency: VOICE_PRICING.inboundBundleCurrency,
+  priceType: bundle.contactOnly ? 'from' : 'fixed',
+  contactOnly: bundle.contactOnly,
+}));
+
+const MACHINE_DEFAULT_CONFIGURATIONS = VOICE_PRICING.plans.map((plan) => {
+  const bundle = VOICE_PRICING.minuteBundles.find(
+    (item) => item.id === plan.defaultMinuteBundleId,
+  );
+  return {
+    platformPlanId: plan.id,
+    inboundMinuteBundleId: plan.defaultMinuteBundleId,
+    inboundConnectedMinutes: bundle?.minutes ?? 0,
+    monthlyPlatformPriceGel: plan.monthlyPlatformPriceGel,
+    monthlyInboundMinutesPriceUsd: bundle?.monthlyPriceUsd ?? 0,
+    outboundPricePerConnectedMinuteGel:
+      VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
+    priceType: plan.contactOnly || bundle?.contactOnly ? 'from' : 'fixed',
+  };
+});
+
+export const PRODUCT_MACHINE_PRICING = {
+  model: 'monthly functional platform plan plus a separately selected inbound-minute bundle; outbound usage is billed separately',
+  platformCurrency: VOICE_PRICING.platformCurrency,
+  inboundBundleCurrency: VOICE_PRICING.inboundBundleCurrency,
+  billingPeriod: VOICE_PRICING.cadence,
+  inboundPricing: {
+    pricePerConnectedMinuteUsd:
+      VOICE_PRICING.billing.inboundPricePerConnectedMinuteUsd,
+    referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
+    referencePriceUsd: VOICE_PRICING.billing.inboundReferencePriceUsd,
+    billingMethod:
+      'The customer selects a monthly inbound-minute bundle. The published reference is $2 for 10 connected inbound minutes.',
+  },
+  outboundPricing: {
+    pricePerConnectedMinuteGel:
+      VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
+    temporary: VOICE_PRICING.billing.outboundRateTemporary,
+    billingMethod:
+      'Outbound usage is not included in inbound-minute bundles. It is currently billed at 3 GEL per connected conversation minute after the customer answers. aiNOW is working to reduce this rate.',
+  },
+  oneTimeSetup: {
+    priceGel: VOICE_PRICING.billing.oneTimeSetupFeeGel,
+    includes: 'phone number purchase and initial configuration',
+    billingMethod:
+      'Charged once when aiCALL is first installed; it is separate from the monthly platform plan and minute bundle.',
+  },
+  minutePool:
+    'Published minute bundles cover connected inbound conversation time only. Outbound calls are billed separately.',
+  selectionOrder: [
+    'Choose the functional platform plan.',
+    'Choose the inbound connected-minute bundle independently.',
+    'Review the separate GEL platform price, USD inbound-bundle price and one-time setup fee before submitting the request.',
+    'If outbound calls are needed, add the temporary 3 GEL per connected-minute rate separately.',
+  ],
+  includedInEveryPlan:
+    'The published launch scope keeps voice quality, Georgian, English and Russian, interruption handling, disclosed recording, transcription and private call history consistent across plans.',
+  fees: {
+    oneTimeSetupFeeGel: VOICE_PRICING.billing.oneTimeSetupFeeGel,
+    additionalFlatFeePerCall:
+      VOICE_PRICING.billing.additionalFlatFeePerCall,
+    campaign: VOICE_PRICING.billing.campaignFee,
+    unexpectedPlatform: VOICE_PRICING.billing.unexpectedPlatformFee,
+    automaticOverage: VOICE_PRICING.billing.automaticOverage,
+  },
+  extraUsage:
+    'Additional inbound minutes or a larger inbound package are activated only after customer approval. Outbound usage remains separate.',
+  platformPlans: MACHINE_PLATFORM_PLANS,
+  minuteBundles: MACHINE_MINUTE_BUNDLES,
+  defaultConfigurations: MACHINE_DEFAULT_CONFIGURATIONS,
+  plans: MACHINE_PLATFORM_PLANS,
+  availabilityNote:
+    'The matrix describes the commercial launch scope. Capabilities marked planned are not currently available and activate only after the required telephony integration is complete.',
+  purchaseFlow:
+    'Plans are selected through aiNOW contact and setup. The customer approves the functional plan and inbound-minute bundle separately. Outbound usage is quoted at the current connected-minute rate. There is no automatic self-service overage charge.',
+} as const;
 
 export function machineJsonResponse(payload: unknown): Response {
   return Response.json(payload, {
@@ -93,6 +220,8 @@ export const PRODUCT_MACHINE_FACTS = {
   contact: {
     email: CONTACT_EMAIL.toLowerCase(),
   },
+  integrations: PRODUCT_MACHINE_INTEGRATIONS,
+  pricing: PRODUCT_MACHINE_PRICING,
   publicPages: MACHINE_PUBLIC_PAGES,
   reviewedOn: MACHINE_REVIEWED_ON,
 } as const;
