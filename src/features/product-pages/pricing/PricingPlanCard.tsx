@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 import { PricingInfo } from './PricingInfo';
 import type {
   PricingComparisonRow,
+  LegacyPricingPageCopy,
   PricingOffer,
-  PricingPageCopy,
 } from './types';
 
 type PlanId = NonNullable<PricingOffer['planId']>;
@@ -20,7 +20,7 @@ const FUNCTIONAL_METRICS = [
 ] as const satisfies readonly {
   id: string;
   labelKey: keyof Pick<
-    PricingPageCopy,
+    LegacyPricingPageCopy,
     | 'cardModelLabel'
     | 'cardOperatorsLabel'
     | 'cardScenariosLabel'
@@ -107,7 +107,7 @@ interface PricingPlanCardProps {
   selected: boolean;
   onSelect: (offerId: string) => void;
   copy: Pick<
-    PricingPageCopy,
+    LegacyPricingPageCopy,
     | 'cardModelLabel'
     | 'cardOperatorsLabel'
     | 'cardScenariosLabel'
@@ -135,7 +135,7 @@ function formatPrice(price: NonNullable<PricingOffer['price']>): string {
 function metricValue(
   row: PricingComparisonRow | undefined,
   planId: PlanId,
-  copy: Pick<PricingPageCopy, 'includedStatusLabel' | 'notIncludedStatusLabel' | 'customValueLabel'>,
+  copy: Pick<LegacyPricingPageCopy, 'includedStatusLabel' | 'notIncludedStatusLabel' | 'customValueLabel'>,
 ): string {
   const value = row?.values[planId];
   if (typeof value === 'string') return value;

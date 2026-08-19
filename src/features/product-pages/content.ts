@@ -4,11 +4,6 @@ import { getTranslations } from 'next-intl/server';
 
 import { SITE } from '@/config/site';
 import { PRODUCT_PAGES } from '@/config/product-pages';
-import {
-  VOICE_PRICING,
-  type VoiceCapabilityStatus,
-  type VoicePlanId,
-} from '@/config/voice-pricing';
 import { CONTACT_EMAIL } from '@/lib/constants/app.constants';
 
 import type {
@@ -24,7 +19,6 @@ import type {
 } from './integrations/IntegrationsPage';
 import type {
   PricingFaqItem,
-  PricingMinuteBundle,
   PricingOffer,
   PricingPageCopy,
   PricingPageData,
@@ -46,6 +40,16 @@ function configuredPricingMode(): PricingMode {
   return PRODUCT_PAGES.pricing.mode;
 }
 
+async function localizedWorkOutcomes(locale: ProductPageLocale): Promise<readonly string[]> {
+  const t = await getTranslations({ locale, namespace: 'product.work' });
+  const outcomes: string[] = [];
+  for (let index = 1; index <= 6; index += 1) {
+    const key = `s${index}Title`;
+    if (t.has(key)) outcomes.push(t(key));
+  }
+  return outcomes.slice(0, 5);
+}
+
 export async function getPricingContent(locale: ProductPageLocale): Promise<{
   copy: PricingPageCopy;
   data: PricingPageData;
@@ -53,250 +57,46 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
   const t = await getTranslations({ locale, namespace: 'productPages.pricing' });
   const product = productName();
   const pricingMode = configuredPricingMode();
+  const included = await localizedWorkOutcomes(locale);
+  const excluded = [t('offer.excluded1'), t('offer.excluded2'), t('offer.excluded3')];
   const actionHref = '/contact';
-  if (pricingMode !== 'project') {
-    throw new Error(
-      `${product} uses pricing mode "${pricingMode}" but the aiCALL adapter expects project mode.`,
-    );
-  }
-
-  const offers: PricingOffer[] = VOICE_PRICING.plans.map((plan) => ({
-    id: plan.id,
-    planId: plan.id,
-    name: t(`plans.${plan.id}.name`),
-    summary: t(`plans.${plan.id}.summary`),
-    billingLabel: t(`plans.${plan.id}.billing`),
-    recommended: plan.recommended,
-    contactOnly: plan.contactOnly,
-    icon: plan.icon,
-    highlightIcon: plan.highlightIcon,
-    highlightLabel: t(`plans.${plan.id}.highlightLabel`),
-    highlightValue: t(`plans.${plan.id}.highlightValue`),
-    highlightCaption: t(`plans.${plan.id}.highlightCaption`),
-    defaultMinuteBundleId: plan.defaultMinuteBundleId,
-    mode: 'project',
-    price: {
-      amount: plan.monthlyPlatformPriceGel,
-      currency: 'GEL',
-      cadence: 'monthly',
-      unit: t('plans.month'),
-    },
-    included: [
-      t(`plans.${plan.id}.included1`),
-      t(`plans.${plan.id}.included2`),
-      t(`plans.${plan.id}.included3`),
-    ],
-    excluded: [t(`plans.${plan.id}.excluded1`)],
-    estimateDrivers: [
-      t('offer.driver1'),
-      t('offer.driver2'),
-      t('offer.driver3'),
-    ],
-    actionLabel: plan.contactOnly ? t('offer.contactAction') : t('offer.action'),
+  const common = {
+    id: 'written-scope',
+    name: t('offer.name', { product }),
+    summary: t('offer.summary', { product }),
+    billingLabel: t('offer.billing'),
+    included: included.length > 0 ? included : [t('offer.fallbackIncluded')],
+    excluded,
+    actionLabel: t('offer.action'),
     actionHref,
-  }));
-
-  const minuteBundles: PricingMinuteBundle[] = VOICE_PRICING.minuteBundles.map(
-    (bundle) => ({
-      id: bundle.id,
-      name: t(`minutes.bundles.${bundle.id}.name`),
-      description: t(`minutes.bundles.${bundle.id}.description`),
-      minutes: bundle.minutes,
-      price: {
-        amount: bundle.monthlyPriceGel,
-        currency: 'GEL',
-        cadence: 'monthly',
-        unit: t('plans.month'),
-      },
-      contactOnly: bundle.contactOnly,
-      icon: bundle.icon,
-    }),
-  );
-
-  const valuesByPlan = (
-    value: (planId: VoicePlanId, index: number) => boolean | string,
-  ): Readonly<Record<VoicePlanId, boolean | string>> => Object.fromEntries(
-    VOICE_PRICING.plans.map((plan, index) => [plan.id, value(plan.id, index)]),
-  ) as Record<VoicePlanId, boolean | string>;
-
-  const capabilityValues = (
-    capability: keyof (typeof VOICE_PRICING.plans)[number]['capabilities'],
-  ): Readonly<Record<VoicePlanId, boolean | string>> => valuesByPlan(
-    (planId) => {
-      const plan = VOICE_PRICING.plans.find((item) => item.id === planId);
-      const status = (
-        plan?.capabilities[capability] ?? 'notIncluded'
-      ) as VoiceCapabilityStatus;
-      if (status === 'included') return true;
-      if (status === 'planned') return t('comparison.plannedValue');
-      return false;
-    },
-  );
-
-  const comparisonRows = [
-    {
-      id: 'model',
-      label: t('comparison.rows.model.label'),
-      info: t('comparison.rows.model.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.model`)),
-    },
-    {
-      id: 'operators',
-      label: t('comparison.rows.operators.label'),
-      info: t('comparison.rows.operators.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.operators`)),
-    },
-    {
-      id: 'scenarios',
-      label: t('comparison.rows.scenarios.label'),
-      info: t('comparison.rows.scenarios.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.scenarios`)),
-    },
-    {
-      id: 'phone-numbers',
-      label: t('comparison.rows.phoneNumbers.label'),
-      info: t('comparison.rows.phoneNumbers.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.phoneNumbers`)),
-    },
-    {
-      id: 'integrations',
-      label: t('comparison.rows.integrations.label'),
-      info: t('comparison.rows.integrations.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.integrations`)),
-    },
-    {
-      id: 'support',
-      label: t('comparison.rows.support.label'),
-      info: t('comparison.rows.support.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.support`)),
-    },
-    {
-      id: 'inbound',
-      label: t('comparison.rows.inbound.label'),
-      info: t('comparison.rows.inbound.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'outbound',
-      label: t('comparison.rows.outbound.label'),
-      info: t('comparison.rows.outbound.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'languages',
-      label: t('comparison.rows.languages.label'),
-      info: t('comparison.rows.languages.info'),
-      values: valuesByPlan(() => t('comparison.values.languages')),
-    },
-    {
-      id: 'business-context',
-      label: t('comparison.rows.businessContext.label'),
-      info: t('comparison.rows.businessContext.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'interruption',
-      label: t('comparison.rows.interruption.label'),
-      info: t('comparison.rows.interruption.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'lead-capture',
-      label: t('comparison.rows.leadCapture.label'),
-      info: t('comparison.rows.leadCapture.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'recording',
-      label: t('comparison.rows.recording.label'),
-      info: t('comparison.rows.recording.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'transcript-history',
-      label: t('comparison.rows.transcriptHistory.label'),
-      info: t('comparison.rows.transcriptHistory.info'),
-      values: valuesByPlan(() => true),
-    },
-    {
-      id: 'knowledge-base',
-      label: t('comparison.rows.knowledgeBase.label'),
-      info: t('comparison.rows.knowledgeBase.info'),
-      values: capabilityValues('knowledgeBase'),
-    },
-    {
-      id: 'concurrent-calls',
-      label: t('comparison.rows.concurrentCalls.label'),
-      info: t('comparison.rows.concurrentCalls.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.concurrentCalls`)),
-    },
-    {
-      id: 'history',
-      label: t('comparison.rows.history.label'),
-      info: t('comparison.rows.history.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.history`)),
-    },
-    {
-      id: 'batch-campaigns',
-      label: t('comparison.rows.batchCampaigns.label'),
-      info: t('comparison.rows.batchCampaigns.info'),
-      values: capabilityValues('batchCampaigns'),
-    },
-    {
-      id: 'scheduling-retries',
-      label: t('comparison.rows.schedulingRetries.label'),
-      info: t('comparison.rows.schedulingRetries.info'),
-      values: capabilityValues('schedulingRetries'),
-    },
-    {
-      id: 'calendar-crm',
-      label: t('comparison.rows.calendarCrm.label'),
-      info: t('comparison.rows.calendarCrm.info'),
-      values: capabilityValues('calendarCrm'),
-    },
-    {
-      id: 'human-handoff',
-      label: t('comparison.rows.humanHandoff.label'),
-      info: t('comparison.rows.humanHandoff.info'),
-      values: capabilityValues('humanHandoff'),
-    },
-    {
-      id: 'analytics',
-      label: t('comparison.rows.analytics.label'),
-      info: t('comparison.rows.analytics.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.analytics`)),
-    },
-    {
-      id: 'api-webhooks',
-      label: t('comparison.rows.apiWebhooks.label'),
-      info: t('comparison.rows.apiWebhooks.info'),
-      values: capabilityValues('apiWebhooks'),
-    },
-    {
-      id: 'automatic-overage',
-      label: t('comparison.rows.overage.label'),
-      info: t('comparison.rows.overage.info'),
-      values: valuesByPlan(() => false),
-    },
-  ] as const;
-
-  const roadmapIcons = {
-    batchCampaigns: 'solar:document-bold-duotone',
-    schedulingQueue: 'solar:calendar-bold-duotone',
-    automaticRetries: 'solar:refresh-bold-duotone',
-    voicemail: 'solar:record-circle-bold-duotone',
-    humanHandoff: 'solar:users-group-rounded-bold-duotone',
-    calendarCrm: 'solar:database-bold-duotone',
-    multipleNumbers: 'solar:phone-calling-rounded-bold-duotone',
-    analytics: 'solar:chart-2-bold-duotone',
   } as const;
 
-  const roadmap = VOICE_PRICING.upcomingFeatures.map((id) => ({
-    id,
-    title: t(`roadmap.items.${id}.title`),
-    description: t(`roadmap.items.${id}.description`),
-    icon: roadmapIcons[id],
-  }));
+  let offer: PricingOffer;
+  if (pricingMode === 'pilot') {
+    offer = {
+      ...common,
+      mode: 'pilot',
+      eligibility: [
+        t('offer.eligibility1'),
+        t('offer.eligibility2'),
+        t('offer.eligibility3'),
+      ],
+    };
+  } else if (pricingMode === 'project') {
+    offer = {
+      ...common,
+      mode: 'project',
+      estimateDrivers: [
+        t('offer.driver1'),
+        t('offer.driver2'),
+        t('offer.driver3'),
+      ],
+    };
+  } else {
+    throw new Error(
+      `${product} uses pricing mode "${pricingMode}" but has no verified numeric pricing adapter.`,
+    );
+  }
 
   const faq: PricingFaqItem[] = Array.from({ length: 5 }, (_, index) => ({
     question: t(`faq.q${index + 1}`, { product }),
@@ -319,68 +119,10 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       allowanceLabel: t('labels.allowance'),
       overageLabel: t('labels.overage'),
       setupLabel: t('labels.setup'),
-      minutesLabel: t('labels.minutes'),
-      minuteUnit: t('labels.minuteUnit'),
-      packageLabel: t('labels.package'),
-      readyNowLabel: t('labels.readyNow'),
-      recommendedLabel: t('labels.recommended'),
-      customLabel: t('labels.custom'),
-      backToStarterLabel: t('labels.backToStarter'),
-      previousLabel: t('labels.previous'),
-      nextLabel: t('labels.next'),
-      swipeHint: t('labels.swipeHint'),
-      cardMinutesLabel: t('labels.cardMinutes'),
-      cardInboundLabel: t('labels.cardInbound'),
-      cardOutboundLabel: t('labels.cardOutbound'),
-      cardLanguagesLabel: t('labels.cardLanguages'),
-      cardRecordingLabel: t('labels.cardRecording'),
-      cardOperatorsLabel: t('labels.cardOperators'),
-      cardScenariosLabel: t('labels.cardScenarios'),
-      cardPhoneNumbersLabel: t('labels.cardPhoneNumbers'),
-      cardIntegrationsLabel: t('labels.cardIntegrations'),
-      cardSupportLabel: t('labels.cardSupport'),
-      cardModelLabel: t('labels.cardModel'),
-      cardConcurrentCallsLabel: t('labels.cardConcurrentCalls'),
-      selectPlanLabel: t('labels.selectPlan'),
-      selectedPlanLabel: t('labels.selectedPlan'),
-      minuteStepEyebrow: t('minutes.eyebrow'),
-      minuteStepTitle: t('minutes.title'),
-      minuteStepIntro: t('minutes.intro'),
-      selectMinutesLabel: t('minutes.select'),
-      selectedMinutesLabel: t('minutes.selected'),
-      connectedMinutesLabel: t('minutes.connected'),
-      platformPriceLabel: t('minutes.summary.platform'),
-      minutesPriceLabel: t('minutes.summary.minutes'),
-      totalPriceLabel: t('minutes.summary.total'),
-      totalPerMonthLabel: t('minutes.summary.perMonth'),
-      configurationLabel: t('minutes.summary.configuration'),
-      noAutomaticChargeLabel: t('minutes.summary.noAutomaticCharge'),
-      configureActionLabel: t('minutes.summary.action'),
-      customPricePrefix: t('minutes.summary.from'),
-      inboundRateTitle: t('minutes.rates.inboundTitle'),
-      inboundRateUnit: t('minutes.rates.inboundUnit'),
-      inboundRateExample: t('minutes.rates.inboundExample'),
-      inboundRateNote: t('minutes.rates.inboundNote'),
-      outboundRateTitle: t('minutes.rates.outboundTitle'),
-      outboundRateUnit: t('minutes.rates.outboundUnit'),
-      outboundRateStatus: t('minutes.rates.outboundStatus'),
-      outboundRateNote: t('minutes.rates.outboundNote'),
-      pricingUpdateNote: t('minutes.rates.pricingUpdateNote'),
-      setupFeeLabel: t('minutes.summary.setupFee'),
-      setupFeeNote: t('minutes.summary.setupFeeNote'),
-      customValueLabel: t('labels.customValue'),
-      plannedStatusLabel: t('comparison.plannedValue'),
-      notIncludedStatusLabel: t('comparison.notIncluded'),
       comparisonEyebrow: t('comparison.eyebrow'),
       comparisonTitle: t('comparison.title'),
-      comparisonIntro: t('comparison.intro'),
       offerLabel: t('comparison.offer'),
       billingLabel: t('comparison.billing'),
-      includedStatusLabel: t('comparison.included'),
-      soonStatusLabel: t('comparison.soon'),
-      roadmapEyebrow: t('roadmap.eyebrow'),
-      roadmapTitle: t('roadmap.title'),
-      roadmapIntro: t('roadmap.intro'),
       timelineEyebrow: t('timeline.eyebrow'),
       timelineTitle: t('timeline.title'),
       faqEyebrow: t('faq.eyebrow'),
@@ -398,39 +140,7 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
         { label: t('context.start'), value: t('context.startValue') },
         { label: t('context.support'), value: t('context.supportValue') },
       ],
-      offers,
-      minuteBundles,
-      setupPrice: {
-        amount: VOICE_PRICING.billing.oneTimeSetupFeeGel,
-        currency: 'GEL',
-        cadence: 'oneTime',
-      },
-      callRates: {
-        inbound: {
-          pricePerConnectedMinute: {
-            amount: VOICE_PRICING.billing.inboundPricePerConnectedMinuteGel,
-            currency: 'GEL',
-            cadence: 'usage',
-          },
-          referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
-          referencePrice: {
-            amount: VOICE_PRICING.billing.inboundReferencePriceGel,
-            currency: 'GEL',
-            cadence: 'usage',
-          },
-        },
-        outbound: {
-          pricePerConnectedMinute: {
-            amount: VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
-            currency: 'GEL',
-            cadence: 'usage',
-          },
-          temporary: VOICE_PRICING.billing.outboundRateTemporary,
-        },
-      },
-      comparisonRows,
-      roadmap,
-      readyFeatureIds: VOICE_PRICING.readyFeatures,
+      offers: [offer],
       timeline: Array.from({ length: 4 }, (_, index) => ({
         title: t(`timeline.s${index + 1}Title`),
         description: t(`timeline.s${index + 1}Description`),

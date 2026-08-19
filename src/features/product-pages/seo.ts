@@ -129,7 +129,6 @@ export function buildProductPageGraph({
               description: offer.summary,
               price: String(offer.price.amount),
               priceCurrency: offer.price.currency,
-              availability: 'https://schema.org/PreOrder',
               url: pageUrl,
               seller: { '@id': 'https://ainow.ge#organization' },
             },
@@ -137,40 +136,12 @@ export function buildProductPageGraph({
         : [],
     ) ?? [];
 
-  const minuteOffers =
-    pricing?.minuteBundles.map((bundle) => ({
-      '@type': 'Offer',
-      name: bundle.name,
-      description: bundle.description,
-      price: String(bundle.price.amount),
-      priceCurrency: bundle.price.currency,
-      availability: 'https://schema.org/PreOrder',
-      url: pageUrl,
-      seller: { '@id': 'https://ainow.ge#organization' },
-      additionalProperty: {
-        '@type': 'PropertyValue',
-        name: 'Inbound connected call minutes',
-        value: bundle.minutes,
-      },
-    })) ?? [];
-
-  if (pricedOffers.length > 0 || minuteOffers.length > 0) {
+  if (pricedOffers.length > 0) {
     graph.push({
       '@type': 'OfferCatalog',
       '@id': `${pageUrl}#offers`,
       name: `${PRODUCT_NAME} offers`,
-      itemListElement: [
-        {
-          '@type': 'OfferCatalog',
-          name: `${PRODUCT_NAME} functional plans`,
-          itemListElement: pricedOffers,
-        },
-        {
-          '@type': 'OfferCatalog',
-          name: `${PRODUCT_NAME} inbound minute bundles`,
-          itemListElement: minuteOffers,
-        },
-      ],
+      itemListElement: pricedOffers,
     });
   }
 

@@ -79,7 +79,7 @@ export function LandingFooter(): React.ReactElement {
     FOOTER_ROUTE_LABELS.en;
   const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   const contactRoute = publishedRoute('contact');
-  const blogRoute = locale === 'ka' ? publishedRoute('blog') : undefined;
+  const blogRoute = publishedRoute('blog');
   const companyRoutes = [
     ...(
       [

@@ -104,14 +104,7 @@ export interface PricingRoadmapItem {
   icon: string;
 }
 
-export interface PricingPageCopy {
-  breadcrumb: string;
-  eyebrow: string;
-  title: string;
-  lead: string;
-  offersEyebrow: string;
-  offersTitle: string;
-  offersIntro: string;
+export interface LegacyPricingPageCopy {
   includedLabel: string;
   excludedLabel: string;
   eligibilityLabel: string;
@@ -121,26 +114,12 @@ export interface PricingPageCopy {
   setupLabel: string;
   minutesLabel: string;
   minuteUnit: string;
-  packageLabel: string;
-  readyNowLabel: string;
   recommendedLabel: string;
-  customLabel: string;
-  backToStarterLabel: string;
-  previousLabel: string;
-  nextLabel: string;
-  swipeHint: string;
-  cardMinutesLabel: string;
-  cardInboundLabel: string;
-  cardOutboundLabel: string;
-  cardLanguagesLabel: string;
-  cardRecordingLabel: string;
+  cardModelLabel: string;
   cardOperatorsLabel: string;
   cardScenariosLabel: string;
-  cardPhoneNumbersLabel: string;
-  cardIntegrationsLabel: string;
-  cardSupportLabel: string;
-  cardModelLabel: string;
   cardConcurrentCallsLabel: string;
+  cardIntegrationsLabel: string;
   selectPlanLabel: string;
   selectedPlanLabel: string;
   minuteStepEyebrow: string;
@@ -169,18 +148,29 @@ export interface PricingPageCopy {
   setupFeeLabel: string;
   setupFeeNote: string;
   customValueLabel: string;
-  plannedStatusLabel: string;
+  includedStatusLabel: string;
   notIncludedStatusLabel: string;
+}
+
+export interface PricingPageCopy {
+  breadcrumb: string;
+  eyebrow: string;
+  title: string;
+  lead: string;
+  offersEyebrow: string;
+  offersTitle: string;
+  offersIntro: string;
+  includedLabel: string;
+  excludedLabel: string;
+  eligibilityLabel: string;
+  driversLabel: string;
+  allowanceLabel: string;
+  overageLabel: string;
+  setupLabel: string;
   comparisonEyebrow: string;
   comparisonTitle: string;
-  comparisonIntro: string;
   offerLabel: string;
   billingLabel: string;
-  includedStatusLabel: string;
-  soonStatusLabel: string;
-  roadmapEyebrow: string;
-  roadmapTitle: string;
-  roadmapIntro: string;
   timelineEyebrow: string;
   timelineTitle: string;
   faqEyebrow: string;
@@ -195,12 +185,6 @@ export interface PricingPageData {
   mode: PricingMode;
   context: readonly PricingContextFact[];
   offers: readonly PricingOffer[];
-  minuteBundles: readonly PricingMinuteBundle[];
-  setupPrice: PricingAmount;
-  callRates: PricingCallRates;
-  comparisonRows: readonly PricingComparisonRow[];
-  roadmap: readonly PricingRoadmapItem[];
-  readyFeatureIds: readonly VoiceReadyFeatureId[];
   timeline: readonly PricingTimelineStep[];
   faq: readonly PricingFaqItem[];
 }

@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 
 import { SITE } from '@/config/site';
 import { BlogArticle } from '@/features/blog/components/BlogArticle';
-import { extractFaq, getAvailableLocales, getBlogLocales, getDefaultAvailableLocale, getPost, getPostSlugs, getRelatedPosts } from '@/features/blog/lib/blog';
+import { extractFaq, getAvailableLocales, getDefaultAvailableLocale, getPost, getPostSlugs, getRelatedPosts } from '@/features/blog/lib/blog';
 import { publishedRoute } from '@/features/product-pages/routes';
 import { localeUrl } from '@/i18n/seo-locales';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   if (!publishedRoute('blog')) return [];
@@ -30,9 +30,8 @@ function articleAlternates(slug: string, locale: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!publishedRoute('blog')) notFound();
   const { locale, slug } = await params;
-  if (!getBlogLocales().includes(locale)) notFound();
   const post = getPost(slug, locale);
-  if (!post) notFound();
+  if (!post) return { title: 'Not found', robots: { index: false, follow: false } };
   const canonical = localeUrl(locale, `/blog/${slug}`);
   const ogImage = localeUrl(locale, `/blog/${slug}/opengraph-image`);
   return {
@@ -60,10 +59,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ArticlePage({ params }: Props) {
   if (!publishedRoute('blog')) notFound();
   const { locale, slug } = await params;
-  if (!getBlogLocales().includes(locale)) notFound();
   setRequestLocale(locale);
   const post = getPost(slug, locale);
-  if (!post) notFound();
+  if (!post) {
+    const fallback = getDefaultAvailableLocale(slug);
+    if (fallback && fallback !== locale) redirect(localeUrl(fallback, `/blog/${slug}`));
+    notFound();
+  }
 
   const url = localeUrl(locale, `/blog/${slug}`);
   const faq = extractFaq(post.content);

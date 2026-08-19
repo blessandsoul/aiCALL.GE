@@ -3,11 +3,6 @@ interface SendTelegramNotificationParams {
   name?: string;
   email?: string;
   message?: string;
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-  utm_content?: string;
-  source_path?: string;
 }
 
 export async function sendTelegramNotification(
@@ -25,14 +20,7 @@ export async function sendTelegramNotification(
   if (params.phone) lines.push(`📞 ტელეფონი: \`${params.phone}\``);
   if (params.email) lines.push(`📧 ელფოსტა: ${params.email}`);
   if (params.message) lines.push(``, `💬 ${params.message}`);
-  if (params.utm_source || params.utm_medium || params.utm_campaign || params.utm_content) {
-    lines.push(
-      ``,
-      `📊 UTM: ${params.utm_source || "-"} · ${params.utm_medium || "-"} · ${params.utm_campaign || "-"} · ${params.utm_content || "-"}`,
-    );
-  }
-  if (params.source_path) lines.push(`🔗 გვერდი: ${params.source_path}`);
-  lines.push(``, `_aicall.ge · კონტაქტის ფორმა_`);
+  lines.push(``, `_ainow.ge · კონტაქტის ფორმა_`);
   const text = lines.join("\n");
 
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
