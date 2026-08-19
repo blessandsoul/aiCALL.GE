@@ -10,8 +10,8 @@ import type {
   PricingCallRates,
   PricingComparisonRow,
   PricingMinuteBundle,
-  LegacyPricingPageCopy,
   PricingOffer,
+  PricingPageCopy,
   PricingAmount,
 } from './types';
 
@@ -21,7 +21,7 @@ interface PricingConfiguratorProps {
   setupPrice: PricingAmount;
   callRates: PricingCallRates;
   rows: readonly PricingComparisonRow[];
-  copy: LegacyPricingPageCopy;
+  copy: PricingPageCopy;
 }
 
 const INBOUND_EXAMPLE_MINUTES = [1, 3, 5, 10] as const;
@@ -114,6 +114,9 @@ export function PricingConfigurator({
       >
         <PricingOfferExplorer
           offers={offers}
+          rows={rows}
+          selectedPlanId={selectedOffer.id}
+          onSelectPlan={handlePlanSelect}
           copy={copy}
         />
       </section>

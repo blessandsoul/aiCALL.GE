@@ -108,7 +108,9 @@ function readPostFile(slug: string, locale: string): { data: Record<string, unkn
   const file = path.join(localeDirectory(locale), `${slug}.mdx`);
   if (!fs.existsSync(file)) return null;
   const parsed = matter(fs.readFileSync(file, 'utf8'));
-  if (!isPublished(parsed.data as Record<string, unknown>)) return null;
+  if (!isPublished(parsed.data as Record<string, unknown>)) {
+    return null;
+  }
   return { data: parsed.data as Record<string, unknown>, source: parsed.content };
 }
 
@@ -145,6 +147,10 @@ export function getPostSlugs(): string[] {
     }
   }
   return [...slugs].sort();
+}
+
+export function getBlogLocales(): string[] {
+  return SITE.locales.filter((locale) => getPosts(locale).length > 0);
 }
 
 export function getDefaultAvailableLocale(slug: string): string | null {

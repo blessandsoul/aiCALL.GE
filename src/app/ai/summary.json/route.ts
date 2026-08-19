@@ -17,6 +17,7 @@ export function GET() {
     areaServed: SITE.seo.areaServed,
     languages: PRODUCT_MACHINE_FACTS.languages,
     boundary: SITE.seo.boundary,
+    pricing: PRODUCT_MACHINE_FACTS.pricing,
     integrations: PRODUCT_MACHINE_FACTS.integrations,
     plannedIntegrations: PRODUCT_MACHINE_FACTS.integrations.filter(
       (integration) => integration.status === 'planned',
