@@ -1,8 +1,13 @@
+# syntax=docker/dockerfile:1.7
 # Stage 1: Dependencies
 FROM node:24-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund --ignore-scripts && test -x node_modules/.bin/next
+RUN --network=host --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund --ignore-scripts \
+      --fetch-retries=5 --fetch-retry-factor=2 \
+      --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
+    && test -x node_modules/.bin/next
 
 # Stage 2: Build
 FROM node:24-bookworm-slim AS builder
