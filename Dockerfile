@@ -7,6 +7,7 @@ RUN --network=host --mount=type=cache,target=/root/.npm \
     npm ci --no-audit --no-fund --ignore-scripts \
       --fetch-retries=5 --fetch-retry-factor=2 \
       --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
+      --maxsockets=1 --prefer-offline \
     && test -x node_modules/.bin/next
 
 # Stage 2: Build
