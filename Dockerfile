@@ -4,6 +4,8 @@ FROM node:24-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --network=host --mount=type=cache,target=/root/.npm \
+    printf '104.16.7.34 registry.npmjs.org\n' >> /etc/hosts \
+    && \
     npm ci --no-audit --no-fund --ignore-scripts \
       --fetch-retries=5 --fetch-retry-factor=2 \
       --fetch-retry-mintimeout=10000 --fetch-retry-maxtimeout=120000 \
