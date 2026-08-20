@@ -261,7 +261,7 @@
         },
         "scenarios": {
           "label": "Call scenarios",
-          "info": "Maximum configured call flows included in the plan."
+          "info": "A scenario is a separate aiCALL task with its own conversation rules and expected result. For example: booking a client, reminding them about a visit, calling leads, rescheduling an appointment, or answering questions about a service. Each scenario is configured separately and records what happened: booked, rescheduled, unreachable, or handed to a team member."
         },
         "phoneNumbers": {
           "label": "Phone numbers",
