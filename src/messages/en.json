@@ -69,6 +69,13 @@
       "typewriterPrefill": "calls",
       "ctaResults": "Show me a call for my business",
       "ctaCall": "Discuss your call list",
+      "liveCall": {
+        "label": "Live aiCALL call",
+        "eyebrow": "Live AI operator",
+        "heading": "Call now and hear how AI answers in Georgian.",
+        "body": "This is a working number. aiCALL answers your call; it is not a recorded demo.",
+        "note": "Call to check the conversation quality yourself."
+      },
       "commitment": "aiNOW checks who aiCALL contacts, what it says and when a call goes to a person. You approve the rules and see the result of every call.",
       "audience": "For clinics, service businesses, salons, delivery teams and administrators",
       "sub": "aiCALL is an AI phone operator that calls your customers in Georgian and answers their calls too. It confirms appointments, takes orders and sends uncertain conversations to your team.",

@@ -5,9 +5,7 @@ import { useTranslations } from 'next-intl';
 import { MagneticButton } from '@/components/common/MagneticButton';
 import { Ico } from '@/components/common/Ico';
 import { SITE } from '@/config/site';
-// PER-SITE. The one thing in this shared component that every landing must supply for itself:
-// the product, in a single frame, above the fold. See src/features/showcase/HeroProof.tsx.
-import { HeroProof } from '@/features/showcase/HeroProof';
+import { CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from '@/lib/constants/app.constants';
 import './landing-hero.css';
 
 /* Hero, ported 1:1 from ainow_handoff/index.html (#hero section).
@@ -227,15 +225,20 @@ export function LandingHero() {
             </p>
           </div>
 
-          {/* B. THE PRODUCT, in one frame.
-              This is the fix the audit put first. Every one of the six pages used to open with a
-              giant wordmark and hide the demo three screens down, so a stranger spent his five
-              seconds looking at a logo and left knowing nothing. HeroProof is per-site and it is
-              the one thing on this screen that answers "what is it" without a single word being
-              read: aiCALL shows a call confirming a row, aiDOCS shows a receipt collapsing into a
-              ledger line, vibecoding shows a redacted key it just found. */}
+          {/* B. The live proof. A visitor can call the actual number instead of watching a
+              simulation first. The detailed product demo remains below this first screen. */}
           <div className="relative order-2 min-w-0 lg:order-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
-            <HeroProof />
+            <div className="call-live-hero" role="region" aria-label={t('liveCall.label')}>
+              <div className="call-live-hero__signal" aria-hidden="true"><span /><span /><span /></div>
+              <p className="call-live-hero__eyebrow"><Ico name="solar:phone-calling-rounded-bold-duotone" />{t('liveCall.eyebrow')}</p>
+              <h2>{t('liveCall.heading')}</h2>
+              <p>{t('liveCall.body')}</p>
+              <a href={`tel:${CONTACT_PHONE}`} className="call-live-hero__number" data-primary-cta="true">
+                <span>{CONTACT_PHONE_DISPLAY}</span>
+                <Ico name="solar:phone-calling-rounded-bold-duotone" aria-hidden="true" />
+              </a>
+              <small><i aria-hidden="true" />{t('liveCall.note')}</small>
+            </div>
           </div>
 
           {/* C. how it works, the one button, the promise, the family */}
@@ -247,7 +250,7 @@ export function LandingHero() {
         <div className="hero-extras">
           <div className="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-3 sm:gap-4">
             <MagneticButton className="w-full sm:w-auto">
-              <a href="#cta" className="btn-primary w-full justify-center sm:w-auto" data-primary-cta="true">
+              <a href="#demo" className="btn-primary w-full justify-center sm:w-auto">
                 <span>{t('ctaResults')}</span>
                 <Ico name="solar:arrow-right-bold-duotone" className="h-[18px] w-[18px]" />
               </a>
