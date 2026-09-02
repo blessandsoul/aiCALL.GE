@@ -65,12 +65,12 @@
   },
   "product": {
     "seo": {
-      "title": "aiCALL: Georgian booking confirmation calls for business",
-      "description": "aiCALL calls your existing customers in Georgian, confirms bookings or deliveries, records the outcome, and hands complex conversations to your team."
+      "title": "aiCALL: AI voice agent for Georgian phone calls",
+      "description": "AI voice agent for Georgian calls. aiCALL answers incoming calls, confirms bookings or deliveries, and hands complex conversations to your team."
     },
     "hero": {
       "owner": "Your",
-      "role": "phone operator",
+      "role": "voice agent for phone calls",
       "lead": "automatically handles",
       "taglinePrefix": "AI that",
       "taglineWorks": "calls",
@@ -87,7 +87,7 @@
       },
       "commitment": "aiNOW checks who aiCALL contacts, what it says and when a call goes to a person. You approve the rules and see the result of every call.",
       "audience": "For clinics, service businesses, salons, delivery teams and administrators",
-      "sub": "aiCALL is an AI phone operator that calls your customers in Georgian and answers their calls too. It confirms appointments, takes orders and sends uncertain conversations to your team.",
+      "sub": "aiCALL is an AI voice agent that calls your customers in Georgian and answers their calls too. It confirms appointments, takes orders and sends uncertain conversations to your team.",
       "signedBy": "Configured and checked by aiNOW"
     },
     "work": {
