@@ -22,7 +22,7 @@ interface PricingOfferExplorerProps {
     | 'cardModelLabel'
     | 'cardOperatorsLabel'
     | 'cardScenariosLabel'
-    | 'cardConcurrentCallsLabel'
+    | 'cardInboundChannelsLabel'
     | 'cardIntegrationsLabel'
     | 'includedStatusLabel'
     | 'notIncludedStatusLabel'

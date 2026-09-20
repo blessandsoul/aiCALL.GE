@@ -24,7 +24,7 @@ import type {
 } from './integrations/IntegrationsPage';
 import type {
   PricingFaqItem,
-  PricingMinuteBundle,
+  PricingInboundChannelOption,
   PricingOffer,
   PricingPageCopy,
   PricingPageData,
@@ -73,7 +73,7 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
     highlightLabel: t(`plans.${plan.id}.highlightLabel`),
     highlightValue: t(`plans.${plan.id}.highlightValue`),
     highlightCaption: t(`plans.${plan.id}.highlightCaption`),
-    defaultMinuteBundleId: plan.defaultMinuteBundleId,
+    includedInboundChannels: plan.includedInboundChannels,
     mode: 'project',
     price: {
       amount: plan.monthlyPlatformPriceGel,
@@ -96,22 +96,18 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
     actionHref,
   }));
 
-  const minuteBundles: PricingMinuteBundle[] = VOICE_PRICING.minuteBundles.map(
-    (bundle) => ({
-      id: bundle.id,
-      name: t(`minutes.bundles.${bundle.id}.name`),
-      description: t(`minutes.bundles.${bundle.id}.description`),
-      minutes: bundle.minutes,
-      price: {
-        amount: bundle.monthlyPriceGel,
+  const inboundChannelOptions: PricingInboundChannelOption[] =
+    VOICE_PRICING.inboundChannelOptions.map((channels) => ({
+      channels,
+      additionalMonthlyPrice: {
+        amount:
+          Math.max(0, channels - VOICE_PRICING.billing.includedInboundChannels) *
+          VOICE_PRICING.billing.additionalInboundChannelMonthlyPriceGel,
         currency: 'GEL',
         cadence: 'monthly',
         unit: t('plans.month'),
       },
-      contactOnly: bundle.contactOnly,
-      icon: bundle.icon,
-    }),
-  );
+    }));
 
   const valuesByPlan = (
     value: (planId: VoicePlanId, index: number) => boolean | string,
@@ -225,10 +221,10 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       values: capabilityValues('knowledgeBase'),
     },
     {
-      id: 'concurrent-calls',
-      label: t('comparison.rows.concurrentCalls.label'),
-      info: t('comparison.rows.concurrentCalls.info'),
-      values: valuesByPlan((planId) => t(`plans.${planId}.concurrentCalls`)),
+      id: 'inbound-channels',
+      label: t('comparison.rows.inboundChannels.label'),
+      info: t('comparison.rows.inboundChannels.info'),
+      values: valuesByPlan((planId) => t(`plans.${planId}.inboundChannels`)),
     },
     {
       id: 'history',
@@ -319,8 +315,6 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       allowanceLabel: t('labels.allowance'),
       overageLabel: t('labels.overage'),
       setupLabel: t('labels.setup'),
-      minutesLabel: t('labels.minutes'),
-      minuteUnit: t('labels.minuteUnit'),
       packageLabel: t('labels.package'),
       readyNowLabel: t('labels.readyNow'),
       recommendedLabel: t('labels.recommended'),
@@ -329,7 +323,6 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       previousLabel: t('labels.previous'),
       nextLabel: t('labels.next'),
       swipeHint: t('labels.swipeHint'),
-      cardMinutesLabel: t('labels.cardMinutes'),
       cardInboundLabel: t('labels.cardInbound'),
       cardOutboundLabel: t('labels.cardOutbound'),
       cardLanguagesLabel: t('labels.cardLanguages'),
@@ -340,34 +333,36 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       cardIntegrationsLabel: t('labels.cardIntegrations'),
       cardSupportLabel: t('labels.cardSupport'),
       cardModelLabel: t('labels.cardModel'),
-      cardConcurrentCallsLabel: t('labels.cardConcurrentCalls'),
+      cardInboundChannelsLabel: t('labels.cardInboundChannels'),
       selectPlanLabel: t('labels.selectPlan'),
       selectedPlanLabel: t('labels.selectedPlan'),
-      minuteStepEyebrow: t('minutes.eyebrow'),
-      minuteStepTitle: t('minutes.title'),
-      minuteStepIntro: t('minutes.intro'),
-      selectMinutesLabel: t('minutes.select'),
-      selectedMinutesLabel: t('minutes.selected'),
-      connectedMinutesLabel: t('minutes.connected'),
-      platformPriceLabel: t('minutes.summary.platform'),
-      minutesPriceLabel: t('minutes.summary.minutes'),
-      totalPriceLabel: t('minutes.summary.total'),
-      totalPerMonthLabel: t('minutes.summary.perMonth'),
-      configurationLabel: t('minutes.summary.configuration'),
-      noAutomaticChargeLabel: t('minutes.summary.noAutomaticCharge'),
-      configureActionLabel: t('minutes.summary.action'),
-      customPricePrefix: t('minutes.summary.from'),
-      inboundRateTitle: t('minutes.rates.inboundTitle'),
-      inboundRateUnit: t('minutes.rates.inboundUnit'),
-      inboundRateExample: t('minutes.rates.inboundExample'),
-      inboundRateNote: t('minutes.rates.inboundNote'),
-      outboundRateTitle: t('minutes.rates.outboundTitle'),
-      outboundRateUnit: t('minutes.rates.outboundUnit'),
-      outboundRateStatus: t('minutes.rates.outboundStatus'),
-      outboundRateNote: t('minutes.rates.outboundNote'),
-      pricingUpdateNote: t('minutes.rates.pricingUpdateNote'),
-      setupFeeLabel: t('minutes.summary.setupFee'),
-      setupFeeNote: t('minutes.summary.setupFeeNote'),
+      channelStepEyebrow: t('channels.eyebrow'),
+      channelStepTitle: t('channels.title'),
+      channelStepIntro: t('channels.intro'),
+      selectChannelsLabel: t('channels.select'),
+      selectedChannelsLabel: t('channels.selected'),
+      inboundChannelUnit: t('channels.unit'),
+      inboundIncludedLabel: t('channels.included'),
+      additionalChannelLabel: t('channels.additional'),
+      platformPriceLabel: t('channels.summary.platform'),
+      channelsPriceLabel: t('channels.summary.channels'),
+      totalPriceLabel: t('channels.summary.total'),
+      totalPerMonthLabel: t('channels.summary.perMonth'),
+      configurationLabel: t('channels.summary.configuration'),
+      noAutomaticChargeLabel: t('channels.summary.noAutomaticCharge'),
+      configureActionLabel: t('channels.summary.action'),
+      customPricePrefix: t('channels.summary.from'),
+      inboundRateTitle: t('channels.rates.inboundTitle'),
+      inboundRateUnit: t('channels.rates.inboundUnit'),
+      inboundRateExample: t('channels.rates.inboundExample'),
+      inboundRateNote: t('channels.rates.inboundNote'),
+      outboundRateTitle: t('channels.rates.outboundTitle'),
+      outboundRateUnit: t('channels.rates.outboundUnit'),
+      outboundRateStatus: t('channels.rates.outboundStatus'),
+      outboundRateNote: t('channels.rates.outboundNote'),
+      pricingUpdateNote: t('channels.rates.pricingUpdateNote'),
+      setupFeeLabel: t('channels.summary.setupFee'),
+      setupFeeNote: t('channels.summary.setupFeeNote'),
       customValueLabel: t('labels.customValue'),
       plannedStatusLabel: t('comparison.plannedValue'),
       notIncludedStatusLabel: t('comparison.notIncluded'),
@@ -399,7 +394,7 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
         { label: t('context.support'), value: t('context.supportValue') },
       ],
       offers,
-      minuteBundles,
+      inboundChannelOptions,
       setupPrice: {
         amount: VOICE_PRICING.billing.oneTimeSetupFeeGel,
         currency: 'GEL',
@@ -407,16 +402,11 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
       },
       callRates: {
         inbound: {
-          pricePerConnectedMinute: {
-            amount: VOICE_PRICING.billing.inboundPricePerConnectedMinuteGel,
+          includedChannels: VOICE_PRICING.billing.includedInboundChannels,
+          additionalChannelPrice: {
+            amount: VOICE_PRICING.billing.additionalInboundChannelMonthlyPriceGel,
             currency: 'GEL',
-            cadence: 'usage',
-          },
-          referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
-          referencePrice: {
-            amount: VOICE_PRICING.billing.inboundReferencePriceGel,
-            currency: 'GEL',
-            cadence: 'usage',
+            cadence: 'monthly',
           },
         },
         outbound: {
@@ -425,7 +415,7 @@ export async function getPricingContent(locale: ProductPageLocale): Promise<{
             currency: 'GEL',
             cadence: 'usage',
           },
-          temporary: VOICE_PRICING.billing.outboundRateTemporary,
+          temporary: false,
         },
       },
       comparisonRows,

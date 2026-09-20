@@ -1,7 +1,7 @@
 import type { PricingMode } from '../types';
 import type {
   VoicePlanId,
-  VoiceMinuteBundleId,
+  VoiceInboundChannelCount,
   VoiceReadyFeatureId,
   VoiceUpcomingFeatureId,
 } from '@/config/voice-pricing';
@@ -26,7 +26,7 @@ interface PricingOfferBase {
   highlightLabel?: string;
   highlightValue?: string;
   highlightCaption?: string;
-  defaultMinuteBundleId?: VoiceMinuteBundleId;
+  includedInboundChannels: 1;
   included: readonly string[];
   excluded: readonly string[];
   actionLabel: string;
@@ -75,21 +75,15 @@ export interface PricingComparisonRow {
   values: Readonly<Record<VoicePlanId, boolean | string>>;
 }
 
-export interface PricingMinuteBundle {
-  id: VoiceMinuteBundleId;
-  name: string;
-  description: string;
-  minutes: number;
-  price: PricingAmount;
-  contactOnly: boolean;
-  icon: string;
+export interface PricingInboundChannelOption {
+  channels: VoiceInboundChannelCount;
+  additionalMonthlyPrice: PricingAmount;
 }
 
 export interface PricingCallRates {
   inbound: {
-    pricePerConnectedMinute: PricingAmount;
-    referenceMinutes: number;
-    referencePrice: PricingAmount;
+    includedChannels: 1;
+    additionalChannelPrice: PricingAmount;
   };
   outbound: {
     pricePerConnectedMinute: PricingAmount;
@@ -119,8 +113,6 @@ export interface PricingPageCopy {
   allowanceLabel: string;
   overageLabel: string;
   setupLabel: string;
-  minutesLabel: string;
-  minuteUnit: string;
   packageLabel: string;
   readyNowLabel: string;
   recommendedLabel: string;
@@ -129,7 +121,6 @@ export interface PricingPageCopy {
   previousLabel: string;
   nextLabel: string;
   swipeHint: string;
-  cardMinutesLabel: string;
   cardInboundLabel: string;
   cardOutboundLabel: string;
   cardLanguagesLabel: string;
@@ -140,17 +131,19 @@ export interface PricingPageCopy {
   cardIntegrationsLabel: string;
   cardSupportLabel: string;
   cardModelLabel: string;
-  cardConcurrentCallsLabel: string;
+  cardInboundChannelsLabel: string;
   selectPlanLabel: string;
   selectedPlanLabel: string;
-  minuteStepEyebrow: string;
-  minuteStepTitle: string;
-  minuteStepIntro: string;
-  selectMinutesLabel: string;
-  selectedMinutesLabel: string;
-  connectedMinutesLabel: string;
+  channelStepEyebrow: string;
+  channelStepTitle: string;
+  channelStepIntro: string;
+  selectChannelsLabel: string;
+  selectedChannelsLabel: string;
+  inboundChannelUnit: string;
+  inboundIncludedLabel: string;
+  additionalChannelLabel: string;
   platformPriceLabel: string;
-  minutesPriceLabel: string;
+  channelsPriceLabel: string;
   totalPriceLabel: string;
   totalPerMonthLabel: string;
   configurationLabel: string;
@@ -195,7 +188,7 @@ export interface PricingPageData {
   mode: PricingMode;
   context: readonly PricingContextFact[];
   offers: readonly PricingOffer[];
-  minuteBundles: readonly PricingMinuteBundle[];
+  inboundChannelOptions: readonly PricingInboundChannelOption[];
   setupPrice: PricingAmount;
   callRates: PricingCallRates;
   comparisonRows: readonly PricingComparisonRow[];

@@ -54,26 +54,26 @@ export function GET() {
     `## Pricing`,
     ``,
     `- Model: ${PRODUCT_MACHINE_PRICING.model}`,
-    `- Minute scope: ${PRODUCT_MACHINE_PRICING.minutePool}`,
-    `- Inbound reference: ${PRODUCT_MACHINE_PRICING.inboundPricing.referenceMinutes} connected minutes cost approximately ${PRODUCT_MACHINE_PRICING.inboundPricing.referencePriceGel} GEL; inbound bundles are displayed in GEL using an indicative conversion.`,
-   `- Outbound current rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute; this temporary high rate is separate from inbound bundles, and aiNOW is working to reduce it.`,
-    `- One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; this is separate from monthly platform and minute-bundle prices.`,
+    `- Inbound channels: ${PRODUCT_MACHINE_PRICING.inboundChannels}`,
+    `- Inbound minutes: no separate per-minute telecom charge; each additional concurrent inbound channel costs ${PRODUCT_MACHINE_PRICING.inboundPricing.additionalChannelMonthlyPriceGel} GEL/month.`,
+   `- Outbound rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute after the customer answers.`,
+    `- One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; this is separate from monthly platform and channel add-on prices.`,
     `- Included: ${PRODUCT_MACHINE_PRICING.includedInEveryPlan}`,
-    `- Billing is split between the monthly platform plan, the inbound-minute bundle, and separate outbound connected-minute usage. Extra usage requires customer approval, and there is no automatic overage charge.`,
+    `- Billing is split between the monthly platform plan, optional inbound channel add-ons, and separate outbound connected-minute usage. Extra channels require customer approval, and there is no automatic overage charge.`,
     `- Step 1, functional platform plans:`,
     ...PRODUCT_MACHINE_PRICING.platformPlans.map(
       (plan) =>
-        `  - ${plan.id}: ${plan.priceType === 'from' ? 'from ' : ''}${plan.monthlyPlatformPriceGel} GEL/month; model ${plan.model}; default minute bundle ${plan.defaultMinuteBundleId}; support ${plan.support}`,
+        `  - ${plan.id}: ${plan.priceType === 'from' ? 'from ' : ''}${plan.monthlyPlatformPriceGel} GEL/month; model ${plan.model}; includes ${plan.includedInboundChannels} parallel inbound channel; support ${plan.support}`,
     ),
-    `- Step 2, inbound connected-minute bundles:`,
-    ...PRODUCT_MACHINE_PRICING.minuteBundles.map(
-      (bundle) =>
-        `  - ${bundle.id}: ${bundle.inboundConnectedMinutes.toLocaleString('en-US')} inbound minutes for approximately ${bundle.monthlyPriceGel} GEL/month`,
+    `- Step 2, inbound channel choices:`,
+    ...PRODUCT_MACHINE_PRICING.inboundChannelOptions.map(
+      (option) =>
+        `  - ${option.channels} parallel inbound channels: ${option.additionalMonthlyPriceGel} GEL/month in channel add-ons`,
     ),
     `- Default combinations:`,
     ...PRODUCT_MACHINE_PRICING.defaultConfigurations.map(
       (configuration) =>
-        `  - ${configuration.platformPlanId}, ${configuration.inboundMinuteBundleId}: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; inbound bundle approximately ${configuration.monthlyInboundMinutesPriceGel} GEL/month; outbound ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute`,
+        `  - ${configuration.platformPlanId}, ${configuration.inboundChannels} inbound channels: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; channel add-on ${configuration.monthlyInboundChannelsPriceGel} GEL/month; outbound ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute`,
     ),
     `- ${PRODUCT_MACHINE_PRICING.extraUsage}`,
     `- Availability: ${PRODUCT_MACHINE_PRICING.availabilityNote}`,

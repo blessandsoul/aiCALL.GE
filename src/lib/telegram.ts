@@ -3,6 +3,8 @@ interface SendTelegramNotificationParams {
   name?: string;
   email?: string;
   message?: string;
+  plan?: string;
+  inboundChannels?: number;
   utm_source?: string;
   utm_medium?: string;
   utm_campaign?: string;
@@ -24,6 +26,8 @@ export async function sendTelegramNotification(
   if (params.name) lines.push(`👤 სახელი: ${params.name}`);
   if (params.phone) lines.push(`📞 ტელეფონი: \`${params.phone}\``);
   if (params.email) lines.push(`📧 ელფოსტა: ${params.email}`);
+  if (params.plan) lines.push(`📦 არჩეული ტარიფი: ${params.plan}`);
+  if (params.inboundChannels) lines.push(`🔗 შემომავალი არხები: ${params.inboundChannels}`);
   if (params.message) lines.push(``, `💬 ${params.message}`);
   if (params.utm_source || params.utm_medium || params.utm_campaign || params.utm_content) {
     lines.push(
