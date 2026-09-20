@@ -6,16 +6,25 @@ export const VOICE_PLAN_IDS = [
   'custom',
 ] as const;
 
-export const VOICE_MINUTE_BUNDLE_IDS = [
-  'minutes100',
-  'minutes500',
-  'minutes2000',
-  'minutes5000',
-  'minutes10000',
+/**
+ * Public channel choices are request sizes, not a promise of technical
+ * capacity. Final availability is confirmed during setup.
+ */
+export const VOICE_INBOUND_CHANNEL_OPTIONS = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
 ] as const;
 
 export type VoicePlanId = (typeof VOICE_PLAN_IDS)[number];
-export type VoiceMinuteBundleId = (typeof VOICE_MINUTE_BUNDLE_IDS)[number];
+export type VoiceInboundChannelCount = (typeof VOICE_INBOUND_CHANNEL_OPTIONS)[number];
 
 export const VOICE_READY_FEATURE_IDS = [
   'inbound',
@@ -56,14 +65,14 @@ export interface VoicePricingPlan {
   monthlyPlatformPriceGel: number;
   recommended: boolean;
   contactOnly: boolean;
-  defaultMinuteBundleId: VoiceMinuteBundleId;
+  includedInboundChannels: 1;
   icon: string;
   highlightIcon: string;
   limits: {
     operators: VoicePlanLimit;
     scenarios: VoicePlanLimit;
     phoneNumbers: VoicePlanLimit;
-    concurrentCalls: VoicePlanLimit;
+    inboundChannels: 1;
     integrations: VoicePlanLimit;
     historyDays: VoicePlanLimit;
   };
@@ -78,41 +87,26 @@ export interface VoicePricingPlan {
   support: VoiceSupportLevel;
 }
 
-export interface VoiceMinuteBundle {
-  id: VoiceMinuteBundleId;
-  minutes: number;
-  monthlyPriceGel: number;
-  contactOnly: boolean;
-  icon: string;
-}
-
 /**
  * Canonical public aiCALL pricing facts.
  *
- * A platform plan controls capabilities, scale and support. A minute bundle is
- * selected separately and controls only connected inbound conversation time.
- * Outbound calls are billed independently at the temporary connected-minute
- * rate. No automatic overage is charged.
+ * A platform plan controls capabilities, scale and support. Every plan includes
+ * one parallel inbound channel. Additional concurrent inbound channels are
+ * selected separately at a flat monthly price. Inbound conversation minutes do
+ * not carry a separate per-minute telecom charge. Outbound calls are billed
+ * independently at the connected-minute rate. No automatic overage is charged.
  */
 export const VOICE_PRICING = {
   platformCurrency: 'GEL',
-  inboundBundleCurrency: 'GEL',
-  currencyConversion: {
-    usdToGel: 2.7,
-    label: '1 USD = 2.70 GEL',
-    basis: 'indicative public display rate; final price is confirmed before purchase',
-  },
   cadence: 'monthly',
-  model: 'platform-plus-inbound-minute-bundle',
+  model: 'monthly-platform-plus-inbound-channels',
   billing: {
     oneTimeSetupFeeGel: 150,
     oneTimeSetupIncludes: 'phone-number-purchase-and-initial-configuration',
-    inboundPricePerConnectedMinuteGel: 0.54,
-    inboundReferenceMinutes: 10,
-    inboundReferencePriceGel: 5.4,
-    outboundPricePerConnectedMinuteGel: 1.4,
-    outboundRateTemporary: true,
-    sharedInboundOutboundPool: false,
+    includedInboundChannels: 1,
+    additionalInboundChannelMonthlyPriceGel: 60,
+    inboundMinutesIncluded: true,
+    outboundPricePerConnectedMinuteGel: 1.5,
     additionalFlatFeePerCall: false,
     campaignFee: false,
     unexpectedPlatformFee: false,
@@ -126,14 +120,14 @@ export const VOICE_PRICING = {
       monthlyPlatformPriceGel: 220,
       recommended: false,
       contactOnly: false,
-      defaultMinuteBundleId: 'minutes100',
+      includedInboundChannels: 1,
       icon: 'solar:battery-charge-bold-duotone',
       highlightIcon: 'solar:phone-bold-duotone',
       limits: {
         operators: 1,
         scenarios: 1,
         phoneNumbers: 1,
-        concurrentCalls: 1,
+        inboundChannels: 1,
         integrations: 0,
         historyDays: 30,
       },
@@ -153,14 +147,14 @@ export const VOICE_PRICING = {
       monthlyPlatformPriceGel: 450,
       recommended: false,
       contactOnly: false,
-      defaultMinuteBundleId: 'minutes500',
+      includedInboundChannels: 1,
       icon: 'solar:star-bold',
       highlightIcon: 'solar:user-check-rounded-bold-duotone',
       limits: {
         operators: 1,
         scenarios: 3,
         phoneNumbers: 1,
-        concurrentCalls: 3,
+        inboundChannels: 1,
         integrations: 1,
         historyDays: 90,
       },
@@ -180,14 +174,14 @@ export const VOICE_PRICING = {
       monthlyPlatformPriceGel: 900,
       recommended: true,
       contactOnly: false,
-      defaultMinuteBundleId: 'minutes2000',
+      includedInboundChannels: 1,
       icon: 'solar:shield-check-bold-duotone',
       highlightIcon: 'solar:refresh-bold-duotone',
       limits: {
         operators: 3,
         scenarios: 10,
         phoneNumbers: 3,
-        concurrentCalls: 10,
+        inboundChannels: 1,
         integrations: 3,
         historyDays: 365,
       },
@@ -207,14 +201,14 @@ export const VOICE_PRICING = {
       monthlyPlatformPriceGel: 2_500,
       recommended: false,
       contactOnly: false,
-      defaultMinuteBundleId: 'minutes5000',
+      includedInboundChannels: 1,
       icon: 'solar:user-check-rounded-bold-duotone',
       highlightIcon: 'solar:shield-check-bold-duotone',
       limits: {
         operators: 10,
         scenarios: 25,
         phoneNumbers: 10,
-        concurrentCalls: 25,
+        inboundChannels: 1,
         integrations: 10,
         historyDays: 'custom',
       },
@@ -234,14 +228,14 @@ export const VOICE_PRICING = {
       monthlyPlatformPriceGel: 5_000,
       recommended: false,
       contactOnly: true,
-      defaultMinuteBundleId: 'minutes10000',
+      includedInboundChannels: 1,
       icon: 'solar:cpu-bold-duotone',
       highlightIcon: 'solar:server-bold-duotone',
       limits: {
         operators: 'custom',
         scenarios: 'custom',
         phoneNumbers: 'custom',
-        concurrentCalls: 'custom',
+        inboundChannels: 1,
         integrations: 'custom',
         historyDays: 'custom',
       },
@@ -256,55 +250,11 @@ export const VOICE_PRICING = {
       support: 'custom',
     },
   ] as const satisfies readonly VoicePricingPlan[],
-  minuteBundles: [
-    {
-      id: 'minutes100',
-      minutes: 100,
-      monthlyPriceGel: 54,
-      contactOnly: false,
-      icon: 'solar:clock-circle-bold-duotone',
-    },
-    {
-      id: 'minutes500',
-      minutes: 500,
-      monthlyPriceGel: 270,
-      contactOnly: false,
-      icon: 'solar:clock-square-bold-duotone',
-    },
-    {
-      id: 'minutes2000',
-      minutes: 2_000,
-      monthlyPriceGel: 1_080,
-      contactOnly: false,
-      icon: 'solar:stopwatch-bold-duotone',
-    },
-    {
-      id: 'minutes5000',
-      minutes: 5_000,
-      monthlyPriceGel: 2_700,
-      contactOnly: false,
-      icon: 'solar:history-bold-duotone',
-    },
-    {
-      id: 'minutes10000',
-      minutes: 10_000,
-      monthlyPriceGel: 5_400,
-      contactOnly: false,
-      icon: 'solar:infinity-bold-duotone',
-    },
-  ] as const satisfies readonly VoiceMinuteBundle[],
+  inboundChannelOptions: VOICE_INBOUND_CHANNEL_OPTIONS,
   readyFeatures: VOICE_READY_FEATURE_IDS,
   upcomingFeatures: VOICE_UPCOMING_FEATURE_IDS,
 } as const;
 
 export function getVoicePlan(planId: VoicePlanId): VoicePricingPlan {
   return VOICE_PRICING.plans.find((plan) => plan.id === planId) as VoicePricingPlan;
-}
-
-export function getVoiceMinuteBundle(
-  bundleId: VoiceMinuteBundleId,
-): VoiceMinuteBundle {
-  return VOICE_PRICING.minuteBundles.find(
-    (bundle) => bundle.id === bundleId,
-  ) as VoiceMinuteBundle;
 }

@@ -41,6 +41,8 @@ export const ContactForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
+          plan: query.get("plan") || undefined,
+          inboundChannels: query.get("inboundChannels") ? Number(query.get("inboundChannels")) : undefined,
           utm_source: query.get("utm_source") || undefined,
           utm_medium: query.get("utm_medium") || undefined,
           utm_campaign: query.get("utm_campaign") || undefined,

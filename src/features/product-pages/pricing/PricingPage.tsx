@@ -13,8 +13,8 @@ export function assertPricingPageData(data: PricingPageData): void {
   if (data.offers.length === 0) {
     throw new Error('A public pricing page requires at least one offer.');
   }
-  if (data.minuteBundles.length === 0) {
-    throw new Error('A public aiCALL pricing page requires a minute bundle.');
+  if (data.inboundChannelOptions.length === 0) {
+    throw new Error('A public aiCALL pricing page requires inbound channel options.');
   }
 
   for (const offer of data.offers) {
@@ -135,7 +135,7 @@ export function PricingPage({
 
           <PricingConfigurator
             offers={data.offers}
-            minuteBundles={data.minuteBundles}
+            inboundChannelOptions={data.inboundChannelOptions}
             setupPrice={data.setupPrice}
             callRates={data.callRates}
             rows={data.comparisonRows}

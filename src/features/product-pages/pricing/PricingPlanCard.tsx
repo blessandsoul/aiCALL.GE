@@ -15,7 +15,7 @@ const FUNCTIONAL_METRICS = [
   { id: 'model', labelKey: 'cardModelLabel', icon: 'solar:cpu-bold-duotone' },
   { id: 'operators', labelKey: 'cardOperatorsLabel', icon: 'solar:users-group-rounded-bold-duotone' },
   { id: 'scenarios', labelKey: 'cardScenariosLabel', icon: 'solar:document-text-bold-duotone' },
-  { id: 'concurrent-calls', labelKey: 'cardConcurrentCallsLabel', icon: 'solar:phone-calling-rounded-bold-duotone' },
+  { id: 'inbound-channels', labelKey: 'cardInboundChannelsLabel', icon: 'solar:phone-calling-rounded-bold-duotone' },
   { id: 'integrations', labelKey: 'cardIntegrationsLabel', icon: 'solar:link-round-angle-bold-duotone' },
 ] as const satisfies readonly {
   id: string;
@@ -24,7 +24,7 @@ const FUNCTIONAL_METRICS = [
     | 'cardModelLabel'
     | 'cardOperatorsLabel'
     | 'cardScenariosLabel'
-    | 'cardConcurrentCallsLabel'
+    | 'cardInboundChannelsLabel'
     | 'cardIntegrationsLabel'
   >;
   icon: string;
@@ -111,7 +111,7 @@ interface PricingPlanCardProps {
     | 'cardModelLabel'
     | 'cardOperatorsLabel'
     | 'cardScenariosLabel'
-    | 'cardConcurrentCallsLabel'
+    | 'cardInboundChannelsLabel'
     | 'cardIntegrationsLabel'
     | 'includedStatusLabel'
     | 'notIncludedStatusLabel'

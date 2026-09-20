@@ -12,42 +12,40 @@
   },
   "pricing": {
     "seoTitle": "{product} pricing for inbound and outbound AI calls",
-    "seoDescription": "Functional plans start at 220 GEL per month. A 100-minute inbound bundle is approximately 54 GEL. Outbound conversation time currently costs 1.40 GEL per minute after the customer answers. Phone-number purchase and initial setup cost a one-time 150 GEL.",
+    "seoDescription": "Functional plans start at 220 GEL per month and include one parallel inbound channel. Each additional concurrent inbound channel costs 60 GEL per month. Inbound minutes have no separate per-minute telecom charge. Outbound conversation time costs 1.50 GEL per connected minute. Phone-number purchase and initial setup cost a one-time 150 GEL.",
     "breadcrumb": "Pricing",
     "eyebrow": "Capabilities and call usage, billed separately",
-    "title": "Choose capabilities and an inbound call bundle",
-    "lead": "Your functional plan determines what aiCALL can do. Choose a separate minute bundle for inbound calls. Outbound calls are not included. Conversation time currently costs 1.40 GEL per minute after the customer answers. Phone-number purchase and initial setup are a one-time 150 GEL charge.",
+    "title": "Choose capabilities and inbound channels",
+    "lead": "Your functional plan determines what aiCALL can do. Every plan includes one parallel inbound channel. Add channels at 60 GEL per month each when more conversations need to run at once. Inbound minutes have no separate per-minute telecom charge. Outbound calls cost 1.50 GEL per connected minute. Phone-number purchase and initial setup are a one-time 150 GEL charge.",
     "context": {
       "model": "Billing model",
-      "fixed": "Fixed minute package",
-      "project": "Platform plan plus inbound minutes",
+      "fixed": "Monthly platform plan",
+      "project": "Platform plan plus inbound channels",
       "retainer": "Monthly package",
-      "usage": "Inbound minute bundle",
-      "hybrid": "Setup plus inbound minutes",
+      "usage": "Inbound channel add-on",
+      "hybrid": "Setup plus inbound channels",
       "pilot": "Pilot package",
       "liveSubscription": "Live packages",
       "price": "Platform plans",
       "priceValue": "From 220 GEL per month",
-      "start": "Inbound minute bundles",
-      "startValue": "From 54 GEL per month",
+      "start": "Included inbound channels",
+      "startValue": "1 channel in every plan",
       "support": "Outbound call rate",
-      "supportValue": "1.40 GEL per conversation minute after answer"
+      "supportValue": "1.50 GEL per connected minute after answer"
     },
     "offers": {
       "eyebrow": "Step 1",
       "title": "Choose your aiCALL capabilities",
-      "intro": "Each plan sets capacity, integrations, history and support. Select inbound call minutes separately in step 2."
+      "intro": "Each plan includes one parallel inbound channel. Select additional channels in step 2; final availability is confirmed during setup."
     },
     "labels": {
       "included": "Included",
       "excluded": "Not ready yet",
       "eligibility": "Requirements",
       "drivers": "What we confirm",
-      "allowance": "Minute allowance",
-      "overage": "After the allowance",
+      "allowance": "Inbound channels",
+      "overage": "Additional channels",
       "setup": "Setup",
-      "minutes": "Call minutes per month",
-      "minuteUnit": "min",
       "package": "Plan",
       "readyNow": "Available in every plan",
       "recommended": "Recommended",
@@ -56,7 +54,6 @@
       "previous": "Previous plan",
       "next": "Next plan",
       "swipeHint": "Swipe to view plans",
-      "cardMinutes": "Call minutes",
       "cardInbound": "Inbound calls",
       "cardOutbound": "Outbound calls",
       "cardLanguages": "Languages",
@@ -64,7 +61,7 @@
       "cardModel": "Model",
       "cardOperators": "AI roles",
       "cardScenarios": "Call tasks",
-      "cardConcurrentCalls": "Concurrent calls",
+      "cardInboundChannels": "Included inbound channels",
       "cardPhoneNumbers": "Phone numbers",
       "cardIntegrations": "Connected tools",
       "cardSupport": "Support",
@@ -82,14 +79,14 @@
         "highlightLabel": "One specific job",
         "highlightValue": "For example, book a client",
         "highlightCaption": "One AI role for one job",
-        "included1": "1 phone number and 1 concurrent call",
+        "included1": "1 phone number and 1 included parallel inbound channel",
         "included2": "30-day call and transcript history",
         "included3": "Georgian, Russian and English, with notice before optional recording",
         "excluded1": "Connected tools and planned phone automation are not included",
         "operators": "1 role",
         "scenarios": "1 task",
         "phoneNumbers": "1",
-        "concurrentCalls": "1",
+        "inboundChannels": "1",
         "integrations": "Not included",
         "history": "30 days",
         "support": "Onboarding support",
@@ -101,7 +98,7 @@
         "summary": "For a small team running several call tasks.",
         "billing": "Platform per month",
         "highlightLabel": "One connected tool",
-        "highlightValue": "3 tasks and 3 concurrent calls",
+        "highlightValue": "3 tasks; add channels as needed",
         "highlightCaption": "Outcome written to calendar or CRM",
         "included1": "1 AI role, 1 phone number and 1 calendar or CRM connection",
         "included2": "90-day call and transcript history",
@@ -110,7 +107,7 @@
         "operators": "1 role",
         "scenarios": "3 tasks",
         "phoneNumbers": "1",
-        "concurrentCalls": "3",
+        "inboundChannels": "1",
         "integrations": "1 connection",
         "history": "90 days",
         "support": "Launch support",
@@ -131,7 +128,7 @@
         "operators": "3 roles",
         "scenarios": "10 tasks",
         "phoneNumbers": "3",
-        "concurrentCalls": "10",
+        "inboundChannels": "1",
         "integrations": "3 connections",
         "history": "365 days",
         "support": "Ongoing support",
@@ -143,7 +140,7 @@
         "summary": "For larger teams that need priority service.",
         "billing": "Platform per month",
         "highlightLabel": "High call volume",
-        "highlightValue": "25 concurrent calls",
+        "highlightValue": "1 included channel; add more as needed",
         "highlightCaption": "Priority support and an SLA",
         "included1": "10 AI roles, 10 phone numbers and 10 connected tools",
         "included2": "Unlimited call and transcript history",
@@ -152,7 +149,7 @@
         "operators": "10 roles",
         "scenarios": "25 tasks",
         "phoneNumbers": "10",
-        "concurrentCalls": "25",
+        "inboundChannels": "1",
         "integrations": "10 connections",
         "history": "Unlimited",
         "support": "Priority support with SLA",
@@ -166,69 +163,49 @@
         "highlightLabel": "Built around your workflow",
         "highlightValue": "A tailored workflow",
         "highlightCaption": "Capacity and support by agreement",
-        "included1": "AI roles, call tasks and call capacity by agreement",
+        "included1": "1 parallel inbound channel; additional channels by agreement",
         "included2": "Connected tools, history and support by agreement",
         "included3": "Georgian, Russian and English, with notice before optional recording",
         "excluded1": "Planned features remain unavailable until separately delivered",
         "operators": "By agreement",
         "scenarios": "By agreement",
         "phoneNumbers": "By agreement",
-        "concurrentCalls": "By agreement",
+        "inboundChannels": "1",
         "integrations": "By agreement",
         "history": "By agreement",
         "support": "By agreement",
         "analytics": "By agreement"
       }
     },
-    "minutes": {
+    "channels": {
       "eyebrow": "Step 2",
-      "title": "Choose your inbound call minutes",
-      "intro": "The bundles below cover inbound calls only. The indicative reference is 5.40 GEL per 10 connected minutes, but you pay for the selected monthly bundle rather than for each individual call.",
-      "select": "Select bundle",
+      "title": "Choose your parallel inbound channels",
+      "intro": "Every plan includes one parallel inbound channel. Each additional concurrent inbound channel costs 60 GEL per month. Inbound minutes have no separate per-minute telecom charge; final availability is confirmed during setup.",
+      "select": "Select channels",
       "selected": "Selected",
-      "connected": "Inbound conversation time",
-      "bundles": {
-        "minutes100": {
-          "name": "100 minutes",
-          "description": "For a pilot or light inbound call flow."
-        },
-        "minutes500": {
-          "name": "500 minutes",
-          "description": "For regular inbound calls."
-        },
-        "minutes2000": {
-          "name": "2,000 minutes",
-          "description": "For an active daily inbound call flow."
-        },
-        "minutes5000": {
-          "name": "5,000 minutes",
-          "description": "For a high volume of inbound calls."
-        },
-        "minutes10000": {
-          "name": "10,000 minutes",
-          "description": "For a very high volume of inbound calls."
-        }
-      },
+      "unit": "channels",
+      "included": "Included inbound channels",
+      "additional": "Optional add-on; availability confirmed during setup",
       "rates": {
         "inboundTitle": "Inbound calls",
-        "inboundUnit": "per conversation minute after answer",
-        "inboundExample": "10 minutes ≈ 5.40 GEL",
-        "inboundNote": "The selected monthly bundle covers the stated number of inbound conversation minutes.",
+        "inboundUnit": "minutes have no separate telecom charge",
+        "inboundExample": "1 channel included",
+        "inboundNote": "Every plan includes one parallel inbound channel. Add channels for simultaneous conversations; this is not a published technical capacity limit.",
         "outboundTitle": "Outbound calls",
         "outboundUnit": "per conversation minute after answer",
-        "outboundStatus": "Temporary rate",
-        "outboundNote": "This rate is currently high. aiNOW is working to reduce it.",
+        "outboundStatus": "Connected-minute rate",
+        "outboundNote": "Only connected outbound conversation time is billed at this rate.",
         "pricingUpdateNote": "Public prices are indicative and may change with exchange rates, telephony costs or service conditions. We confirm the final price and availability before purchase."
       },
       "summary": {
         "platform": "Platform plan",
-        "minutes": "Inbound minute bundle",
+        "channels": "Inbound channel add-on",
         "total": "Monthly configuration",
         "perMonth": "per month",
-        "configuration": "Plan and inbound minutes",
+        "configuration": "Plan and inbound channels",
         "setupFee": "One-time number setup",
         "setupFeeNote": "Number purchase and initial configuration",
-        "noAutomaticCharge": "Extra inbound minutes activate only after your approval",
+        "noAutomaticCharge": "Additional channels activate only after your approval",
         "action": "Configure this combination",
         "from": "From"
       }
@@ -247,9 +224,9 @@
         "languages": "KA, RU, EN"
       },
       "rows": {
-        "minutes": {
-          "label": "Inbound minute bundle",
-          "info": "Step 2 selects inbound call minutes only. The indicative price for ten connected inbound minutes is 5.40 GEL."
+        "inboundChannels": {
+          "label": "Parallel inbound channels",
+          "info": "Every plan includes one parallel inbound channel. Additional concurrent channels cost 60 GEL per month each; this is a requested configuration, not a published technical capacity limit."
         },
         "model": {
           "label": "Model",
@@ -277,11 +254,11 @@
         },
         "inbound": {
           "label": "Inbound calls",
-          "info": "Customers call your assigned number and aiCALL answers. Conversation time starts after aiCALL answers and uses the selected inbound bundle."
+          "info": "Customers call your assigned number and aiCALL answers. Inbound minutes have no separate per-minute telecom charge."
         },
         "outbound": {
           "label": "Individual outbound calls",
-          "info": "An approved call objective can be started to a Georgian +995 number. Conversation time currently costs 1.40 GEL per minute after the customer answers."
+          "info": "An approved call objective can be started to a Georgian +995 number. Connected outbound conversation time costs 1.50 GEL per minute after the customer answers."
         },
         "languages": {
           "label": "Conversation languages",
@@ -310,10 +287,6 @@
         "knowledgeBase": {
           "label": "Knowledge base",
           "info": "Connection to approved knowledge sources is planned and is not live yet."
-        },
-        "concurrentCalls": {
-          "label": "Concurrent calls",
-          "info": "Maximum number of calls the plan can process at the same time."
         },
         "history": {
           "label": "Call and transcript history",
@@ -407,19 +380,19 @@
       "s3Title": "Run test calls",
       "s3Description": "Check language, interruptions, recording and correct result capture.",
       "s3Timing": "Test",
-      "s4Title": "Activate the plan and inbound-minute bundle",
-      "s4Description": "The platform plan and selected inbound-minute bundle activate together. Outbound calls are calculated separately at the current rate of 1.40 GEL per conversation minute after answer. Extra usage requires your approval.",
+      "s4Title": "Activate the plan and inbound channels",
+      "s4Description": "The platform plan and selected inbound channel count activate together. Inbound minutes have no separate per-minute telecom charge. Outbound calls are calculated separately at 1.50 GEL per connected minute after answer. Extra channels require your approval.",
       "s4Timing": "After approval"
     },
     "faq": {
       "eyebrow": "Pricing questions",
       "title": "What to know before you start",
       "q1": "What exactly am I paying for?",
-      "a1": "Choose a monthly platform plan for capabilities and a separate monthly inbound-minute bundle. Outbound conversation time is billed separately at 1.40 GEL per minute after the customer answers.",
+      "a1": "Choose a monthly platform plan for capabilities. Every plan includes one parallel inbound channel; additional channels cost 60 GEL per month each. Inbound minutes have no separate per-minute telecom charge. Outbound conversation time is billed separately at 1.50 GEL per connected minute after the customer answers.",
       "q2": "Are inbound and outbound calls included in one bundle?",
-      "a2": "No. Inbound bundles cover inbound calls only. Outbound usage is billed separately.",
+      "a2": "Inbound calls use the channels included in your plan, with optional additional channels. Inbound minutes have no separate per-minute telecom charge. Outbound usage is billed separately.",
       "q3": "How is inbound call pricing calculated?",
-      "a3": "Inbound conversation time is displayed at an indicative 0.54 GEL per minute after aiCALL answers, so 10 minutes are approximately 5.40 GEL. You pay for the selected monthly bundle. An additional bundle activates only after your approval.",
+      "a3": "Every plan includes one parallel inbound channel. If you need more simultaneous inbound conversations, each additional channel costs 60 GEL per month. Inbound minutes have no separate per-minute telecom charge.",
       "q4": "Why does Custom require contact?",
       "a4": "Custom starts at 5,000 GEL per month for the platform, but capacity, connected tools and support must be agreed before launch.",
       "q5": "Are batch campaigns available now?",
@@ -428,7 +401,7 @@
     "cta": {
       "eyebrow": "Next step",
       "title": "Configure the right {product} plan",
-      "description": "Choose the capabilities you need, then add an inbound-minute bundle for your expected inbound volume. Outbound calls are calculated separately.",
+      "description": "Choose the capabilities you need, then select the number of parallel inbound channels. Inbound minutes have no separate per-minute telecom charge; outbound calls are calculated separately at 1.50 GEL per connected minute.",
       "label": "Configure my plan"
     }
   },

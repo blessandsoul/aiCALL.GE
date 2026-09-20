@@ -137,24 +137,24 @@ export function buildProductPageGraph({
         : [],
     ) ?? [];
 
-  const minuteOffers =
-    pricing?.minuteBundles.map((bundle) => ({
+  const inboundChannelOffers =
+    pricing?.inboundChannelOptions.map((option) => ({
       '@type': 'Offer',
-      name: bundle.name,
-      description: bundle.description,
-      price: String(bundle.price.amount),
-      priceCurrency: bundle.price.currency,
+      name: `${option.channels} parallel inbound channels`,
+      description: 'Optional inbound channel add-on; inbound minutes have no separate per-minute telecom charge.',
+      price: String(option.additionalMonthlyPrice.amount),
+      priceCurrency: option.additionalMonthlyPrice.currency,
       availability: 'https://schema.org/PreOrder',
       url: pageUrl,
       seller: { '@id': 'https://ainow.ge#organization' },
       additionalProperty: {
         '@type': 'PropertyValue',
-        name: 'Inbound connected call minutes',
-        value: bundle.minutes,
+        name: 'Parallel inbound channels',
+        value: option.channels,
       },
     })) ?? [];
 
-  if (pricedOffers.length > 0 || minuteOffers.length > 0) {
+  if (pricedOffers.length > 0 || inboundChannelOffers.length > 0) {
     graph.push({
       '@type': 'OfferCatalog',
       '@id': `${pageUrl}#offers`,
@@ -167,8 +167,8 @@ export function buildProductPageGraph({
         },
         {
           '@type': 'OfferCatalog',
-          name: `${PRODUCT_NAME} inbound minute bundles`,
-          itemListElement: minuteOffers,
+          name: `${PRODUCT_NAME} inbound channel add-ons`,
+          itemListElement: inboundChannelOffers,
         },
       ],
     });

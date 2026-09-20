@@ -14,6 +14,8 @@ export const contactFormSchema = z
     name: z.string().min(1).max(120).optional(),
     email: z.string().email("Invalid email").max(254).optional(),
     message: z.string().max(5000).optional(),
+    plan: z.string().max(40).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+    inboundChannels: z.number().int().min(1).max(10).optional(),
     utm_source: z.string().max(80).regex(/^[a-zA-Z0-9_-]+$/).optional(),
     utm_medium: z.string().max(80).regex(/^[a-zA-Z0-9_-]+$/).optional(),
     utm_campaign: z.string().max(120).regex(/^[a-zA-Z0-9_-]+$/).optional(),

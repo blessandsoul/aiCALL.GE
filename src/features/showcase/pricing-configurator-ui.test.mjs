@@ -15,21 +15,21 @@ const styles = readFileSync(
   'utf8',
 );
 
-test('pricing requires a functional plan and a separate inbound minute bundle', () => {
+test('pricing requires a functional plan and an inbound channel selection', () => {
   assert.match(configurator, /selectedPlanId/u);
-  assert.match(configurator, /selectedMinuteId/u);
+  assert.match(configurator, /selectedChannels/u);
+  assert.match(configurator, /inboundChannelOptions/u);
   assert.match(configurator, /callRates\.outbound\.pricePerConnectedMinute/u);
-  assert.match(configurator, /plan=.*inboundMinutes=/u);
-  assert.doesNotMatch(configurator, /platformAmount \+ minutesAmount/u);
+  assert.match(configurator, /plan=.*inboundChannels=/u);
+  assert.match(configurator, /platformAmount \+ channelAmount/u);
   assert.match(configurator, /formatAmount\(platformAmount, platformCurrency\)/u);
-  assert.match(configurator, /formatAmount\(minutesAmount, minutesCurrency\)/u);
+  assert.match(configurator, /formatAmount\(channelAmount, channelCurrency\)/u);
   assert.match(configurator, /aria-live="polite"/u);
 });
 
-test('manual minute choice survives later functional-plan changes', () => {
-  assert.match(configurator, /minutesChosenManually/u);
-  assert.match(configurator, /if \(!minutesChosenManually\)/u);
-  assert.match(configurator, /setMinutesChosenManually\(true\)/u);
+test('each functional plan resets to its included inbound channel count', () => {
+  assert.match(configurator, /setSelectedChannels\(nextOffer\.includedInboundChannels\)/u);
+  assert.match(configurator, /onClick=\{\(\) => setSelectedChannels\(option\.channels\)\}/u);
 });
 
 test('mobile opens on the selected plan without page-wide overflow', () => {

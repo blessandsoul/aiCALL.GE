@@ -97,71 +97,64 @@ const MACHINE_PLATFORM_PLANS = VOICE_PRICING.plans.map((plan) => ({
   priceType: plan.contactOnly ? 'from' : 'fixed',
   recommended: plan.recommended,
   contactOnly: plan.contactOnly,
-  defaultMinuteBundleId: plan.defaultMinuteBundleId,
+  includedInboundChannels: plan.includedInboundChannels,
   limits: plan.limits,
   support: plan.support,
   capabilities: plan.capabilities,
 }));
 
-const MACHINE_MINUTE_BUNDLES = VOICE_PRICING.minuteBundles.map((bundle) => ({
-  id: bundle.id,
-  direction: 'inbound',
-  inboundConnectedMinutes: bundle.minutes,
-  monthlyPriceGel: bundle.monthlyPriceGel,
-  currency: VOICE_PRICING.inboundBundleCurrency,
-  priceType: bundle.contactOnly ? 'from' : 'fixed',
-  contactOnly: bundle.contactOnly,
+const MACHINE_INBOUND_CHANNEL_OPTIONS = VOICE_PRICING.inboundChannelOptions.map((channels) => ({
+  channels,
+  additionalMonthlyPriceGel:
+    Math.max(0, channels - VOICE_PRICING.billing.includedInboundChannels) *
+    VOICE_PRICING.billing.additionalInboundChannelMonthlyPriceGel,
+  currency: VOICE_PRICING.platformCurrency,
 }));
 
 const MACHINE_DEFAULT_CONFIGURATIONS = VOICE_PRICING.plans.map((plan) => {
-  const bundle = VOICE_PRICING.minuteBundles.find(
-    (item) => item.id === plan.defaultMinuteBundleId,
-  );
   return {
     platformPlanId: plan.id,
-    inboundMinuteBundleId: plan.defaultMinuteBundleId,
-    inboundConnectedMinutes: bundle?.minutes ?? 0,
+    inboundChannels: plan.includedInboundChannels,
     monthlyPlatformPriceGel: plan.monthlyPlatformPriceGel,
-    monthlyInboundMinutesPriceGel: bundle?.monthlyPriceGel ?? 0,
+    monthlyInboundChannelsPriceGel: 0,
     outboundPricePerConnectedMinuteGel:
       VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
-    priceType: plan.contactOnly || bundle?.contactOnly ? 'from' : 'fixed',
+    priceType: plan.contactOnly ? 'from' : 'fixed',
   };
 });
 
 export const PRODUCT_MACHINE_PRICING = {
-  model: 'monthly functional platform plan plus a separately selected inbound-minute bundle; outbound usage is billed separately',
+  model: 'monthly functional platform plan with one included parallel inbound channel; outbound usage is billed separately',
   platformCurrency: VOICE_PRICING.platformCurrency,
-  inboundBundleCurrency: VOICE_PRICING.inboundBundleCurrency,
   billingPeriod: VOICE_PRICING.cadence,
   inboundPricing: {
-    pricePerConnectedMinuteGel:
-      VOICE_PRICING.billing.inboundPricePerConnectedMinuteGel,
-    referenceMinutes: VOICE_PRICING.billing.inboundReferenceMinutes,
-    referencePriceGel: VOICE_PRICING.billing.inboundReferencePriceGel,
+    includedChannels: VOICE_PRICING.billing.includedInboundChannels,
+    additionalChannelMonthlyPriceGel:
+      VOICE_PRICING.billing.additionalInboundChannelMonthlyPriceGel,
+    minutesHaveNoSeparateTelecomCharge: VOICE_PRICING.billing.inboundMinutesIncluded,
     billingMethod:
-      'The customer selects a monthly inbound-minute bundle. The indicative reference is 5.40 GEL for 10 connected inbound minutes.',
+      'Every plan includes one parallel inbound channel. Each additional concurrent inbound channel costs 60 GEL per month. Inbound minutes have no separate per-minute telecom charge.',
   },
   outboundPricing: {
     pricePerConnectedMinuteGel:
       VOICE_PRICING.billing.outboundPricePerConnectedMinuteGel,
-    temporary: VOICE_PRICING.billing.outboundRateTemporary,
+    temporary: false,
     billingMethod:
-      'Outbound usage is not included in inbound-minute bundles. It is currently billed at 1.40 GEL per connected conversation minute after the customer answers. aiNOW is working to reduce this rate.',
+      'Outbound usage is billed at 1.50 GEL per connected conversation minute after the customer answers.',
   },
   oneTimeSetup: {
     priceGel: VOICE_PRICING.billing.oneTimeSetupFeeGel,
     includes: 'phone number purchase and initial configuration',
     billingMethod:
-      'Charged once when aiCALL is first installed; it is separate from the monthly platform plan and minute bundle.',
+      'Charged once when aiCALL is first installed; it is separate from the monthly platform plan and channel add-ons.',
   },
-  minutePool:
-    'Published minute bundles cover connected inbound conversation time only. Outbound calls are billed separately.',
+  inboundChannels:
+    'Every published plan starts with one parallel inbound channel. Additional channels are optional monthly add-ons; final availability is confirmed during setup.',
   selectionOrder: [
     'Choose the functional platform plan.',
-    'Choose the inbound connected-minute bundle independently.',
-    'Review the separate GEL platform price, GEL inbound-bundle price and one-time setup fee before submitting the request.',
-    'If outbound calls are needed, add the temporary 1.40 GEL per connected-minute rate separately.',
+    'Choose how many parallel inbound channels you need.',
+    'Review the monthly platform price, channel add-on and one-time setup fee before submitting the request.',
+    'If outbound calls are needed, add 1.50 GEL per connected conversation minute separately.',
   ],
   includedInEveryPlan:
     'The published launch scope keeps voice quality, Georgian, English and Russian, interruption handling, disclosed recording, transcription and private call history consistent across plans.',
@@ -174,15 +167,15 @@ export const PRODUCT_MACHINE_PRICING = {
     automaticOverage: VOICE_PRICING.billing.automaticOverage,
   },
   extraUsage:
-    'Additional inbound minutes or a larger inbound package are activated only after customer approval. Outbound usage remains separate.',
+    'Additional inbound channels are activated only after customer approval. Inbound minutes have no separate per-minute telecom charge; outbound usage remains separate.',
   platformPlans: MACHINE_PLATFORM_PLANS,
-  minuteBundles: MACHINE_MINUTE_BUNDLES,
+  inboundChannelOptions: MACHINE_INBOUND_CHANNEL_OPTIONS,
   defaultConfigurations: MACHINE_DEFAULT_CONFIGURATIONS,
   plans: MACHINE_PLATFORM_PLANS,
   availabilityNote:
     'The matrix describes the commercial launch scope. Capabilities marked planned are not currently available and activate only after the required telephony integration is complete.',
   purchaseFlow:
-    'Plans are selected through aiNOW contact and setup. The customer approves the functional plan and inbound-minute bundle separately. Outbound usage is quoted at the current connected-minute rate. There is no automatic self-service overage charge.',
+    'Plans are selected through aiNOW contact and setup. The customer approves the functional plan and inbound channel count separately. Outbound usage is quoted at 1.50 GEL per connected minute. There is no automatic self-service overage charge.',
 } as const;
 
 export function machineJsonResponse(payload: unknown): Response {
