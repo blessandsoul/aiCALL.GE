@@ -1,61 +1,51 @@
 import type { MetadataRoute } from "next";
-import { getAvailableLocales, getBlogLocales, getDefaultAvailableLocale, getPost, getPostSlugs } from "@/features/blog/lib/blog";
-import { INDEXED_LOCALES, buildAlternates, localeUrl } from "@/i18n/seo-locales";
-import {
-  PUBLIC_ROUTES,
-  isPublicRoute,
-} from "@/features/product-pages/routes";
+import { getAvailableLocales, getPosts } from "@/features/blog/lib/api";
+import { APP_DOMAIN, SITE_CONTENT_UPDATED } from "@/lib/constants/app.constants";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const entries: MetadataRoute.Sitemap = [];
-  for (const route of PUBLIC_ROUTES) {
-    if (route.path === "/privacy" || route.path === "/terms" || route.path === "/cookies") continue;
-    if (route.path === "/blog") continue;
-    const path = route.path === "/" ? "" : route.path;
-    for (const locale of INDEXED_LOCALES) {
-      entries.push({
-        url: localeUrl(locale, path),
-        changeFrequency: route.changeFrequency,
-        priority: route.priority,
-        alternates: { languages: buildAlternates(path, locale).languages },
-      });
-    }
-  }
+const BASE_URL = `https://${APP_DOMAIN}`;
+const BUILD_DATE = new Date(SITE_CONTENT_UPDATED);
+const INDEXED_LOCALES = ["ka", "en", "ru"] as const;
+const STATIC_PATHS = ["", "/pricing", "/contact", "/integrations", "/security", "/blog", "/privacy", "/terms", "/refund"] as const;
 
-  if (!isPublicRoute('/blog')) return entries;
+function localeUrl(locale: string, path: string): string {
+  return locale === "ka" ? `${BASE_URL}${path}` : `${BASE_URL}/${locale}${path}`;
+}
 
-  const blogLanguages: Record<string, string> = {};
-  const blogLocales = getBlogLocales();
-  for (const locale of blogLocales) blogLanguages[locale] = localeUrl(locale, "/blog");
-  if (blogLocales[0]) blogLanguages["x-default"] = localeUrl(blogLocales[0], "/blog");
-  for (const locale of blogLocales) {
-    entries.push({
-      url: localeUrl(locale, "/blog"),
-      changeFrequency: "weekly",
-      priority: 0.7,
-      alternates: { languages: blogLanguages },
-    });
-  }
+function languageMap(path: string): Record<string, string> {
+  return Object.fromEntries([
+    ...INDEXED_LOCALES.map((locale) => [locale, localeUrl(locale, path)]),
+    ["x-default", localeUrl("ka", path)],
+  ]);
+}
 
-  for (const slug of getPostSlugs()) {
-    const path = `/blog/${slug}`;
-    const available = getAvailableLocales(slug);
-    const languages: Record<string, string> = {};
-    for (const locale of available) languages[locale] = localeUrl(locale, path);
-    const defaultAvailable = getDefaultAvailableLocale(slug);
-    if (defaultAvailable) languages["x-default"] = localeUrl(defaultAvailable, path);
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages = STATIC_PATHS.flatMap((path) => INDEXED_LOCALES.map((locale) => ({
+    url: localeUrl(locale, path),
+    lastModified: BUILD_DATE,
+    changeFrequency: path === "/blog" ? "daily" as const : "monthly" as const,
+    priority: path === "" ? 1 : path === "/blog" ? 0.9 : 0.7,
+    alternates: { languages: languageMap(path) },
+  })));
 
-    for (const locale of available) {
-      const post = getPost(slug, locale);
-      if (!post?.indexable) continue;
-      entries.push({
-        url: localeUrl(locale, path),
-        lastModified: post.updated ? new Date(`${post.updated}T12:00:00Z`) : undefined,
-        changeFrequency: "monthly",
-        priority: 0.7,
+  const postsByLocale = new Map(await Promise.all(INDEXED_LOCALES.map(async (locale) => [locale, await getPosts(locale)] as const)));
+  const slugs = [...new Set([...postsByLocale.values()].flatMap((posts) => posts.map((post) => post.slug)))];
+  const blogPages = slugs.flatMap((slug) => {
+    const locales = getAvailableLocales(slug).filter((locale): locale is typeof INDEXED_LOCALES[number] => INDEXED_LOCALES.includes(locale as typeof INDEXED_LOCALES[number]));
+    const languages = Object.fromEntries([
+      ...locales.map((locale) => [locale, localeUrl(locale, `/blog/${slug}`)]),
+      ...(locales.includes("ka") ? [["x-default", localeUrl("ka", `/blog/${slug}`)]] : []),
+    ]);
+    return locales.map((locale) => {
+      const post = postsByLocale.get(locale)?.find((item) => item.slug === slug);
+      return {
+        url: localeUrl(locale, `/blog/${slug}`),
+        lastModified: post?.updated || post?.date ? new Date(post.updated || post.date) : BUILD_DATE,
+        changeFrequency: "monthly" as const,
+        priority: 0.8,
         alternates: { languages },
-      });
-    }
-  }
-  return entries;
+      };
+    });
+  });
+
+  return [...staticPages, ...blogPages];
 }

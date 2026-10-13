@@ -9,12 +9,6 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
-    ".next*/**",
-    ".task*/**",
-    ".runtime/**",
-    ".deploy-worktrees/**",
-    "artifacts/**",
-    "tests/__pycache__/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

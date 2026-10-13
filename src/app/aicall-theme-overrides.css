@@ -1,0 +1,37 @@
+/* aiCALL adaptation: keep the source geometry and glass material while routing
+   every product accent through the verified orange palette. */
+.aicall-product {
+  --ainow-blue: #ff5a1f;
+  --ainow-blue-hover: #ff5a1f;
+  --ainow-blue-subtle: #ffe2d5;
+  --ainow-pink: #ff8a3d;
+  --ainow-emerald: #ff8a3d;
+  --ainow-cyan: #ff8a3d;
+  --ainow-purple: #ff8a3d;
+  /* Tailwind v4 utilities read these scoped tokens, preserving native variants and opacity. */
+  --color-blue-50: #ffe2d5; --color-blue-100: #ffe2d5; --color-blue-200: #ffe2d5; --color-blue-300: #ffe2d5; --color-blue-400: #ffe2d5; --color-blue-500: #ff5a1f; --color-blue-600: #ff5a1f; --color-blue-700: #ff5a1f; --color-blue-800: #ff5a1f; --color-blue-900: #ff5a1f; --color-blue-950: #ff5a1f;
+  --color-indigo-50: #ffe2d5; --color-indigo-100: #ffe2d5; --color-indigo-200: #ffe2d5; --color-indigo-300: #ffe2d5; --color-indigo-400: #ffe2d5; --color-indigo-500: #ff5a1f; --color-indigo-600: #ff5a1f; --color-indigo-700: #ff5a1f; --color-indigo-800: #ff5a1f; --color-indigo-900: #ff5a1f; --color-indigo-950: #ff5a1f;
+  --color-purple-50: #ffe2d5; --color-purple-100: #ffe2d5; --color-purple-200: #ffe2d5; --color-purple-300: #ffe2d5; --color-purple-400: #ffe2d5; --color-purple-500: #ff5a1f; --color-purple-600: #ff5a1f; --color-purple-700: #ff5a1f; --color-purple-800: #ff5a1f; --color-purple-900: #ff5a1f; --color-purple-950: #ff5a1f;
+  --color-violet-50: #ffe2d5; --color-violet-100: #ffe2d5; --color-violet-200: #ffe2d5; --color-violet-300: #ffe2d5; --color-violet-400: #ffe2d5; --color-violet-500: #ff5a1f; --color-violet-600: #ff5a1f; --color-violet-700: #ff5a1f; --color-violet-800: #ff5a1f; --color-violet-900: #ff5a1f; --color-violet-950: #ff5a1f;
+  --color-pink-50: #ffe2d5; --color-pink-100: #ffe2d5; --color-pink-200: #ffe2d5; --color-pink-300: #ffe2d5; --color-pink-400: #ffe2d5; --color-pink-500: #ff5a1f; --color-pink-600: #ff5a1f; --color-pink-700: #ff5a1f; --color-pink-800: #ff5a1f; --color-pink-900: #ff5a1f; --color-pink-950: #ff5a1f;
+  --color-emerald-50: #ffe2d5; --color-emerald-100: #ffe2d5; --color-emerald-200: #ffe2d5; --color-emerald-300: #ffe2d5; --color-emerald-400: #ffe2d5; --color-emerald-500: #ff5a1f; --color-emerald-600: #ff5a1f; --color-emerald-700: #ff5a1f; --color-emerald-800: #ff5a1f; --color-emerald-900: #ff5a1f; --color-emerald-950: #ff5a1f;
+  --color-cyan-50: #ffe2d5; --color-cyan-100: #ffe2d5; --color-cyan-200: #ffe2d5; --color-cyan-300: #ffe2d5; --color-cyan-400: #ffe2d5; --color-cyan-500: #ff5a1f; --color-cyan-600: #ff5a1f; --color-cyan-700: #ff5a1f; --color-cyan-800: #ff5a1f; --color-cyan-900: #ff5a1f; --color-cyan-950: #ff5a1f;
+  --color-teal-50: #ffe2d5; --color-teal-100: #ffe2d5; --color-teal-200: #ffe2d5; --color-teal-300: #ffe2d5; --color-teal-400: #ffe2d5; --color-teal-500: #ff5a1f; --color-teal-600: #ff5a1f; --color-teal-700: #ff5a1f; --color-teal-800: #ff5a1f; --color-teal-900: #ff5a1f; --color-teal-950: #ff5a1f;
+  --color-sky-50: #ffe2d5; --color-sky-100: #ffe2d5; --color-sky-200: #ffe2d5; --color-sky-300: #ffe2d5; --color-sky-400: #ffe2d5; --color-sky-500: #ff5a1f; --color-sky-600: #ff5a1f; --color-sky-700: #ff5a1f; --color-sky-800: #ff5a1f; --color-sky-900: #ff5a1f; --color-sky-950: #ff5a1f;
+  --color-rose-50: #ffe2d5; --color-rose-100: #ffe2d5; --color-rose-200: #ffe2d5; --color-rose-300: #ffe2d5; --color-rose-400: #ffe2d5; --color-rose-500: #ff5a1f; --color-rose-600: #ff5a1f; --color-rose-700: #ff5a1f; --color-rose-800: #ff5a1f; --color-rose-900: #ff5a1f; --color-rose-950: #ff5a1f;
+  --color-orange-50: #ffe2d5; --color-orange-100: #ffe2d5; --color-orange-200: #ffe2d5; --color-orange-300: #ffe2d5; --color-orange-400: #ffe2d5; --color-orange-500: #ff5a1f; --color-orange-600: #ff5a1f; --color-orange-700: #ff5a1f; --color-orange-800: #ff5a1f; --color-orange-900: #ff5a1f; --color-orange-950: #ff5a1f;
+  --color-amber-50: #ffe2d5; --color-amber-100: #ffe2d5; --color-amber-200: #ffe2d5; --color-amber-300: #ffe2d5; --color-amber-400: #ffe2d5; --color-amber-500: #ff5a1f; --color-amber-600: #ff5a1f; --color-amber-700: #ff5a1f; --color-amber-800: #ff5a1f; --color-amber-900: #ff5a1f; --color-amber-950: #ff5a1f;
+}
+
+/* Keep source light accents, but let dark semantic roles win only in their real state. */
+.dark .aicall-product [class~="dark:text-white"] { color: #ffffff !important; }
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-blue-400"],
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-cyan-400"],
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-emerald-400"],
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-orange-400"],
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-pink-400"],
+.dark .aicall-product .group:hover [class~="dark:group-hover:text-purple-400"],
+.dark .aicall-product .group\/item:hover [class~="dark:group-hover/item:text-blue-400"] { color: #ff8a3d !important; }
+
+.aicall-product [class~="bg-orange-500"][class~="text-white"] { --color-orange-500: #ff5a1f; }
+

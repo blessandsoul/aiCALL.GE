@@ -1,128 +1,56 @@
-import { SITE } from '@/config/site';
-import { PUBLIC_ROUTES } from '@/features/product-pages/routes';
-import {
-  MACHINE_FAQ,
-  MACHINE_PUBLIC_PAGES,
-  MACHINE_REVIEWED_ON,
-  PRODUCT_MACHINE_INTEGRATIONS,
-  PRODUCT_MACHINE_PRICING,
-  PRODUCT_BRAND,
-  machineTextResponse,
-} from '@/features/product-pages/machine';
+import { getPostBySlug, getPosts } from "@/features/blog/lib/api";
+import { AICALL_BASE_URL, AICALL_FACTS, buildAiCallCatalog } from "@/lib/aicall-public-facts";
 
-export const dynamic = 'force-static';
+function articleUrl(locale: string, slug: string): string {
+  return locale === "ka" ? `${AICALL_BASE_URL}/blog/${slug}` : `${AICALL_BASE_URL}/${locale}/blog/${slug}`;
+}
 
-export function GET() {
-  const lines: string[] = [
-    `# ${PRODUCT_BRAND}, full product reference`,
-    '',
-    `Last reviewed: ${MACHINE_REVIEWED_ON}`,
-    `Canonical website: ${SITE.baseUrl}`,
-    '',
-    '## Definition',
-    '',
-    SITE.seo.summary,
-    '',
-    '## Intended customer',
-    '',
-    SITE.seo.audienceName,
-    '',
-    '## Pricing',
-    '',
-    `Model: ${PRODUCT_MACHINE_PRICING.model}.`,
-    PRODUCT_MACHINE_PRICING.inboundChannels,
-   `Inbound minutes have no separate per-minute telecom charge. Each additional concurrent inbound channel costs ${PRODUCT_MACHINE_PRICING.inboundPricing.additionalChannelMonthlyPriceGel} GEL/month.`,
-    `One-time setup: ${PRODUCT_MACHINE_PRICING.oneTimeSetup.priceGel} GEL once for phone-number purchase and initial configuration; separate from monthly charges.`,
-    `Outbound rate: ${PRODUCT_MACHINE_PRICING.outboundPricing.pricePerConnectedMinuteGel} GEL per connected conversation minute after the customer answers.`,
-    PRODUCT_MACHINE_PRICING.includedInEveryPlan,
-    '',
-    '### Step 1, functional platform plan',
-    '',
-    ...PRODUCT_MACHINE_PRICING.platformPlans.flatMap((plan) => [
-      `### ${plan.id}`,
-      '',
-      `Monthly platform price: ${plan.priceType === 'from' ? 'from ' : ''}${plan.monthlyPlatformPriceGel} GEL.`,
-      `AI model: ${plan.model}.`,
-      `Included inbound channels: ${plan.includedInboundChannels}.`,
-      `Limits: ${JSON.stringify(plan.limits)}.`,
-      `Support: ${plan.support}.`,
-      `Capability status: ${JSON.stringify(plan.capabilities)}.`,
-      '',
-    ]),
-    '### Step 2, inbound channel options',
-    '',
-    ...PRODUCT_MACHINE_PRICING.inboundChannelOptions.map(
-      (option) =>
-        `- ${option.channels} parallel inbound channels: ${option.additionalMonthlyPriceGel} GEL/month in channel add-ons.`,
-    ),
-    '',
-    '### Default combinations',
-    '',
-    ...PRODUCT_MACHINE_PRICING.defaultConfigurations.map(
-      (configuration) =>
-        `- ${configuration.platformPlanId}, ${configuration.inboundChannels} inbound channels: platform ${configuration.priceType === 'from' ? 'from ' : ''}${configuration.monthlyPlatformPriceGel} GEL/month; channel add-on ${configuration.monthlyInboundChannelsPriceGel} GEL/month; outbound usage remains separate at ${configuration.outboundPricePerConnectedMinuteGel} GEL per connected conversation minute.`,
-    ),
-    '',
-    PRODUCT_MACHINE_PRICING.extraUsage,
-    PRODUCT_MACHINE_PRICING.availabilityNote,
-    '',
-    `## What ${PRODUCT_BRAND} does`,
-    '',
-    ...SITE.seo.features.map((feature) => `- ${feature}`),
-    '',
-    '## Integrations and availability',
-    '',
-    ...PRODUCT_MACHINE_INTEGRATIONS.flatMap((integration) => [
-      `### ${integration.platform}`,
-      '',
-      `Status: ${integration.status}.`,
-      `Available now: ${integration.availableNow ? 'yes' : 'no'}.`,
-      ...(integration.description ? [integration.description] : []),
-      ...(integration.requirements.length > 0
-        ? [
-            'Requirements:',
-            ...integration.requirements.map((requirement) => `- ${requirement}`),
-          ]
-        : []),
-      '',
-    ]),
-    '## Product boundary',
-    '',
-    SITE.seo.boundary,
-    '',
-    '## Known limits',
-    '',
-    ...SITE.seo.limits.map((limit) => `- ${limit}`),
-    '',
-    '## Commitment',
-    '',
-    SITE.seo.commitment,
-    '',
-    '## Public pages',
-    '',
-    ...PUBLIC_ROUTES.map((route, index) => {
-      const page = MACHINE_PUBLIC_PAGES[index];
-      return `- ${route.key}: ${page.url}`;
-    }),
-    '',
-    '## Frequently asked questions',
-    '',
-    ...MACHINE_FAQ.flatMap(({ question, answer }) => [
-      `### ${question}`,
-      '',
-      answer,
-      '',
-    ]),
-    '## Verification',
-    '',
-    `- Provider: aiNOW, https://ainow.ge`,
-    `- Structured summary: ${SITE.baseUrl}/ai/summary.json`,
-    `- Structured service facts: ${SITE.baseUrl}/ai/service.json`,
-    `- Structured integration status: ${SITE.baseUrl}/ai/integrations.json`,
-    `- Structured FAQ: ${SITE.baseUrl}/ai/faq.json`,
-    `- Concise index: ${SITE.baseUrl}/llms.txt`,
-    '',
+function toPlainMarkdown(content: string): string {
+  return content.replace(/<[^>]+>/g, "").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+export async function GET(): Promise<Response> {
+  const lines = [
+    `# ${AICALL_FACTS.product} by ${AICALL_FACTS.provider} — full content`,
+    "",
+    `> ${AICALL_FACTS.purpose}`,
+    "",
+    "## Current facts",
+    "",
+    `Provider: ${AICALL_FACTS.provider} (${AICALL_FACTS.providerUrl})`,
+    `Website: ${AICALL_BASE_URL}`,
+    `Languages: ${AICALL_FACTS.languages.join(", ")}`,
+    `Input: ${AICALL_FACTS.input.join("; ")}`,
+    `Outcome: ${AICALL_FACTS.output.join("; ")}`,
+    "",
+    "## Pricing",
+    "",
+    `Phone setup: ${AICALL_FACTS.pricing.setup.amount} GEL once.`,
+    `Inbound channel: ${AICALL_FACTS.pricing.includedInboundChannels} included; additional channel ${AICALL_FACTS.pricing.extraInboundChannelMonthly} GEL/month subject to confirmation.`,
+    "Inbound minutes: no separate per-minute telecom fee.",
+    `Connected outbound minute: ${AICALL_FACTS.pricing.connectedOutboundMinute.toFixed(2)} GEL after answer.`,
+    ...AICALL_FACTS.pricing.plans.map((plan) => `${plan.name}: ${plan.amount} GEL/month; ${plan.scope}`),
+    "",
+    "## Boundaries",
+    ...AICALL_FACTS.boundaries,
+    "",
+    "## Authored articles",
+    "",
   ];
 
-  return machineTextResponse(lines.join('\n'));
+  for (const locale of ["ka", "en", "ru"]) {
+    const posts = await getPosts(locale);
+    lines.push(`### ${locale.toUpperCase()} (${posts.length})`, "");
+    for (const post of posts) {
+      const full = await getPostBySlug(post.slug, locale);
+      if (!full?.content) continue;
+      lines.push(`#### ${full.title}`, "", `Language: ${locale}`, `URL: ${articleUrl(locale, full.slug)}`, `Published: ${full.date}`, "", toPlainMarkdown(full.content), "", "---", "");
+    }
+  }
+
+  lines.push(`Catalog JSON: ${AICALL_BASE_URL}/ai/catalog.json`, `Facts JSON: ${AICALL_BASE_URL}/ai/summary.json`, `Catalog snapshot: ${JSON.stringify(buildAiCallCatalog())}`);
+
+  return new Response(`${lines.join("\n")}\n`, {
+    headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400, stale-while-revalidate=3600" },
+  });
 }
